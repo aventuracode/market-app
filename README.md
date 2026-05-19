@@ -85,14 +85,56 @@ Cada feature contiene:
 - Bottom navigation
 - Dark mode
 
+## Supabase Multi-Tenant
+
+✅ **Configuración Completa**
+
+- Clientes browser/server
+- Auth helpers
+- Tenant helpers
+- Middleware con tenant isolation
+- Hooks reutilizables
+- Server Actions ready
+
+Ver documentación completa:
+- 📖 `SUPABASE.md` - Guía completa
+- 📖 `EXAMPLES.md` - Ejemplos prácticos
+- 📖 `SUPABASE_SETUP_COMPLETE.md` - Resumen de setup
+
+## Autenticación Mobile-First
+
+✅ **Sistema Completo**
+
+- Login page tipo Mercado Pago
+- Protected routes con middleware
+- Role-based access control (ADMIN, CAJERO, SUPERVISOR)
+- User menu con logout
+- Bottom navigation (5 secciones)
+- Session persistence
+- Loading states
+- Error handling
+
+Ver documentación:
+- 📖 `AUTH.md` - Guía de autenticación
+
 ## Roadmap MVP
 
 1. ✅ Setup inicial
-2. 🔄 Auth & Layout
-3. ⏳ POS & Cart
-4. ⏳ Caja
-5. ⏳ Productos
-6. ⏳ Ventas
+2. ✅ Supabase multi-tenant
+3. ✅ Auth & Layout mobile-first
+4. 🔄 POS & Cart
+5. ⏳ Caja
+6. ⏳ Productos
+7. ⏳ Ventas
+
+## Documentación
+
+- `README.md` - Este archivo
+- `SETUP.md` - Setup inicial completado
+- `SUPABASE.md` - Configuración Supabase
+- `AUTH.md` - Sistema de autenticación
+- `EXAMPLES.md` - Ejemplos de código
+- `SUPABASE_SETUP_COMPLETE.md` - Resumen Supabase
 
 ## Licencia
 
