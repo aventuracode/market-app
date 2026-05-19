@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
 import { authService } from '@/services/auth.service'
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/theme/theme-toggle'
 import { LogOut, User, Store, Loader2 } from 'lucide-react'
 
 export function UserMenu() {
@@ -52,19 +53,22 @@ export function UserMenu() {
         </div>
       </div>
 
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={handleLogout}
-        disabled={isLoggingOut}
-        className="h-10 w-10"
-      >
-        {isLoggingOut ? (
-          <Loader2 className="h-5 w-5 animate-spin" />
-        ) : (
-          <LogOut className="h-5 w-5" />
-        )}
-      </Button>
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="h-10 w-10"
+        >
+          {isLoggingOut ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <LogOut className="h-5 w-5" />
+          )}
+        </Button>
+      </div>
     </div>
   )
 }
