@@ -2,10 +2,14 @@ export type Role = 'ADMIN' | 'CAJERO' | 'SUPERVISOR'
 
 export interface User {
   id: string
-  email: string
-  role: Role
+  email?: string
+  role_id: number | null
   tenant_id: string
+  first_name: string
+  last_name: string
+  is_active: boolean
   created_at: string
+  updated_at: string
 }
 
 export interface Tenant {

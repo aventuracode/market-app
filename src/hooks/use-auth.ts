@@ -17,18 +17,34 @@ export function useAuth() {
           data: { user: authUser },
         } = await supabase.auth.getUser()
 
-        if (authUser) {
-          const { data: userData } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', authUser.id)
-            .single()
-
-          if (userData) {
-            setUser(userData as User)
-          }
-        } else {
+        if (!authUser) {
           clearUser()
+          setLoading(false)
+          return
+        }
+
+        // Obtener datos adicionales del usuario
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('id, email, role_id, tenant_id, first_name, last_name, is_active, created_at, updated_at')
+          .eq('id', authUser.id)
+          .single()
+
+        if (userError || !userData) {
+          // Fallback a datos básicos de auth
+          setUser({
+            id: authUser.id,
+            email: authUser.email || '',
+            role_id: null,
+            tenant_id: '',
+            first_name: '',
+            last_name: '',
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          } as any)
+        } else {
+          setUser(userData as User)
         }
       } catch (error) {
         console.error('Error fetching user:', error)
@@ -46,7 +62,7 @@ export function useAuth() {
       if (event === 'SIGNED_IN' && session?.user) {
         const { data: userData } = await supabase
           .from('users')
-          .select('*')
+          .select('id, email, role_id, tenant_id, first_name, last_name, is_active, created_at, updated_at')
           .eq('id', session.user.id)
           .single()
 

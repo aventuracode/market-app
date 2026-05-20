@@ -37,11 +37,11 @@ export async function requireAuth(): Promise<User> {
 }
 
 export async function requireRole(
-  allowedRoles: Array<'ADMIN' | 'CAJERO' | 'SUPERVISOR'>
+  allowedRoleIds: number[]
 ): Promise<User> {
   const user = await requireAuth()
 
-  if (!allowedRoles.includes(user.role)) {
+  if (!user.role_id || !allowedRoleIds.includes(user.role_id)) {
     throw new Error('Forbidden: Insufficient permissions')
   }
 

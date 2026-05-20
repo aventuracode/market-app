@@ -1,11 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { authService } from '@/services/auth.service'
-import { loginSchema, type LoginInput } from '@/lib/validations/auth'
+import { login } from './actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -13,31 +9,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { LogIn, Loader2 } from 'lucide-react'
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [error, setError] = useState('')
+  const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
-  })
-
-  const onSubmit = async (data: LoginInput) => {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
     setIsLoading(true)
-    setError('')
+    setError(null)
 
-    try {
-      await authService.login(data)
-      router.push('/')
-      router.refresh()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al iniciar sesión')
-    } finally {
+    const formData = new FormData(e.currentTarget)
+    const result = await login(formData)
+
+    if (result?.error) {
+      setError(result.error)
       setIsLoading(false)
     }
+    // Si no hay error, redirect() se ejecuta en la Server Action
   }
 
   return (
@@ -61,38 +48,30 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="tu@email.com"
                   autoComplete="email"
                   autoFocus
-                  {...register('email')}
+                  required
                 />
-                {errors.email && (
-                  <p className="text-sm text-destructive">
-                    {errors.email.message}
-                  </p>
-                )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="password">Contraseña</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
                   placeholder="••••••••"
                   autoComplete="current-password"
-                  {...register('password')}
+                  required
                 />
-                {errors.password && (
-                  <p className="text-sm text-destructive">
-                    {errors.password.message}
-                  </p>
-                )}
               </div>
 
               {error && (

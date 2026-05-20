@@ -1,6 +1,5 @@
 import { requireAuth } from '@/lib/supabase/auth-helpers'
-import { UserMenu } from '@/components/auth/user-menu'
-import { BottomNav } from '@/components/navigation/bottom-nav'
+import { AppShell } from '@/components/layout/app-shell'
 
 export default async function ProtectedLayout({
   children,
@@ -9,11 +8,5 @@ export default async function ProtectedLayout({
 }) {
   await requireAuth()
 
-  return (
-    <div className="flex flex-col h-screen">
-      <UserMenu />
-      <main className="flex-1 overflow-auto pb-20">{children}</main>
-      <BottomNav />
-    </div>
-  )
+  return <AppShell>{children}</AppShell>
 }

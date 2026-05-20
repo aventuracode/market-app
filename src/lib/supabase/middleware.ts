@@ -20,13 +20,7 @@ export async function updateSession(request: NextRequest) {
         getAll() {
           return request.cookies.getAll()
         },
-        setAll(
-          cookiesToSet: Array<{
-            name: string
-            value: string
-            options?: Record<string, unknown>
-          }>
-        ) {
+        setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           )
@@ -41,12 +35,14 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
+  // CRÍTICO: Refrescar sesión para obtener cookies actualizadas
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
   const pathname = request.nextUrl.pathname
 
+  // Redirect logic
   if (!user && !isPublicRoute(pathname)) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
@@ -55,20 +51,8 @@ export async function updateSession(request: NextRequest) {
 
   if (user && isPublicRoute(pathname)) {
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+    url.pathname = '/pos'
     return NextResponse.redirect(url)
-  }
-
-  if (user) {
-    const { data: userData } = await supabase
-      .from('users')
-      .select('tenant_id')
-      .eq('id', user.id)
-      .single()
-
-    if (userData?.tenant_id) {
-      supabaseResponse.headers.set('x-tenant-id', userData.tenant_id)
-    }
   }
 
   return supabaseResponse

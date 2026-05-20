@@ -4,13 +4,35 @@ Sistema POS moderno y mobile-first para kioscos.
 
 ## Stack Tecnológico
 
-- **Next.js 14** - App Router
-- **TypeScript** - Tipado estático
-- **TailwindCSS** - Estilos
-- **shadcn/ui** - Componentes UI
-- **Zustand** - State management
-- **Supabase** - Backend & Auth
-- **PWA** - Progressive Web App
+### Frontend
+- **Next.js 14.2.3** - App Router con Server Components
+- **React 18.3.1** - UI library
+- **TypeScript 5.4.5** - Tipado estático
+- **TailwindCSS 3.4.3** - Utility-first CSS
+- **shadcn/ui** - Componentes UI accesibles
+- **Lucide React** - Iconos modernos
+
+### Backend & Auth
+- **Supabase** - Backend as a Service
+  - `@supabase/ssr 0.10.3` - SSR con Next.js 14
+  - `@supabase/supabase-js 2.106.0` - Cliente JavaScript
+- **Server Actions** - Mutaciones server-side
+- **Middleware** - Protección de rutas
+
+### State Management
+- **Zustand 4.5.2** - State management ligero
+- **React Hook Form 7.76.0** - Manejo de formularios
+- **Zod 4.4.3** - Validación de schemas
+
+### Theming
+- **next-themes 0.3.0** - Sistema de temas
+- **CSS Variables** - Theming dinámico
+- **Dark mode** - Soporte completo
+
+### Developer Experience
+- **ESLint** - Linting
+- **Prettier** - Formateo de código
+- **TypeScript** - Type safety completo
 
 ## Estructura del Proyecto
 
@@ -31,7 +53,7 @@ src/
 ## Instalación
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## Configuración
@@ -40,25 +62,30 @@ npm install
 2. Configura las variables de Supabase:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=tu-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-key
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
+
+3. Obtén las credenciales:
+   - Ve a [Supabase Dashboard](https://app.supabase.com)
+   - Settings → API
+   - Copia `Project URL` y `anon/public key`
 
 ## Desarrollo
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Abre [http://localhost:3000](http://localhost:3000)
 
 ## Comandos
 
-- `npm run dev` - Servidor desarrollo
-- `npm run build` - Build producción
-- `npm run start` - Servidor producción
-- `npm run lint` - Linter
-- `npm run format` - Formatear código
+- `pnpm dev` - Servidor desarrollo
+- `pnpm build` - Build producción
+- `pnpm start` - Servidor producción
+- `pnpm lint` - Linter
+- `pnpm format` - Formatear código
 
 ## Arquitectura
 
@@ -85,56 +112,112 @@ Cada feature contiene:
 - Bottom navigation
 - Dark mode
 
-## Supabase Multi-Tenant
+---
 
-✅ **Configuración Completa**
+## 📐 Convenciones de Código
 
-- Clientes browser/server
-- Auth helpers
-- Tenant helpers
-- Middleware con tenant isolation
-- Hooks reutilizables
-- Server Actions ready
+### Naming
+- **Componentes:** `PascalCase.tsx`
+- **Hooks:** `use*.ts`
+- **Stores:** `*.store.ts`
+- **Services:** `*.service.ts`
+- **Types:** `PascalCase`
 
-Ver documentación completa:
-- 📖 `SUPABASE.md` - Guía completa
-- 📖 `EXAMPLES.md` - Ejemplos prácticos
-- 📖 `SUPABASE_SETUP_COMPLETE.md` - Resumen de setup
+### Imports
+```typescript
+import { Component } from '@/components/Component'
+import { useStore } from '@/stores/store'
+import { service } from '@/services/service'
+import type { Type } from '@/types'
+```
 
-## Autenticación Mobile-First
+### Componentes
+- Mobile-first design
+- Dark mode compatible
+- TypeScript strict mode
+- Props completamente tipadas
+- Accesibilidad (a11y)
 
-✅ **Sistema Completo**
+## Autenticación SSR con Supabase
 
-- Login page tipo Mercado Pago
-- Protected routes con middleware
-- Role-based access control (ADMIN, CAJERO, SUPERVISOR)
-- User menu con logout
-- Bottom navigation (5 secciones)
-- Session persistence
-- Loading states
-- Error handling
+✅ **Sistema Completo y Actualizado**
+
+- **Next.js 14 App Router** con Server Components
+- **Supabase SSR** (`@supabase/ssr` v0.10.3)
+- **Server Actions** para login/logout
+- **Middleware** de protección de rutas
+- **Cookies HTTP-only** seguras
+- **Multi-tenant** con tenant isolation
+- **Role-based access control**
+- Session persistence automática
+
+### Características:
+- ✅ Login con Server Actions
+- ✅ Logout con Server Actions
+- ✅ Protected routes con middleware
+- ✅ Tenant isolation automático
+- ✅ User menu con información de tenant
+- ✅ Loading states y error handling
+- ✅ TypeScript completo
 
 Ver documentación:
-- 📖 `AUTH.md` - Guía de autenticación
+- 📖 `SKILL_NEXTJS_SUPABASE_SSR_AUTH.md` - Guía completa de autenticación SSR
+
+## Sistema de Theming
+
+✅ **Theming Profesional**
+
+- Light mode minimalista
+- Dark mode moderno
+- System preference detection
+- Persistencia automática
+- Paleta inspirada en Mercado Pago/Shopify
+- Colores: Primary (azul), Success (verde), Warning (amarillo), Destructive (rojo)
+- Theme toggle en UserMenu
+- Página de configuración de apariencia
+
+Ver documentación:
+- 📖 `THEMING.md` - Guía completa de theming
+
+## Layout Mobile-First
+
+✅ **Layout Profesional**
+
+- AppShell con estructura flex
+- Header sticky con backdrop blur
+- Bottom navigation táctil (5 secciones)
+- Safe areas iOS/Android
+- 100dvh support
+- PageContainer reutilizable
+- Touch optimizations (44px mínimo)
+- Responsive con max-width
+- PWA ready
+
+Ver documentación:
+- 📖 `LAYOUT.md` - Guía completa de layout
 
 ## Roadmap MVP
 
 1. ✅ Setup inicial
 2. ✅ Supabase multi-tenant
 3. ✅ Auth & Layout mobile-first
-4. 🔄 POS & Cart
-5. ⏳ Caja
-6. ⏳ Productos
-7. ⏳ Ventas
+4. ✅ Sistema de theming profesional
+5. ✅ Layout mobile-first optimizado
+6. 🔄 POS & Cart
+7. ⏳ Caja
+8. ⏳ Productos
+9. ⏳ Ventas
 
 ## Documentación
 
-- `README.md` - Este archivo
-- `SETUP.md` - Setup inicial completado
-- `SUPABASE.md` - Configuración Supabase
-- `AUTH.md` - Sistema de autenticación
-- `EXAMPLES.md` - Ejemplos de código
-- `SUPABASE_SETUP_COMPLETE.md` - Resumen Supabase
+### Documentos Principales
+- 📖 `README.md` - Este archivo (overview del proyecto)
+- 📖 `SKILL_NEXTJS_SUPABASE_SSR_AUTH.md` - Guía completa de autenticación SSR
+- 📖 `THEMING.md` - Sistema de theming profesional
+
+### Skills Reutilizables
+Las skills son guías completas y reutilizables para implementar features específicas en otros proyectos:
+- 🎓 `SKILL_NEXTJS_SUPABASE_SSR_AUTH.md` - Autenticación SSR con Next.js 14 + Supabase
 
 ## Licencia
 
