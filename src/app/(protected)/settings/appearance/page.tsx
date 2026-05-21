@@ -1,10 +1,7 @@
-import { requireAuth } from '@/lib/supabase/auth-helpers'
 import { ThemeSwitcher } from '@/components/theme/theme-switcher'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-export default async function AppearancePage() {
-  await requireAuth()
-
+export default function AppearancePage() {
   return (
     <div className="p-4 space-y-6">
       <div>

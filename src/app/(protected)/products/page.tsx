@@ -1,8 +1,4 @@
-import { requireAuth } from '@/lib/supabase/auth-helpers'
-
-export default async function ProductsPage() {
-  await requireAuth()
-
+export default function ProductsPage() {
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-2xl font-bold">Productos</h1>

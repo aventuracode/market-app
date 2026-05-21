@@ -221,4 +221,4 @@ Las skills son gu√≠as completas y reutilizables para implementar features espec√
 
 ## Licencia
 
-Privado
+MIT

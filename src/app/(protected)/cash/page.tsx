@@ -1,8 +1,4 @@
-import { requireAuth } from '@/lib/supabase/auth-helpers'
-
-export default async function CashPage() {
-  await requireAuth()
-
+export default function CashPage() {
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-2xl font-bold">Caja</h1>

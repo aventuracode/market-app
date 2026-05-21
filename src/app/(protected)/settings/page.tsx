@@ -1,10 +1,19 @@
-import { requireRole } from '@/lib/supabase/auth-helpers'
+import { requireAuth } from '@/lib/supabase/auth-helpers'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Palette, Bell, Shield, Store, User } from 'lucide-react'
+import { Palette, Bell, Shield, Store, User, AlertCircle } from 'lucide-react'
 
 export default async function SettingsPage() {
-  const user = await requireRole(['ADMIN', 'SUPERVISOR'])
+  const user = await requireAuth()
+  
+  // Verificar si el usuario tiene permisos (role_id 1 = ADMIN, 2 = SUPERVISOR)
+  const hasPermission = user.role_id && [1, 2].includes(user.role_id)
+  
+  if (!hasPermission) {
+    // Redirigir a POS si no tiene permisos
+    redirect('/pos')
+  }
 
   const settingsSections = [
     {
@@ -51,7 +60,9 @@ export default async function SettingsPage() {
           Gestiona la configuración de tu cuenta y comercio
         </p>
         <p className="text-xs text-muted-foreground mt-1">
-          Rol actual: <span className="font-medium text-primary">{user.role}</span>
+          Rol actual: <span className="font-medium text-primary">
+            {user.role_id === 1 ? 'Administrador' : user.role_id === 2 ? 'Supervisor' : 'Empleado'}
+          </span>
         </p>
       </div>
 

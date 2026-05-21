@@ -107,6 +107,7 @@
 }
 
 @layer utilities {
+  /* Safe area utilities */
   .safe-top {
     padding-top: env(safe-area-inset-top);
   }
@@ -119,8 +120,6 @@
   .safe-right {
     padding-right: env(safe-area-inset-right);
   }
-  
-  /* Safe area utilities */
   .pb-safe {
     padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
   }
@@ -139,5 +138,30 @@
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
+  }
+  
+  /* Premium card styles */
+  .card-premium {
+    @apply rounded-3xl border border-border/50 bg-card shadow-lg shadow-black/5 backdrop-blur-sm;
+  }
+  
+  /* Premium gradient backgrounds */
+  .bg-gradient-premium {
+    @apply bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900;
+  }
+  
+  /* Glass effect */
+  .glass {
+    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-white/20 dark:border-gray-800/50;
+  }
+  
+  /* Premium button hover */
+  .btn-premium {
+    @apply transition-all duration-200 active:scale-[0.98] hover:scale-[1.01];
+  }
+  
+  /* Smooth focus ring */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background;
   }
 }

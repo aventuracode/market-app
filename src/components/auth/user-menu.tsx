@@ -9,7 +9,7 @@ import { ThemeToggle } from '@/components/theme/theme-toggle'
 import { LogOut, User, Store, Loader2 } from 'lucide-react'
 
 export function UserMenu() {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
   const { tenant } = useTenant()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
 
@@ -21,6 +21,27 @@ export function UserMenu() {
       console.error('Error al cerrar sesión:', error)
       setIsLoggingOut(false)
     }
+  }
+
+  // Mostrar skeleton mientras carga
+  if (loading) {
+    return (
+      <div className="w-full">
+        <div className="flex items-center justify-between p-4 max-w-7xl mx-auto">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="w-10 h-10 rounded-full bg-muted animate-pulse" />
+            <div className="flex flex-col gap-2 min-w-0 flex-1">
+              <div className="h-4 w-32 bg-muted animate-pulse rounded" />
+              <div className="h-3 w-24 bg-muted animate-pulse rounded" />
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-muted animate-pulse rounded-lg" />
+            <div className="w-10 h-10 bg-muted animate-pulse rounded-lg" />
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (!user) return null
