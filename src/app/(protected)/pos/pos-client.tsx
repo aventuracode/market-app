@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ShoppingCart } from 'lucide-react'
+import { ShoppingCart, ScanBarcode } from 'lucide-react'
 import { useProductSearch } from '@/hooks/use-product-search'
 import { useCartStore } from '@/stores/cart.store'
+import { useTenant } from '@/hooks/use-tenant'
+import { productService } from '@/services/product.service'
 import { SearchInput } from '@/components/pos/search-input'
 import { ProductCard } from '@/components/pos/product-card'
 import {
@@ -14,14 +16,17 @@ import {
 } from '@/components/pos/product-list-states'
 import { Button } from '@/components/ui/button'
 import { CartSheet } from '@/components/cart/cart-sheet'
+import { BarcodeScanner } from '@/components/scanner/barcode-scanner'
 import { motion } from 'framer-motion'
 import type { ProductWithCategory } from '@/types/product'
 
 export function POSClient() {
   const [mounted, setMounted] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
+  const [scannerOpen, setScannerOpen] = useState(false)
   const { query, setQuery, products, loading, error, clearSearch } = useProductSearch()
   const { addItem, removeItem, updateQuantity, getItem, getItemCount, getTotal } = useCartStore()
+  const { tenant } = useTenant()
 
   useEffect(() => {
     setMounted(true)
@@ -37,6 +42,29 @@ export function POSClient() {
 
   const handleUpdateQuantity = (product: ProductWithCategory, quantity: number) => {
     updateQuantity(product.id, quantity)
+  }
+
+  const handleBarcodeScan = async (barcode: string) => {
+    if (!tenant?.id) {
+      throw new Error('No hay tenant activo')
+    }
+
+    const product = await productService.getProductByBarcode(tenant.id, barcode)
+    
+    if (!product) {
+      throw new Error('Producto no encontrado')
+    }
+
+    if (!product.is_active) {
+      throw new Error('Producto inactivo')
+    }
+
+    if (product.stock <= 0) {
+      throw new Error('Producto sin stock')
+    }
+
+    // Add to cart
+    addItem(product, 1)
   }
 
   const cartItemCount = getItemCount()
@@ -60,6 +88,16 @@ export function POSClient() {
               Busca y agrega productos al carrito
             </p>
           </div>
+          
+          {/* Scanner Button */}
+          <Button
+            size="icon"
+            variant="outline"
+            className="h-12 w-12 rounded-xl"
+            onClick={() => setScannerOpen(true)}
+          >
+            <ScanBarcode className="h-6 w-6" />
+          </Button>
         </div>
 
         <SearchInput
@@ -132,6 +170,13 @@ export function POSClient() {
 
       {/* Cart Sheet */}
       <CartSheet open={cartOpen} onClose={() => setCartOpen(false)} />
+
+      {/* Barcode Scanner */}
+      <BarcodeScanner 
+        open={scannerOpen} 
+        onClose={() => setScannerOpen(false)}
+        onScan={handleBarcodeScan}
+      />
     </div>
   )
 }
