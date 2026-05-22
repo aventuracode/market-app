@@ -1,14 +1,12 @@
 'use client'
 
 import { useAuth } from '@/hooks/use-auth'
-import { Loading } from '@/components/ui/loading'
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { loading } = useAuth()
+  // Inicializar el hook para mantener el estado sincronizado
+  // pero no bloquear el renderizado - el middleware ya validó la sesión
+  useAuth()
 
-  if (loading) {
-    return <Loading text="Verificando sesión..." />
-  }
-
+  // Renderizar inmediatamente - cada componente maneja su propio loading
   return <>{children}</>
 }

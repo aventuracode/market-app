@@ -26,12 +26,18 @@ export function useAuth() {
         // Obtener datos adicionales del usuario
         const { data: userData, error: userError } = await supabase
           .from('users')
-          .select('id, email, role_id, tenant_id, first_name, last_name, is_active, created_at, updated_at')
+          .select('*')
           .eq('id', authUser.id)
-          .single()
+          .maybeSingle()
 
-        if (userError || !userData) {
-          // Fallback a datos básicos de auth
+        if (userError) {
+          console.error('Error fetching user data:', userError)
+        }
+
+        if (userData) {
+          setUser(userData as User)
+        } else {
+          // Fallback a datos básicos de auth si no hay datos en la tabla
           setUser({
             id: authUser.id,
             email: authUser.email || '',
@@ -43,8 +49,6 @@ export function useAuth() {
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           } as any)
-        } else {
-          setUser(userData as User)
         }
       } catch (error) {
         console.error('Error fetching user:', error)
@@ -60,11 +64,15 @@ export function useAuth() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
-        const { data: userData } = await supabase
+        const { data: userData, error } = await supabase
           .from('users')
-          .select('id, email, role_id, tenant_id, first_name, last_name, is_active, created_at, updated_at')
+          .select('*')
           .eq('id', session.user.id)
-          .single()
+          .maybeSingle()
+
+        if (error) {
+          console.error('Error fetching user on auth change:', error)
+        }
 
         if (userData) {
           setUser(userData as User)

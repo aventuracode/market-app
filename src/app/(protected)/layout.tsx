@@ -1,12 +1,11 @@
-import { requireAuth } from '@/lib/supabase/auth-helpers'
 import { AppShell } from '@/components/layout/app-shell'
 
-export default async function ProtectedLayout({
+export default function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  await requireAuth()
-
+  // El middleware ya valida la autenticación y redirige si es necesario
+  // No necesitamos verificar aquí para evitar delays innecesarios
   return <AppShell>{children}</AppShell>
 }
