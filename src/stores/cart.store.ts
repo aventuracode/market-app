@@ -12,8 +12,11 @@ interface CartStore {
   addItem: (product: ProductWithCategory, quantity?: number) => void
   removeItem: (productId: string) => void
   updateQuantity: (productId: string, quantity: number) => void
+  increaseQuantity: (productId: string) => void
+  decreaseQuantity: (productId: string) => void
   clearCart: () => void
   getTotal: () => number
+  getSubtotal: () => number
   getItemCount: () => number
   getItem: (productId: string) => CartItem | undefined
 }
@@ -81,6 +84,37 @@ export const useCartStore = create<CartStore>()(
 
       getItem: (productId) => {
         return get().items.find((item) => item.product.id === productId)
+      },
+
+      increaseQuantity: (productId) => {
+        set((state) => ({
+          items: state.items.map((item) =>
+            item.product.id === productId
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          ),
+        }))
+      },
+
+      decreaseQuantity: (productId) => {
+        const item = get().items.find((i) => i.product.id === productId)
+        if (!item) return
+
+        if (item.quantity <= 1) {
+          get().removeItem(productId)
+        } else {
+          set((state) => ({
+            items: state.items.map((i) =>
+              i.product.id === productId
+                ? { ...i, quantity: i.quantity - 1 }
+                : i
+            ),
+          }))
+        }
+      },
+
+      getSubtotal: () => {
+        return get().getTotal()
       },
     }),
     {

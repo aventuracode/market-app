@@ -13,11 +13,13 @@ import {
   ProductListSearching,
 } from '@/components/pos/product-list-states'
 import { Button } from '@/components/ui/button'
+import { CartSheet } from '@/components/cart/cart-sheet'
 import { motion } from 'framer-motion'
 import type { ProductWithCategory } from '@/types/product'
 
 export function POSClient() {
   const [mounted, setMounted] = useState(false)
+  const [cartOpen, setCartOpen] = useState(false)
   const { query, setQuery, products, loading, error, clearSearch } = useProductSearch()
   const { addItem, removeItem, updateQuantity, getItem, getItemCount, getTotal } = useCartStore()
 
@@ -120,16 +122,16 @@ export function POSClient() {
             <Button
               size="lg"
               className="w-full"
-              onClick={() => {
-                // TODO: Navigate to cart/checkout
-                console.log('Go to cart')
-              }}
+              onClick={() => setCartOpen(true)}
             >
               Ver Carrito
             </Button>
           </div>
         </motion.div>
       )}
+
+      {/* Cart Sheet */}
+      <CartSheet open={cartOpen} onClose={() => setCartOpen(false)} />
     </div>
   )
 }
