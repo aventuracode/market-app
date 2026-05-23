@@ -1,13 +1,14 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { CartItem } from './cart-item'
 import { CartSummary } from './cart-summary'
 import { EmptyCart } from './empty-cart'
+import { CheckoutModal } from '@/components/checkout/checkout-modal'
 import { useCartStore } from '@/stores/cart.store'
-import { useEffect } from 'react'
 
 interface CartSheetProps {
   open: boolean
@@ -15,6 +16,7 @@ interface CartSheetProps {
 }
 
 export function CartSheet({ open, onClose }: CartSheetProps) {
+  const [checkoutOpen, setCheckoutOpen] = useState(false)
   const { 
     items, 
     increaseQuantity, 
@@ -43,8 +45,12 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
   }, [open])
 
   const handleCheckout = () => {
-    // TODO: Navigate to checkout
-    console.log('Go to checkout')
+    setCheckoutOpen(true)
+  }
+
+  const handleCheckoutSuccess = () => {
+    setCheckoutOpen(false)
+    onClose()
   }
 
   const handleClear = () => {
@@ -121,6 +127,13 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
               </div>
             )}
           </motion.div>
+
+          {/* Checkout Modal */}
+          <CheckoutModal
+            open={checkoutOpen}
+            onClose={() => setCheckoutOpen(false)}
+            onSuccess={handleCheckoutSuccess}
+          />
         </>
       )}
     </AnimatePresence>
