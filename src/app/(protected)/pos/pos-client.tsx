@@ -6,7 +6,8 @@ import { useProductSearch } from '@/hooks/use-product-search'
 import { useCartStore } from '@/stores/cart.store'
 import { useTenant } from '@/hooks/use-tenant'
 import { productService } from '@/services/product.service'
-import { SearchInput } from '@/components/pos/search-input'
+import { PageHeader } from '@/components/shared/page-header'
+import { SearchBar } from '@/components/shared/search-bar'
 import { ProductCard } from '@/components/pos/product-card'
 import {
   ProductListLoading,
@@ -80,11 +81,11 @@ export function POSClient() {
   return (
     <div className="flex flex-col h-full">
       {/* Header con search sticky */}
-      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-lg border-b pb-4 space-y-4">
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-lg border-b p-4 space-y-4">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Punto de Venta</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="text-3xl font-bold mb-1">Punto de Venta</h1>
+            <p className="text-muted-foreground">
               Busca y agrega productos al carrito
             </p>
           </div>
@@ -100,17 +101,18 @@ export function POSClient() {
           </Button>
         </div>
 
-        <SearchInput
+        <SearchBar
           value={query}
           onChange={setQuery}
           onClear={clearSearch}
           loading={loading}
           placeholder="Buscar por nombre, SKU o código..."
+          autoFocus
         />
       </div>
 
       {/* Product List */}
-      <div className="flex-1 overflow-y-auto py-4">
+      <div className="flex-1 overflow-y-auto">
         {error ? (
           <ProductListError message={error} />
         ) : loading && products.length === 0 ? (
@@ -118,7 +120,7 @@ export function POSClient() {
         ) : products.length === 0 ? (
           <ProductListEmpty hasQuery={query.length > 0} />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in">
+          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in">
             {products.map((product) => {
               const cartItem = getItem(product.id)
               return (
