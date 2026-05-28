@@ -122,9 +122,28 @@ export const salesFilterSchema = z.object({
 )
 
 /**
+ * Schema para período de tiempo (tabs)
+ */
+export const salesPeriodSchema = z.enum(['all', 'today', 'week', 'month'], {
+  message: 'Período inválido',
+})
+
+/**
+ * Schema para query params de la página de ventas
+ */
+export const salesQueryParamsSchema = z.object({
+  period: salesPeriodSchema.default('all'),
+  payment_method: paymentMethodSchema.optional(),
+  search: z.string().optional(),
+  user_id: z.string().uuid().optional(),
+})
+
+/**
  * Types inferidos de los schemas
  */
 export type PaymentMethod = z.infer<typeof paymentMethodSchema>
 export type SaleItemInput = z.infer<typeof saleItemSchema>
 export type CreateSaleInput = z.infer<typeof createSaleSchema>
 export type SalesFilterInput = z.infer<typeof salesFilterSchema>
+export type SalesPeriod = z.infer<typeof salesPeriodSchema>
+export type SalesQueryParams = z.infer<typeof salesQueryParamsSchema>
