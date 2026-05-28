@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
+import { QuickCreateCategory } from '@/components/settings/categories/quick-create-category'
 import type { Product, Category } from '@/types/product'
 
 interface ProductFormProps {
@@ -45,20 +46,27 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
   useEffect(() => {
     if (!tenant?.id) return
 
-    const loadCategories = async () => {
-      try {
-        setLoadingCategories(true)
-        const data = await productService.getCategories(tenant.id)
-        setCategories(data)
-      } catch (error) {
-        console.error('Error loading categories:', error)
-      } finally {
-        setLoadingCategories(false)
-      }
-    }
-
     loadCategories()
   }, [tenant?.id])
+
+  const loadCategories = async () => {
+    if (!tenant?.id) return
+    
+    try {
+      setLoadingCategories(true)
+      const data = await productService.getCategories(tenant.id)
+      setCategories(data)
+    } catch (error) {
+      console.error('Error loading categories:', error)
+    } finally {
+      setLoadingCategories(false)
+    }
+  }
+
+  const handleCategoryCreated = async (categoryId: string) => {
+    await loadCategories()
+    form.setValue('category_id', categoryId)
+  }
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
@@ -99,19 +107,22 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
           {/* Categoría */}
           <div className="space-y-2">
             <Label htmlFor="category_id">Categoría</Label>
-            <select
-              id="category_id"
-              {...register('category_id')}
-              className="flex h-12 w-full rounded-lg border-2 border-input bg-background px-4 py-3 text-base font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.5rem] bg-[right_0.75rem_center] bg-no-repeat pr-12"
-              disabled={loadingCategories}
-            >
-              <option value="">Sin categoría</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+            <div className="flex gap-2">
+              <select
+                id="category_id"
+                {...register('category_id')}
+                className="flex h-12 w-full rounded-lg border-2 border-input bg-background px-4 py-3 text-base font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.5rem] bg-[right_0.75rem_center] bg-no-repeat pr-12"
+                disabled={loadingCategories}
+              >
+                <option value="">Sin categoría</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+              <QuickCreateCategory onCategoryCreated={handleCategoryCreated} />
+            </div>
             {errors.category_id && (
               <p className="text-sm text-destructive">{errors.category_id.message}</p>
             )}

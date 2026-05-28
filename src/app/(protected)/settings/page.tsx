@@ -1,8 +1,8 @@
 import { requireAuth } from '@/lib/supabase/auth-helpers'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Palette, Bell, Shield, Store, User, AlertCircle } from 'lucide-react'
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Palette, Shield, Store, Users, Tags } from 'lucide-react'
 
 export default async function SettingsPage() {
   const user = await requireAuth()
@@ -17,16 +17,17 @@ export default async function SettingsPage() {
 
   const settingsSections = [
     {
-      title: 'Apariencia',
-      description: 'Tema, colores y personalización',
-      icon: Palette,
-      href: '/settings/appearance',
+      title: 'Categorías',
+      description: 'Administra las categorías de productos',
+      icon: Tags,
+      href: '/settings/categories',
+      soon: false,
     },
     {
-      title: 'Perfil',
-      description: 'Información personal y cuenta',
-      icon: User,
-      href: '/settings/profile',
+      title: 'Usuarios',
+      description: 'Gestiona usuarios y permisos',
+      icon: Users,
+      href: '/settings/users',
       soon: true,
     },
     {
@@ -37,11 +38,11 @@ export default async function SettingsPage() {
       soon: true,
     },
     {
-      title: 'Notificaciones',
-      description: 'Alertas y avisos',
-      icon: Bell,
-      href: '/settings/notifications',
-      soon: true,
+      title: 'Apariencia',
+      description: 'Tema, colores y personalización',
+      icon: Palette,
+      href: '/settings/appearance',
+      soon: false,
     },
     {
       title: 'Seguridad',
@@ -69,35 +70,38 @@ export default async function SettingsPage() {
       <div className="grid gap-4">
         {settingsSections.map((section) => {
           const Icon = section.icon
+          const cardContent = (
+            <Card className={section.soon ? 'opacity-60 cursor-not-allowed' : 'hover:bg-accent/50 transition-colors'}>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Icon className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">{section.title}</CardTitle>
+                      <CardDescription className="text-sm">
+                        {section.description}
+                      </CardDescription>
+                    </div>
+                  </div>
+                  {section.soon && (
+                    <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
+                      Próximamente
+                    </span>
+                  )}
+                </div>
+              </CardHeader>
+            </Card>
+          )
+
+          if (section.soon) {
+            return <div key={section.href}>{cardContent}</div>
+          }
 
           return (
-            <Link
-              key={section.href}
-              href={section.soon ? '#' : section.href}
-              className={section.soon ? 'pointer-events-none opacity-60' : ''}
-            >
-              <Card className="hover:bg-accent/50 transition-colors">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Icon className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-base">{section.title}</CardTitle>
-                        <CardDescription className="text-sm">
-                          {section.description}
-                        </CardDescription>
-                      </div>
-                    </div>
-                    {section.soon && (
-                      <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
-                        Próximamente
-                      </span>
-                    )}
-                  </div>
-                </CardHeader>
-              </Card>
+            <Link key={section.href} href={section.href}>
+              {cardContent}
             </Link>
           )
         })}
