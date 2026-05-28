@@ -12,14 +12,14 @@ class CashRealtimeService {
   private channels: Map<string, RealtimeChannel> = new Map()
 
   /**
-   * Subscribe to cash movements changes for a specific cash register
-   * @param cashRegisterId - The cash register ID to monitor
+   * Subscribe to cash movements changes for a specific cash session
+   * @param sessionId - The cash session ID to monitor
    * @param tenantId - The tenant ID for security filtering
    * @param callbacks - Callback functions for different event types
    * @returns Cleanup function to unsubscribe
    */
   subscribeToCashMovements(
-    cashRegisterId: string,
+    sessionId: string,
     tenantId: string,
     callbacks: {
       onInsert?: (payload: RealtimePostgresChangesPayload<CashMovement>) => void
@@ -28,13 +28,17 @@ class CashRealtimeService {
       onError?: (error: Error) => void
     }
   ): () => void {
-    const channelName = `cash_movements:${cashRegisterId}`
+    const channelName = `cash_movements:${sessionId}`
 
     // Remove existing channel if any
     const existingChannel = this.channels.get(channelName)
     if (existingChannel) {
       this.supabase.removeChannel(existingChannel)
       this.channels.delete(channelName)
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Realtime] Setting up subscription for session:', sessionId)
     }
 
     // Create new channel and configure ALL callbacks BEFORE subscribe
@@ -46,7 +50,7 @@ class CashRealtimeService {
           event: 'INSERT',
           schema: 'public',
           table: 'cash_movements',
-          filter: `cash_register_id=eq.${cashRegisterId}`,
+          filter: `cash_session_id=eq.${sessionId}`,
         },
         (payload) => {
           if (process.env.NODE_ENV === 'development') {
@@ -78,7 +82,7 @@ class CashRealtimeService {
           event: 'UPDATE',
           schema: 'public',
           table: 'cash_movements',
-          filter: `cash_register_id=eq.${cashRegisterId}`,
+          filter: `cash_session_id=eq.${sessionId}`,
         },
         (payload) => {
           const record = payload.new as CashMovement
@@ -96,7 +100,7 @@ class CashRealtimeService {
           event: 'DELETE',
           schema: 'public',
           table: 'cash_movements',
-          filter: `cash_register_id=eq.${cashRegisterId}`,
+          filter: `cash_session_id=eq.${sessionId}`,
         },
         (payload) => {
           if (process.env.NODE_ENV === 'development') {

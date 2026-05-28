@@ -8,7 +8,7 @@ import { debounce } from '@/lib/utils/debounce'
 import type { CashMovementWithUser } from '@/types/cash'
 
 interface UseCashMovementsOptions {
-  cashRegisterId?: string
+  sessionId?: string
   autoLoad?: boolean
   limit?: number
 }
@@ -16,7 +16,7 @@ interface UseCashMovementsOptions {
 const DEBOUNCE_DELAY = 300 // ms
 
 export function useCashMovements(options: UseCashMovementsOptions = {}) {
-  const { cashRegisterId, autoLoad = true, limit = 50 } = options
+  const { sessionId, autoLoad = true, limit = 50 } = options
   const { tenant } = useTenant()
   const [movements, setMovements] = useState<CashMovementWithUser[]>([])
   const [loading, setLoading] = useState(false)
@@ -26,31 +26,39 @@ export function useCashMovements(options: UseCashMovementsOptions = {}) {
   const unsubscribeRef = useRef<(() => void) | null>(null)
 
   const loadMovements = useCallback(async () => {
-    if (!cashRegisterId) return
+    if (!sessionId) return
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[useCashMovements] Loading movements for session:', sessionId)
+    }
 
     try {
       setLoading(true)
       setError(null)
-      const data = await cashService.getCashMovements(cashRegisterId, limit)
+      const data = await cashService.getCashMovements(sessionId, limit)
       setMovements(data)
+      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[useCashMovements] Loaded movements:', data.length)
+      }
     } catch (err) {
       console.error('Error loading cash movements:', err)
       setError(err instanceof Error ? err.message : 'Error al cargar los movimientos')
     } finally {
       setLoading(false)
     }
-  }, [cashRegisterId, limit])
+  }, [sessionId, limit])
 
   // Debounced refresh to prevent excessive API calls
   const debouncedRefreshRef = useRef<(() => void) | null>(null)
   
   useEffect(() => {
     debouncedRefreshRef.current = debounce(() => {
-      if (cashRegisterId) {
+      if (sessionId) {
         loadMovements()
       }
     }, DEBOUNCE_DELAY)
-  }, [cashRegisterId, loadMovements])
+  }, [sessionId, loadMovements])
 
   // Initial load
   useEffect(() => {
@@ -61,18 +69,18 @@ export function useCashMovements(options: UseCashMovementsOptions = {}) {
 
   // Setup Realtime subscription
   useEffect(() => {
-    if (!cashRegisterId || !tenant?.id) {
+    if (!sessionId || !tenant?.id) {
       setRealtimeConnected(false)
       return
     }
 
     if (process.env.NODE_ENV === 'development') {
-      console.log('[useCashMovements] Setting up realtime subscription')
+      console.log('[useCashMovements] Setting up realtime subscription for session:', sessionId)
     }
 
     // Subscribe to cash movements changes
     const unsubscribe = cashRealtimeService.subscribeToCashMovements(
-      cashRegisterId,
+      sessionId,
       tenant.id,
       {
         onInsert: () => {
@@ -111,7 +119,7 @@ export function useCashMovements(options: UseCashMovementsOptions = {}) {
       }
       setRealtimeConnected(false)
     }
-  }, [cashRegisterId, tenant?.id])
+  }, [sessionId, tenant?.id])
 
   const refresh = useCallback(() => {
     loadMovements()

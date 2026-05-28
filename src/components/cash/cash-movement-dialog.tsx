@@ -22,6 +22,7 @@ import { Textarea } from '@/components/ui/textarea'
 
 interface CashMovementDialogProps {
   open: boolean
+  sessionId: string | null
   cashRegisterId: string | null
   onClose: () => void
   onSuccess?: () => void
@@ -29,6 +30,7 @@ interface CashMovementDialogProps {
 
 export function CashMovementDialog({
   open,
+  sessionId,
   cashRegisterId,
   onClose,
   onSuccess,
@@ -57,7 +59,7 @@ export function CashMovementDialog({
   const type = watch('type')
 
   const onSubmit = async (data: CashMovementFormData) => {
-    if (!tenant?.id || !user?.id || !cashRegisterId) {
+    if (!tenant?.id || !user?.id || !cashRegisterId || !sessionId) {
       setError('No hay sesión activa')
       return
     }
@@ -69,6 +71,7 @@ export function CashMovementDialog({
       await cashService.createCashMovement(
         tenant.id,
         cashRegisterId,
+        sessionId,
         user.id,
         data.type,
         data.amount,

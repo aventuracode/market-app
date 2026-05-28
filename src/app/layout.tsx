@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
+import { Toaster } from 'sonner'
 import { Providers } from '@/providers'
 import '@/styles/globals.css'
 
@@ -37,6 +38,7 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
         <Providers>{children}</Providers>
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   )

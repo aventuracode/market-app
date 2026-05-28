@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, DollarSign } from 'lucide-react'
-import { cashService } from '@/services/cash.service'
+import { toast } from 'sonner'
+import { cashService, CashConcurrencyError } from '@/services/cash.service'
 import { useTenant } from '@/hooks/use-tenant'
 import { useAuthStore } from '@/stores/auth.store'
 import { openCashSchema, type OpenCashFormData } from '@/types/cash'
@@ -19,6 +20,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { CashRegisterSelector } from './cash-register-selector'
 
 interface OpenCashDialogProps {
   open: boolean
@@ -31,6 +33,8 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
   const { user } = useAuthStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selectedRegisterId, setSelectedRegisterId] = useState<string>('')
+  const [selectedRegisterName, setSelectedRegisterName] = useState<string>('')
 
   const {
     register,
@@ -51,40 +55,76 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
       return
     }
 
+    if (!selectedRegisterId) {
+      setError('Debes seleccionar una caja registradora')
+      return
+    }
+
     try {
       setLoading(true)
       setError(null)
 
-      const cashRegister = await cashService.getDefaultCashRegister(tenant.id)
-      if (!cashRegister) {
-        throw new Error('No hay caja registrada')
-      }
-
       await cashService.openCash(
         tenant.id,
         user.id,
-        cashRegister.id,
+        selectedRegisterId,
         data.opening_amount,
         data.notes
       )
 
+      // Feedback háptico
       if (navigator.vibrate) {
         navigator.vibrate(200)
       }
 
+      // Toast de éxito
+      toast.success('Caja abierta exitosamente', {
+        description: `${selectedRegisterName} - Monto inicial: $${data.opening_amount.toLocaleString('es-CL')}`,
+      })
+
+      // Reset y cerrar
       reset()
+      setSelectedRegisterId('')
+      setSelectedRegisterName('')
       onSuccess?.()
       onClose()
     } catch (err) {
-      console.error('Error opening cash:', err)
-      setError(err instanceof Error ? err.message : 'Error al abrir la caja')
+      console.error('[OpenCashDialog] Error al abrir caja:', err)
+
+      // Manejo específico de error de concurrencia
+      if (err instanceof CashConcurrencyError) {
+        toast.error('Caja no disponible', {
+          description: err.message,
+          duration: 5000,
+        })
+        setError(err.message)
+        return
+      }
+
+      // Otros errores
+      const errorMessage = err instanceof Error ? err.message : 'Error al abrir la caja'
+      toast.error('Error al abrir caja', {
+        description: errorMessage,
+        duration: 5000,
+      })
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
   }
 
+  const handleClose = () => {
+    if (!loading) {
+      reset()
+      setSelectedRegisterId('')
+      setSelectedRegisterName('')
+      setError(null)
+      onClose()
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Abrir Caja</DialogTitle>
@@ -94,6 +134,17 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Selector de Caja */}
+          <CashRegisterSelector
+            value={selectedRegisterId}
+            onChange={(id, name) => {
+              setSelectedRegisterId(id)
+              setSelectedRegisterName(name)
+              setError(null)
+            }}
+            disabled={loading}
+          />
+
           <div className="space-y-2">
             <Label htmlFor="opening_amount">
               Monto Inicial <span className="text-destructive">*</span>
@@ -147,13 +198,17 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
             <Button
               type="button"
               variant="outline"
-              onClick={onClose}
+              onClick={handleClose}
               disabled={loading}
               className="flex-1 h-11"
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={loading} className="flex-1 h-11 gap-2">
+            <Button 
+              type="submit" 
+              disabled={loading || !selectedRegisterId} 
+              className="flex-1 h-11 gap-2"
+            >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               Abrir Caja
             </Button>

@@ -28,7 +28,7 @@ export function CashClient() {
   } = useCashRegister()
 
   const { movements, loading: loadingMovements, refresh: refreshMovements } = useCashMovements({
-    cashRegisterId: activeSession?.cash_register_id,
+    sessionId: activeSession?.id,
     autoLoad: isOpen,
   })
 
@@ -251,6 +251,7 @@ export function CashClient() {
 
       <CashMovementDialog
         open={movementDialog}
+        sessionId={activeSession?.id || null}
         cashRegisterId={activeSession?.cash_register_id || null}
         onClose={() => setMovementDialog(false)}
         onSuccess={handleMovementSuccess}

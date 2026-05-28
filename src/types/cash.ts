@@ -30,6 +30,7 @@ export interface CashMovement {
   id: string
   tenant_id: string
   cash_register_id: string
+  cash_session_id: string
   user_id: string | null
   type: CashMovementType
   amount: number

@@ -8,6 +8,16 @@ import type {
   CashMovementType,
 } from '@/types/cash'
 
+/**
+ * Error personalizado para conflictos de concurrencia en cajas
+ */
+export class CashConcurrencyError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'CashConcurrencyError'
+  }
+}
+
 class CashService {
   private supabase = createClient()
 
@@ -62,41 +72,86 @@ class CashService {
     openingAmount: number,
     notes?: string
   ): Promise<CashSession> {
+    // Verificar si el usuario ya tiene una caja abierta
     const activeSession = await this.getActiveCashRegister(tenantId, userId)
     if (activeSession) {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[openCash] Usuario ya tiene una caja abierta:', {
+          userId,
+          sessionId: activeSession.session.id,
+          registerId: activeSession.register.id,
+        })
+      }
       throw new Error('Ya tienes una caja abierta')
     }
 
-    const { data, error } = await this.supabase
-      .from('cash_sessions')
-      .insert({
-        tenant_id: tenantId,
-        cash_register_id: cashRegisterId,
-        user_id: userId,
-        opening_amount: openingAmount,
-        status: 'open',
-        notes: notes || null,
-      })
-      .select()
-      .single()
+    try {
+      const { data, error } = await this.supabase
+        .from('cash_sessions')
+        .insert({
+          tenant_id: tenantId,
+          cash_register_id: cashRegisterId,
+          user_id: userId,
+          opening_amount: openingAmount,
+          status: 'open',
+          notes: notes || null,
+        })
+        .select()
+        .single()
 
-    if (error) {
-      console.error('Error opening cash:', error)
-      throw new Error(error.message || 'Error al abrir la caja')
-    }
+      if (error) {
+        // Detectar error de concurrencia (constraint violation)
+        if (error.code === '23505' && error.message?.includes('unique_open_session_per_register')) {
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('[openCash] Conflicto de concurrencia detectado:', {
+              code: error.code,
+              constraint: 'unique_open_session_per_register',
+              cashRegisterId,
+            })
+          }
+          throw new CashConcurrencyError('Esta caja ya se encuentra abierta por otro cajero.')
+        }
 
-    return {
-      id: data.id,
-      cash_register_id: data.cash_register_id,
-      user_id: data.user_id,
-      opening_amount: Number(data.opening_amount),
-      closing_amount: null,
-      expected_amount: null,
-      difference: null,
-      status: data.status,
-      opened_at: data.opened_at,
-      closed_at: null,
-      notes: data.notes,
+        // Otros errores de base de datos
+        console.error('[openCash] Error al abrir caja:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+        })
+        throw new Error(error.message || 'Error al abrir la caja')
+      }
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[openCash] Caja abierta exitosamente:', {
+          sessionId: data.id,
+          cashRegisterId: data.cash_register_id,
+          userId: data.user_id,
+          openingAmount: data.opening_amount,
+        })
+      }
+
+      return {
+        id: data.id,
+        cash_register_id: data.cash_register_id,
+        user_id: data.user_id,
+        opening_amount: Number(data.opening_amount),
+        closing_amount: null,
+        expected_amount: null,
+        difference: null,
+        status: data.status,
+        opened_at: data.opened_at,
+        closed_at: null,
+        notes: data.notes,
+      }
+    } catch (err) {
+      // Re-lanzar errores personalizados
+      if (err instanceof CashConcurrencyError) {
+        throw err
+      }
+
+      // Capturar errores inesperados
+      console.error('[openCash] Error inesperado:', err)
+      throw err instanceof Error ? err : new Error('Error inesperado al abrir la caja')
     }
   }
 
@@ -154,13 +209,11 @@ class CashService {
       throw new Error('Sesión no encontrada')
     }
 
-    // Obtener movimientos de la sesión actual
-    // Usar cash_session_id si existe en la tabla, sino filtrar por fecha
+    // Obtener movimientos de la sesión actual usando cash_session_id
     const { data: movements } = await this.supabase
       .from('cash_movements')
       .select('type, amount, created_at')
-      .eq('cash_register_id', session.cash_register_id)
-      .gte('created_at', session.opened_at)
+      .eq('cash_session_id', sessionId)
 
     if (process.env.NODE_ENV === 'development') {
       console.log('[getCashSummary] Session opened_at:', session.opened_at)
@@ -224,6 +277,7 @@ class CashService {
   async createCashMovement(
     tenantId: string,
     cashRegisterId: string,
+    cashSessionId: string,
     userId: string,
     type: CashMovementType,
     amount: number,
@@ -235,6 +289,7 @@ class CashService {
       .insert({
         tenant_id: tenantId,
         cash_register_id: cashRegisterId,
+        cash_session_id: cashSessionId,
         user_id: userId,
         type,
         amount,
@@ -253,6 +308,7 @@ class CashService {
       id: data.id,
       tenant_id: data.tenant_id,
       cash_register_id: data.cash_register_id,
+      cash_session_id: data.cash_session_id,
       user_id: data.user_id,
       type: data.type,
       amount: Number(data.amount),
@@ -263,17 +319,17 @@ class CashService {
   }
 
   async getCashMovements(
-    cashRegisterId: string,
+    sessionId: string,
     limit: number = 50
   ): Promise<CashMovementWithUser[]> {
     if (process.env.NODE_ENV === 'development') {
-      console.log('[getCashMovements] Fetching movements for:', cashRegisterId)
+      console.log('[getCashMovements] Fetching movements for session:', sessionId)
     }
 
     const { data, error } = await this.supabase
       .from('cash_movements')
       .select('*')
-      .eq('cash_register_id', cashRegisterId)
+      .eq('cash_session_id', sessionId)
       .order('created_at', { ascending: false })
       .limit(limit)
 
@@ -283,7 +339,7 @@ class CashService {
     }
 
     if (process.env.NODE_ENV === 'development') {
-      console.log('[getCashMovements] Movements fetched:', data?.length)
+      console.log('[getCashMovements] Movements fetched for session:', data?.length)
     }
 
     // Mapear datos sin user info (temporal)
@@ -302,6 +358,7 @@ class CashService {
   async registerSale(
     tenantId: string,
     cashRegisterId: string,
+    cashSessionId: string,
     userId: string,
     amount: number,
     saleId: string
@@ -309,6 +366,7 @@ class CashService {
     return this.createCashMovement(
       tenantId,
       cashRegisterId,
+      cashSessionId,
       userId,
       'SALE',
       amount,
@@ -331,6 +389,22 @@ class CashService {
     }
 
     return data
+  }
+
+  async getAvailableCashRegisters(tenantId: string): Promise<CashRegister[]> {
+    const { data, error } = await this.supabase
+      .from('cash_registers')
+      .select('*')
+      .eq('tenant_id', tenantId)
+      .eq('is_active', true)
+      .order('name', { ascending: true })
+
+    if (error) {
+      console.error('Error fetching cash registers:', error)
+      throw new Error(error.message || 'Error al obtener las cajas')
+    }
+
+    return data || []
   }
 }
 
