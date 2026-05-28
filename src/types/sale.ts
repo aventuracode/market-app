@@ -13,6 +13,7 @@ export interface CreateSaleParams {
   tenant_id: string
   user_id: string
   cash_register_id: string
+  cash_session_id: string
   payment_method: PaymentMethod
   items: SaleItem[]
 }

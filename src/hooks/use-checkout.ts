@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react'
 import { saleService } from '@/services/sale.service'
 import { useCartStore } from '@/stores/cart.store'
+import { useCashStore } from '@/stores/cash.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { useTenant } from '@/hooks/use-tenant'
 import type { PaymentMethod, CreateSaleResponse, CheckoutState } from '@/types/sale'
@@ -23,6 +24,7 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
   const { items, getTotal, clearCart } = useCartStore()
   const { user } = useAuthStore()
   const { tenant } = useTenant()
+  const activeSession = useCashStore((state) => state.activeSession)
 
   const checkout = useCallback(
     async (paymentMethod: PaymentMethod) => {
@@ -35,13 +37,24 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
       })
 
       try {
+        // Debug logs
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[useCheckout] User:', user)
+          console.log('[useCheckout] Tenant:', tenant)
+        }
+
         // Validaciones
         if (!user?.id) {
           throw new Error('Usuario no autenticado')
         }
 
         if (!tenant?.id) {
+          console.error('[useCheckout] Tenant is null or undefined:', { user, tenant })
           throw new Error('No hay tenant activo')
+        }
+
+        if (!activeSession?.id) {
+          throw new Error('No hay una sesión de caja abierta. Por favor, abre la caja antes de realizar ventas.')
         }
 
         if (items.length === 0) {
@@ -56,15 +69,12 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
           subtotal: item.product.sale_price * item.quantity,
         }))
 
-        // TODO: Obtener cash_register_id del sistema de cajas
-        // Por ahora usamos el ID de la caja principal existente
-        const cashRegisterId = '4f11889b-9125-4469-ab22-6bcb113887da'
-
-        // Crear venta
+        // Crear venta con la sesión activa
         const response = await saleService.createSale({
           tenant_id: tenant.id,
           user_id: user.id,
-          cash_register_id: cashRegisterId,
+          cash_register_id: activeSession.cash_register_id,
+          cash_session_id: activeSession.id,
           payment_method: paymentMethod,
           items: saleItems,
         })

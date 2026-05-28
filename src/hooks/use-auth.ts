@@ -85,7 +85,8 @@ export function useAuth() {
     return () => {
       subscription.unsubscribe()
     }
-  }, [supabase, setUser, clearUser])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return {
     user,

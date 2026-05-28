@@ -21,6 +21,7 @@ class SaleService {
         tenant_id: params.tenant_id,
         user_id: params.user_id,
         cash_register_id: params.cash_register_id,
+        cash_session_id: params.cash_session_id,
         payment_method: params.payment_method,
         items_count: params.items.length,
       })
@@ -30,6 +31,7 @@ class SaleService {
         p_tenant_id: params.tenant_id,
         p_user_id: params.user_id,
         p_cash_register_id: params.cash_register_id,
+        p_cash_session_id: params.cash_session_id,
         p_payment_method: params.payment_method,
         p_items: params.items,
       })
@@ -116,6 +118,10 @@ class SaleService {
 
     if (!params.cash_register_id) {
       throw new Error('cash_register_id es requerido')
+    }
+
+    if (!params.cash_session_id) {
+      throw new Error('cash_session_id es requerido - debe haber una sesión de caja abierta')
     }
 
     if (!params.items || params.items.length === 0) {
