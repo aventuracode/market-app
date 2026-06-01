@@ -32,6 +32,8 @@ export function useProductForm(options: UseProductFormOptions = {}) {
           cost_price: product.cost_price || undefined,
           stock: product.stock,
           minimum_stock: product.minimum_stock,
+          unit_type: product.unit_type || 'UNIT',
+          allow_decimal: product.allow_decimal || false,
           is_active: product.is_active,
         }
       : {
@@ -44,6 +46,8 @@ export function useProductForm(options: UseProductFormOptions = {}) {
           cost_price: undefined,
           stock: 0,
           minimum_stock: 0,
+          unit_type: 'UNIT',
+          allow_decimal: false,
           is_active: true,
         },
   })

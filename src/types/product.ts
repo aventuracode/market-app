@@ -1,3 +1,5 @@
+export type UnitType = 'UNIT' | 'GRAM' | 'KILOGRAM' | 'LITER' | 'MILLILITER'
+
 export interface Product {
   id: string
   tenant_id: string
@@ -10,6 +12,8 @@ export interface Product {
   stock: number
   minimum_stock: number
   category_id: string | null
+  unit_type: UnitType
+  allow_decimal: boolean
   is_active: boolean
   created_at: string
   updated_at: string
@@ -42,3 +46,17 @@ export interface ProductSearchResult {
   total: number
   hasMore: boolean
 }
+
+export interface UnitTypeOption {
+  value: UnitType
+  label: string
+  abbreviation: string
+}
+
+export const UNIT_TYPE_OPTIONS: UnitTypeOption[] = [
+  { value: 'UNIT', label: 'Unidad', abbreviation: 'un' },
+  { value: 'GRAM', label: 'Gramo', abbreviation: 'g' },
+  { value: 'KILOGRAM', label: 'Kilogramo', abbreviation: 'kg' },
+  { value: 'LITER', label: 'Litro', abbreviation: 'l' },
+  { value: 'MILLILITER', label: 'Mililitro', abbreviation: 'ml' },
+]

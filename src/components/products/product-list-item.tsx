@@ -3,6 +3,7 @@
 import { Package, Edit, Trash2, AlertCircle } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { formatStock } from '@/lib/format-stock'
 import type { ProductWithCategory } from '@/types/product'
 
 interface ProductListItemProps {
@@ -23,6 +24,12 @@ export function ProductListItem({
   const isHighStock = product.stock > 20
 
   const getStockBadge = () => {
+    const formattedStock = formatStock(
+      product.stock, 
+      product.unit_type || 'UNIT', 
+      product.allow_decimal || false
+    )
+    
     if (isOutOfStock) {
       return {
         label: 'Sin stock',
@@ -32,20 +39,20 @@ export function ProductListItem({
     }
     if (isLowStock) {
       return {
-        label: `Stock: ${product.stock}`,
+        label: formattedStock,
         className: 'bg-yellow-50 text-yellow-700 border-yellow-200',
         icon: true
       }
     }
     if (isHighStock) {
       return {
-        label: `Stock: ${product.stock}`,
+        label: formattedStock,
         className: 'bg-green-50 text-green-700 border-green-200',
         icon: false
       }
     }
     return {
-      label: `Stock: ${product.stock}`,
+      label: formattedStock,
       className: 'bg-blue-50 text-blue-700 border-blue-200',
       icon: false
     }
