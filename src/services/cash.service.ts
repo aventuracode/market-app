@@ -164,6 +164,16 @@ class CashService {
     const expectedAmount = summary.expected_balance
     const difference = closingAmount - expectedAmount
 
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[closeCash] Closing cash session:', {
+        sessionId,
+        closingAmount,
+        expectedAmount,
+        difference,
+        notes,
+      })
+    }
+
     const { data, error } = await this.supabase
       .from('cash_sessions')
       .update({
@@ -179,8 +189,19 @@ class CashService {
       .single()
 
     if (error) {
-      console.error('Error closing cash:', error)
+      console.error('[closeCash] Error closing cash:', error)
       throw new Error(error.message || 'Error al cerrar la caja')
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[closeCash] Cash session closed successfully:', {
+        id: data.id,
+        status: data.status,
+        closing_amount: data.closing_amount,
+        expected_amount: data.expected_amount,
+        difference: data.difference,
+        closed_at: data.closed_at,
+      })
     }
 
     return {
@@ -212,7 +233,7 @@ class CashService {
     // Obtener movimientos de la sesión actual usando cash_session_id
     const { data: movements } = await this.supabase
       .from('cash_movements')
-      .select('type, amount, created_at')
+      .select('type, amount, created_at, reference_id')
       .eq('cash_session_id', sessionId)
 
     if (process.env.NODE_ENV === 'development') {
@@ -222,9 +243,45 @@ class CashService {
     }
 
     const openingAmount = Number(session.opening_amount)
-    let totalSales = 0
+    let totalCashSales = 0
+    let totalCardSales = 0
+    let totalTransferSales = 0
     let totalIncome = 0
     let totalExpenses = 0
+
+    // Obtener IDs de ventas para filtrar por método de pago
+    const saleMovementIds = movements
+      ?.filter(m => m.type === 'SALE' && m.reference_id)
+      .map(m => m.reference_id) || []
+
+    if (saleMovementIds.length > 0) {
+      // Consultar ventas para separar por método de pago
+      const { data: sales } = await this.supabase
+        .from('sales')
+        .select('id, total, payment_method')
+        .in('id', saleMovementIds)
+
+      if (sales) {
+        totalCashSales = sales
+          .filter(sale => sale.payment_method === 'CASH')
+          .reduce((sum, sale) => sum + Number(sale.total), 0)
+
+        totalCardSales = sales
+          .filter(sale => sale.payment_method === 'CARD')
+          .reduce((sum, sale) => sum + Number(sale.total), 0)
+
+        totalTransferSales = sales
+          .filter(sale => sale.payment_method === 'TRANSFER')
+          .reduce((sum, sale) => sum + Number(sale.total), 0)
+
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[getCashSummary] Total sales:', sales.length)
+          console.log('[getCashSummary] Cash sales:', sales.filter(s => s.payment_method === 'CASH').length, '- Amount:', totalCashSales)
+          console.log('[getCashSummary] Card sales:', sales.filter(s => s.payment_method === 'CARD').length, '- Amount:', totalCardSales)
+          console.log('[getCashSummary] Transfer sales:', sales.filter(s => s.payment_method === 'TRANSFER').length, '- Amount:', totalTransferSales)
+        }
+      }
+    }
 
     movements?.forEach((movement, index) => {
       const amount = Number(movement.amount)
@@ -239,7 +296,7 @@ class CashService {
       
       switch (movement.type) {
         case 'SALE':
-          totalSales += amount
+          // Ya calculamos solo las ventas en efectivo arriba
           break
         case 'INCOME':
           totalIncome += amount
@@ -256,19 +313,23 @@ class CashService {
 
     if (process.env.NODE_ENV === 'development') {
       console.log('[getCashSummary] Opening:', openingAmount)
-      console.log('[getCashSummary] Sales:', totalSales)
+      console.log('[getCashSummary] Cash Sales:', totalCashSales)
+      console.log('[getCashSummary] Card Sales:', totalCardSales)
+      console.log('[getCashSummary] Transfer Sales:', totalTransferSales)
       console.log('[getCashSummary] Income:', totalIncome)
       console.log('[getCashSummary] Expenses:', totalExpenses)
-      console.log('[getCashSummary] Expected balance:', openingAmount + totalSales + totalIncome - totalExpenses)
+      console.log('[getCashSummary] Expected balance:', openingAmount + totalCashSales + totalIncome - totalExpenses)
     }
 
-    const expectedBalance = openingAmount + totalSales + totalIncome - totalExpenses
+    const expectedBalance = openingAmount + totalCashSales + totalIncome - totalExpenses
 
     return {
       opening_amount: openingAmount,
-      total_sales: totalSales,
+      total_sales: totalCashSales,
       total_income: totalIncome,
       total_expenses: totalExpenses,
+      total_card_sales: totalCardSales,
+      total_transfer_sales: totalTransferSales,
       current_balance: expectedBalance,
       expected_balance: expectedBalance,
     }

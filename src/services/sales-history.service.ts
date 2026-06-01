@@ -14,7 +14,16 @@ class SalesHistoryService {
    */
   async getSales(filters: SalesQueryFilters): Promise<SaleWithRelations[]> {
     try {
-      console.log('[SalesHistoryService] Fetching sales with filters:', filters)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[SalesHistoryService] Fetching sales with filters:', {
+          tenant_id: filters.tenant_id,
+          user_id: filters.user_id || 'ALL',
+          start_date: filters.start_date,
+          end_date: filters.end_date,
+          payment_method: filters.payment_method,
+          search: filters.search,
+        })
+      }
 
       let query = this.supabase
         .from('sales')
@@ -52,9 +61,13 @@ class SalesHistoryService {
         query = query.eq('payment_method', filters.payment_method)
       }
 
-      // Filtro por usuario
+      // Filtro por usuario (CAJERO)
       if (filters.user_id) {
         query = query.eq('user_id', filters.user_id)
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[SalesHistoryService] Aplicando filtro user_id:', filters.user_id)
+        }
       }
 
       // Filtro por búsqueda (número de venta)
@@ -73,7 +86,13 @@ class SalesHistoryService {
         throw error
       }
 
-      console.log('[SalesHistoryService] Sales fetched:', data?.length || 0)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[SalesHistoryService] Sales fetched:', {
+          count: data?.length || 0,
+          filtered_by_user: !!filters.user_id,
+        })
+      }
+      
       return (data as SaleWithRelations[]) || []
     } catch (error) {
       console.error('[SalesHistoryService] getSales error:', error)

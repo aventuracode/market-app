@@ -53,6 +53,8 @@ export interface CashSummary {
   total_sales: number
   total_income: number
   total_expenses: number
+  total_card_sales: number
+  total_transfer_sales: number
   current_balance: number
   expected_balance: number
 }

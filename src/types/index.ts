@@ -3,6 +3,7 @@ export type Role = 'ADMIN' | 'CAJERO' | 'SUPERVISOR'
 export interface User {
   id: string
   email?: string
+  role?: Role
   role_id: number | null
   tenant_id: string
   first_name: string

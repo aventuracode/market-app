@@ -18,6 +18,7 @@ interface CheckoutModalProps {
 
 export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null)
+  const [checkoutTotal, setCheckoutTotal] = useState(0)
 
   const { items, getTotal } = useCartStore()
   const { checkout, loading, success, error, saleNumber, reset } = useCheckout({
@@ -77,6 +78,9 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
     if (!paymentMethod) {
       return
     }
+
+    // Guardar total antes de que se limpie el carrito
+    setCheckoutTotal(total)
 
     try {
       await checkout(paymentMethod)
@@ -253,7 +257,7 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
                       </div>
                     )}
                     <p className="text-lg text-white/70">
-                      {formatPrice(total)} cobrados
+                      {formatPrice(checkoutTotal)} cobrados
                     </p>
                   </div>
                 </motion.div>

@@ -100,9 +100,21 @@ export function CloseCashDialog({
                 <span className="font-medium">${summary.opening_amount.toLocaleString('es-CL')}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Ventas:</span>
+                <span className="text-muted-foreground">Ventas (Efectivo):</span>
                 <span className="font-medium text-green-600">+${summary.total_sales.toLocaleString('es-CL')}</span>
               </div>
+              {summary.total_card_sales > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground text-xs pl-4">Ventas (Tarjeta):</span>
+                  <span className="font-medium text-blue-600 text-xs">${summary.total_card_sales.toLocaleString('es-CL')}</span>
+                </div>
+              )}
+              {summary.total_transfer_sales > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground text-xs pl-4">Ventas (Transferencia):</span>
+                  <span className="font-medium text-purple-600 text-xs">${summary.total_transfer_sales.toLocaleString('es-CL')}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Ingresos:</span>
                 <span className="font-medium text-green-600">+${summary.total_income.toLocaleString('es-CL')}</span>
