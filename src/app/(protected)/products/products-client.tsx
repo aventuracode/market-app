@@ -41,7 +41,7 @@ export function ProductosClient() {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 space-y-4">
+      <div className="px-4 pt-4 pb-3 space-y-3 bg-background/95 backdrop-blur-sm border-b">
         <PageHeader
           title="Productos"
           subtitle={loading ? 'Cargando...' : `${total} producto${total !== 1 ? 's' : ''}`}
@@ -49,10 +49,10 @@ export function ProductosClient() {
             <Button
               onClick={() => router.push('/products/new')}
               size="default"
-              className="gap-2 h-11 px-4"
+              className="gap-1.5 h-9 px-4 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95"
             >
               <Plus className="w-4 h-4" />
-              Nuevo
+              <span className="font-medium">Nuevo</span>
             </Button>
           }
         />
@@ -66,8 +66,8 @@ export function ProductosClient() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
-        <div className="space-y-3">
+      <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
+        <div className="space-y-2.5">
           {/* Error State */}
           {error && (
             <div className="p-4 bg-destructive/10 text-destructive rounded-lg text-sm">
