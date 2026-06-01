@@ -24,9 +24,9 @@ export default function SalesPage() {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-background border-b">
-        <div className="p-4">
-          <h1 className="text-2xl font-bold mb-4">{pageTitle}</h1>
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b shadow-sm">
+        <div className="px-4 pt-5 pb-4">
+          <h1 className="text-2xl font-bold tracking-tight mb-5">{pageTitle}</h1>
           
           {/* Period Tabs */}
           <SalesPeriodTabs period={period} onPeriodChange={setPeriod} />
@@ -37,7 +37,7 @@ export default function SalesPage() {
       </div>
 
       {/* Sales Table */}
-      <div className="p-4">
+      <div className="p-4 pt-5">
         <SalesTable 
           sales={sales} 
           isLoading={salesLoading}

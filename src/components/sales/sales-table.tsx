@@ -132,41 +132,65 @@ export function SalesTable({ sales, isLoading, error }: SalesTableProps) {
     )
   }
 
+  const getPaymentMethodColor = (method: string) => {
+    switch (method) {
+      case 'CASH':
+        return 'bg-green-50 text-green-700 border-green-200'
+      case 'CARD':
+        return 'bg-blue-50 text-blue-700 border-blue-200'
+      case 'TRANSFER':
+        return 'bg-purple-50 text-purple-700 border-purple-200'
+      default:
+        return 'bg-gray-50 text-gray-700 border-gray-200'
+    }
+  }
+
   // Data state
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <ShoppingBag className="w-5 h-5" />
-          Ventas ({sales.length})
+    <Card className="shadow-sm">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <ShoppingBag className="w-4 h-4" />
+          Ventas
+          <span className="text-sm font-normal text-muted-foreground">({sales.length})</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2">
         {sales.map((sale) => (
           <div
             key={sale.id}
-            className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+            className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/30 hover:border-accent transition-all duration-150 cursor-pointer group"
           >
-            <div className="flex-1 min-w-0">
-              {/* Sale Number */}
-              <div className="font-semibold text-sm mb-1">
-                #{sale.sale_number}
+            <div className="flex-1 min-w-0 space-y-1.5">
+              {/* Sale Number - más pequeño y elegante */}
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-mono text-muted-foreground/60 tracking-wide">
+                  #{String(sale.sale_number).padStart(4, '0')}
+                </span>
+                {/* Payment Method Badge - inline */}
+                <Badge 
+                  variant="outline" 
+                  className={`text-[10px] px-1.5 py-0 h-5 ${getPaymentMethodColor(sale.payment_method)}`}
+                >
+                  <span className="mr-1">{getPaymentMethodIcon(sale.payment_method)}</span>
+                  {getPaymentMethodLabel(sale.payment_method)}
+                </Badge>
               </div>
 
-              {/* Metadata */}
-              <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              {/* Metadata - más compacto */}
+              <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground/80">
                 {/* Date */}
-                <span>
-                  {format(new Date(sale.created_at), "d 'de' MMMM, HH:mm", { locale: es })}
+                <span className="font-medium">
+                  {format(new Date(sale.created_at), "d MMM, HH:mm", { locale: es })}
                 </span>
 
                 {/* User */}
                 {sale.users && (
                   <>
-                    <span>•</span>
+                    <span className="text-muted-foreground/40">•</span>
                     <span className="flex items-center gap-1">
                       <User className="w-3 h-3" />
-                      {sale.users.first_name} {sale.users.last_name}
+                      {sale.users.first_name}
                     </span>
                   </>
                 )}
@@ -174,26 +198,20 @@ export function SalesTable({ sales, isLoading, error }: SalesTableProps) {
                 {/* Items count */}
                 {sale.sale_items && sale.sale_items.length > 0 && (
                   <>
-                    <span>•</span>
+                    <span className="text-muted-foreground/40">•</span>
                     <span>
                       {sale.sale_items.length} {sale.sale_items.length === 1 ? 'item' : 'items'}
                     </span>
                   </>
                 )}
               </div>
-
-              {/* Payment Method */}
-              <div className="mt-2">
-                <Badge variant={getPaymentMethodVariant(sale.payment_method)} className="text-xs">
-                  <span className="mr-1">{getPaymentMethodIcon(sale.payment_method)}</span>
-                  {getPaymentMethodLabel(sale.payment_method)}
-                </Badge>
-              </div>
             </div>
 
-            {/* Total */}
-            <div className="text-right ml-4">
-              <div className="text-lg font-bold">{formatCurrency(sale.total)}</div>
+            {/* Total - más destacado */}
+            <div className="text-right ml-3">
+              <div className="text-xl font-bold tracking-tight group-hover:text-primary transition-colors">
+                {formatCurrency(sale.total)}
+              </div>
             </div>
           </div>
         ))}
