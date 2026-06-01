@@ -21,7 +21,8 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
     items, 
     increaseQuantity, 
     decreaseQuantity, 
-    removeItem, 
+    removeItem,
+    updateQuantity, 
     clearCart,
     getTotal,
     getSubtotal,
@@ -81,15 +82,22 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
             className="fixed right-0 top-0 bottom-0 w-full sm:w-[480px] bg-background z-50 shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-xl font-bold">
-                Carrito
-              </h2>
+            <div className="flex items-center justify-between px-5 py-4 border-b bg-background/95 backdrop-blur-sm">
+              <div>
+                <h2 className="text-2xl font-bold">
+                  Carrito
+                </h2>
+                {items.length > 0 && (
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {itemCount} {itemCount === 1 ? 'producto' : 'productos'}
+                  </p>
+                )}
+              </div>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={onClose}
-                className="rounded-full"
+                className="rounded-full h-10 w-10"
               >
                 <X className="h-5 w-5" />
               </Button>
@@ -108,6 +116,7 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
                       onIncrease={increaseQuantity}
                       onDecrease={decreaseQuantity}
                       onRemove={removeItem}
+                      onUpdateQuantity={updateQuantity}
                     />
                   ))}
                 </div>
@@ -116,7 +125,7 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
 
             {/* Footer with Summary */}
             {items.length > 0 && (
-              <div className="border-t p-4 pb-safe">
+              <div className="border-t bg-background/95 backdrop-blur-sm p-5 pb-safe shadow-lg">
                 <CartSummary
                   subtotal={subtotal}
                   total={total}

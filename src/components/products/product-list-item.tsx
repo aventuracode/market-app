@@ -4,6 +4,7 @@ import { Package, Edit, Trash2, AlertCircle } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { formatStock } from '@/lib/format-stock'
+import { formatUnit, getUnitBadgeVariant, formatPriceByUnit } from '@/lib/product-helpers'
 import type { ProductWithCategory } from '@/types/product'
 
 interface ProductListItemProps {
@@ -60,6 +61,9 @@ export function ProductListItem({
 
   const stockBadge = getStockBadge()
 
+  const unitType = product.unit_type || 'UNIT'
+  const unitBadgeVariant = getUnitBadgeVariant(unitType)
+
   return (
     <Card className="p-3.5 shadow-sm hover:shadow-md hover:-translate-y-[1px] transition-all duration-200 active:scale-[0.99] cursor-pointer group">
       <div className="flex gap-3">
@@ -72,12 +76,23 @@ export function ProductListItem({
 
         {/* Content */}
         <div className="flex-1 min-w-0 space-y-2">
-          {/* Header with Actions */}
+          {/* Header with Badge and Actions */}
           <div className="flex items-start justify-between gap-2">
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-base mb-0.5 line-clamp-1">{product.name}</h3>
+            <div className="flex-1 min-w-0 space-y-1">
+              {/* Badge de unidad */}
+              <Badge 
+                variant="outline" 
+                className={`text-[9px] px-1.5 py-0 h-4 font-medium ${unitBadgeVariant}`}
+              >
+                {formatUnit(unitType)}
+              </Badge>
+              
+              {/* Nombre del producto */}
+              <h3 className="font-bold text-base leading-tight line-clamp-1">{product.name}</h3>
+              
+              {/* Categoría */}
               {product.category && (
-                <p className="text-xs text-muted-foreground/70">
+                <p className="text-[11px] text-muted-foreground/60">
                   {product.category.name}
                 </p>
               )}
@@ -110,22 +125,23 @@ export function ProductListItem({
             </div>
           </div>
 
-          {/* Barcode */}
-          {product.barcode && (
-            <p className="font-mono text-xs text-muted-foreground/60">
-              {product.barcode}
-            </p>
-          )}
-
           {/* Price & Stock */}
           <div className="flex items-center justify-between gap-3">
             <div className="flex flex-col gap-0.5">
-              <span className="text-xl font-bold tracking-tight">
-                ${product.sale_price.toLocaleString('es-CL')}
-              </span>
-              {product.cost_price && (
-                <span className="text-xs text-muted-foreground/60">
-                  Costo: ${product.cost_price.toLocaleString('es-CL')}
+              {/* Precio principal con unidad */}
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold tracking-tight leading-none">
+                  ${product.sale_price.toLocaleString('es-CL')}
+                </span>
+                <span className="text-[10px] text-muted-foreground/60 font-medium mt-0.5">
+                  {formatPriceByUnit(product.sale_price, unitType)}
+                </span>
+              </div>
+              
+              {/* Código de barras (más sutil) */}
+              {product.barcode && (
+                <span className="font-mono text-[9px] text-muted-foreground/50">
+                  {product.barcode}
                 </span>
               )}
             </div>

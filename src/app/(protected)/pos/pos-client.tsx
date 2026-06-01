@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { ShoppingCart, ScanBarcode } from 'lucide-react'
+import { toast } from 'sonner'
 import { useProductSearch } from '@/hooks/use-product-search'
 import { useCartStore } from '@/stores/cart.store'
 import { useTenant } from '@/hooks/use-tenant'
 import { productService } from '@/services/product.service'
+import { formatQuantity } from '@/lib/product-helpers'
 import { PageHeader } from '@/components/shared/page-header'
 import { SearchBar } from '@/components/shared/search-bar'
 import { ProductCard } from '@/components/pos/product-card'
@@ -34,7 +36,24 @@ export function POSClient() {
   }, [])
 
   const handleAddToCart = (product: ProductWithCategory) => {
-    addItem(product, 1)
+    const result = addItem(product, 1)
+    
+    if (!result.success) {
+      if (result.error === 'INSUFFICIENT_STOCK') {
+        const unitType = product.unit_type || 'UNIT'
+        const unitLabel = unitType === 'UNIT' ? 'unidades' : unitType === 'KILOGRAM' ? 'kg' : unitType === 'GRAM' ? 'g' : unitType === 'LITER' ? 'l' : 'ml'
+        
+        if (result.available && result.available > 0) {
+          toast.error(`Stock insuficiente`, {
+            description: `Solo quedan ${result.available} ${unitLabel} disponibles`
+          })
+        } else {
+          toast.error('Sin stock', {
+            description: 'Este producto no tiene stock disponible'
+          })
+        }
+      }
+    }
   }
 
   const handleRemoveFromCart = (product: ProductWithCategory) => {
@@ -81,34 +100,36 @@ export function POSClient() {
   return (
     <div className="flex flex-col h-full">
       {/* Header con search sticky */}
-      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-lg border-b p-4 space-y-4">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold mb-1">Punto de Venta</h1>
-            <p className="text-muted-foreground">
-              Busca y agrega productos al carrito
-            </p>
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-lg border-b shadow-sm">
+        <div className="p-4 pb-3 space-y-3">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold">Punto de Venta</h1>
+              <p className="text-xs text-muted-foreground/70">
+                Busca productos o escanea código
+              </p>
+            </div>
+            
+            {/* Scanner Button */}
+            <Button
+              size="icon"
+              variant="outline"
+              className="h-12 w-12 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors"
+              onClick={() => setScannerOpen(true)}
+            >
+              <ScanBarcode className="h-6 w-6" />
+            </Button>
           </div>
-          
-          {/* Scanner Button */}
-          <Button
-            size="icon"
-            variant="outline"
-            className="h-12 w-12 rounded-xl"
-            onClick={() => setScannerOpen(true)}
-          >
-            <ScanBarcode className="h-6 w-6" />
-          </Button>
-        </div>
 
-        <SearchBar
-          value={query}
-          onChange={setQuery}
-          onClear={clearSearch}
-          loading={loading}
-          placeholder="Buscar por nombre, SKU o código..."
-          autoFocus
-        />
+          <SearchBar
+            value={query}
+            onChange={setQuery}
+            onClear={clearSearch}
+            loading={loading}
+            placeholder="Buscar producto, código o escanear..."
+            autoFocus
+          />
+        </div>
       </div>
 
       {/* Product List */}
@@ -120,7 +141,7 @@ export function POSClient() {
         ) : products.length === 0 ? (
           <ProductListEmpty hasQuery={query.length > 0} />
         ) : (
-          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in">
+          <div className="px-3 py-2 flex flex-col gap-1.5 animate-fade-in">
             {products.map((product) => {
               const cartItem = getItem(product.id)
               return (

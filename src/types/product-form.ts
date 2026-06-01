@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { UnitType } from './product'
 
 /**
  * Schema de validación para crear/editar productos
@@ -58,6 +59,10 @@ export const productFormSchema = z.object({
     .int('El stock mínimo debe ser un número entero')
     .min(0, 'El stock mínimo no puede ser negativo')
     .max(999999, 'El stock mínimo es demasiado alto'),
+
+  unit_type: z.enum(['UNIT', 'GRAM', 'KILOGRAM', 'LITER', 'MILLILITER']).default('UNIT'),
+
+  allow_decimal: z.boolean().default(false),
 
   is_active: z.boolean().default(true),
 })

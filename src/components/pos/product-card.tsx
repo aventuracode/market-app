@@ -1,10 +1,13 @@
 'use client'
 
-import { Package, Tag, Plus, Minus } from 'lucide-react'
+import { useState } from 'react'
+import { Package, Tag, Plus, Minus, Weight } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import type { ProductWithCategory } from '@/types/product'
 import { cn } from '@/lib/utils'
+import { formatPrice, formatUnit, getUnitBadgeVariant } from '@/lib/product-helpers'
 
 interface ProductCardProps {
   product: ProductWithCategory
@@ -23,125 +26,110 @@ export function ProductCard({
   inCart = false, 
   cartQuantity = 0 
 }: ProductCardProps) {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-AR', {
-      style: 'currency',
-      currency: 'ARS',
-    }).format(price)
-  }
+  const [justAdded, setJustAdded] = useState(false)
 
   const isLowStock = product.stock <= product.minimum_stock && product.stock > 0
   const isOutOfStock = product.stock <= 0
+  const isPesable = product.allow_decimal === true
+  const unitType = product.unit_type || 'UNIT'
+  const unitLabel = unitType === 'UNIT' ? 'c/u' : unitType === 'KILOGRAM' ? 'kg' : unitType === 'GRAM' ? 'g' : unitType === 'LITER' ? 'l' : 'ml'
+
+  const handleAdd = () => {
+    if (!isOutOfStock) {
+      onAdd(product)
+      setJustAdded(true)
+      setTimeout(() => setJustAdded(false), 600)
+    }
+  }
 
   return (
-    <Card
+    <div
       className={cn(
-        'relative overflow-hidden transition-all duration-200 hover:shadow-xl animate-fade-in',
-        inCart && 'ring-2 ring-primary/50',
-        isOutOfStock && 'opacity-60'
+        'relative flex items-center gap-3 p-2.5 rounded-lg border bg-card transition-all duration-150',
+        'active:scale-[0.98] touch-manipulation',
+        inCart && 'bg-primary/5 border-primary/30',
+        justAdded && 'ring-2 ring-green-500/50',
+        isOutOfStock && 'opacity-50',
+        !isOutOfStock && !inCart && 'hover:bg-accent/50 cursor-pointer'
       )}
+      onClick={!inCart && !isOutOfStock ? handleAdd : undefined}
     >
-        <div className="p-4 space-y-3">
-          {/* Header */}
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-base leading-tight line-clamp-2">
-                {product.name}
-              </h3>
-              {product.category && (
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <Tag className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
-                  <span className="text-xs text-muted-foreground truncate">
-                    {product.category.name}
-                  </span>
-                </div>
-              )}
-            </div>
+      {/* Icon */}
+      <div className={cn(
+        "flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0",
+        isOutOfStock ? 'bg-muted' : 'bg-primary/10'
+      )}>
+        <Package className={cn(
+          "h-5 w-5",
+          isOutOfStock ? 'text-muted-foreground' : 'text-primary'
+        )} />
+      </div>
 
-            {/* Add/Quantity Controls */}
-            {inCart && cartQuantity > 0 ? (
-              // Controles de cantidad cuando está en carrito
-              <div className="flex items-center gap-2">
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-10 w-10 rounded-xl"
-                  onClick={() => {
-                    if (cartQuantity === 1) {
-                      onRemove?.(product)
-                    } else {
-                      onUpdateQuantity?.(product, cartQuantity - 1)
-                    }
-                  }}
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
-                
-                <div className="flex items-center justify-center min-w-[2.5rem] h-10 px-3 rounded-xl bg-success/10 font-bold text-success">
-                  {cartQuantity}
-                </div>
-                
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-10 w-10 rounded-xl border-success text-success hover:bg-success hover:text-white"
-                  onClick={() => !isOutOfStock && onAdd(product)}
-                  disabled={isOutOfStock}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            ) : (
-              // Botón simple cuando no está en carrito
-              <Button
-                size="icon"
-                variant="outline"
-                className="flex-shrink-0 h-10 w-10 rounded-xl"
-                onClick={() => !isOutOfStock && onAdd(product)}
-                disabled={isOutOfStock}
-              >
-                <Plus className="h-5 w-5" />
-              </Button>
-            )}
-          </div>
-
-          {/* Price and Stock */}
-          <div className="flex items-end justify-between gap-3">
-            <div className="space-y-1">
-              <p className="text-2xl font-bold text-primary">
-                {formatPrice(product.sale_price)}
-              </p>
-              {product.sku && (
-                <p className="text-xs text-muted-foreground">
-                  SKU: {product.sku}
-                </p>
-              )}
-            </div>
-
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted">
-              <Package className="h-4 w-4 text-muted-foreground" />
-              <span
-                className={cn(
-                  'text-sm font-medium',
-                  isOutOfStock && 'text-destructive',
-                  isLowStock && 'text-warning',
-                  !isOutOfStock && !isLowStock && 'text-foreground'
-                )}
-              >
-                {isOutOfStock ? 'Sin stock' : product.stock}
-              </span>
-            </div>
-          </div>
-
-          {/* Out of stock overlay */}
-          {isOutOfStock && (
-            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center">
-              <span className="text-sm font-semibold text-destructive">
-                Sin stock
-              </span>
-            </div>
+      {/* Info */}
+      <div className="flex-1 min-w-0 space-y-0.5">
+        {/* Name and Badge */}
+        <div className="flex items-center gap-1.5">
+          <h3 className="font-semibold text-sm leading-tight truncate">
+            {product.name}
+          </h3>
+          {isPesable && (
+            <Badge 
+              variant="outline" 
+              className="text-[9px] px-1 py-0 h-3.5 bg-cyan-50 text-cyan-700 border-cyan-200 flex-shrink-0"
+            >
+              Pesable
+            </Badge>
           )}
         </div>
-    </Card>
+
+        {/* Category */}
+        {product.category && (
+          <p className="text-[10px] text-muted-foreground/60 truncate">
+            {product.category.name}
+          </p>
+        )}
+
+        {/* Price and Stock */}
+        <div className="flex items-center gap-2">
+          <span className="text-base font-bold text-foreground">
+            {formatPrice(product.sale_price)}
+          </span>
+          {isPesable && (
+            <span className="text-[10px] text-muted-foreground/70">
+              / {unitLabel}
+            </span>
+          )}
+          <span className={cn(
+            "text-[10px] font-medium ml-auto",
+            isOutOfStock && 'text-red-600',
+            isLowStock && 'text-yellow-600',
+            !isOutOfStock && !isLowStock && 'text-muted-foreground/70'
+          )}>
+            {isOutOfStock ? 'Sin stock' : `${product.stock} ${unitType === 'UNIT' ? 'un' : unitType === 'KILOGRAM' ? 'kg' : unitType === 'GRAM' ? 'g' : unitType === 'LITER' ? 'l' : 'ml'}`}
+          </span>
+        </div>
+      </div>
+
+      {/* Add Button */}
+      <Button
+        size="icon"
+        variant="default"
+        className="h-9 w-9 rounded-full shadow-sm flex-shrink-0"
+        onClick={(e) => {
+          e.stopPropagation()
+          handleAdd()
+        }}
+        disabled={isOutOfStock}
+      >
+        <Plus className="h-4 w-4" />
+      </Button>
+
+      {/* In Cart Indicator */}
+      {inCart && cartQuantity > 0 && (
+        <div className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold shadow-sm">
+          {cartQuantity}
+        </div>
+      )}
+    </div>
   )
 }

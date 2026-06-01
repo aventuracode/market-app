@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { formatPrice } from '@/lib/product-helpers'
 
 interface CartSummaryProps {
   subtotal: number
@@ -18,54 +19,47 @@ export function CartSummary({
   onCheckout,
   onClear 
 }: CartSummaryProps) {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-AR', {
-      style: 'currency',
-      currency: 'ARS',
-    }).format(price)
-  }
-
   return (
     <div className="space-y-4">
-      <Separator />
-      
-      {/* Summary Details */}
-      <div className="space-y-3 px-1">
+      {/* Summary Card */}
+      <div className="bg-muted/30 rounded-xl p-4 space-y-3 border border-border/50">
+        {/* Subtotal */}
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">
-            Subtotal ({itemCount} {itemCount === 1 ? 'producto' : 'productos'})
+            {itemCount} {itemCount === 1 ? 'producto' : 'productos'}
           </span>
           <span className="font-medium">
             {formatPrice(subtotal)}
           </span>
         </div>
 
-        <Separator />
+        <Separator className="bg-border/50" />
 
+        {/* Total */}
         <div className="flex items-center justify-between">
-          <span className="text-lg font-semibold">
+          <span className="text-xl font-bold">
             Total
           </span>
-          <span className="text-2xl font-bold text-primary">
+          <span className="text-3xl font-bold text-primary">
             {formatPrice(total)}
           </span>
         </div>
       </div>
 
       {/* Actions */}
-      <div className="space-y-2 pt-2">
+      <div className="space-y-3">
         <Button
           size="lg"
-          className="w-full text-base"
+          className="w-full h-14 text-lg font-semibold rounded-xl shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
           onClick={onCheckout}
         >
-          Cobrar
+          Cobrar {formatPrice(total)}
         </Button>
         
         <Button
-          size="lg"
-          variant="outline"
-          className="w-full"
+          size="default"
+          variant="ghost"
+          className="w-full text-sm text-muted-foreground hover:text-foreground"
           onClick={onClear}
         >
           Vaciar carrito

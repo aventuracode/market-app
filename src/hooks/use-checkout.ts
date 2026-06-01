@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { toast } from 'sonner'
 import { saleService } from '@/services/sale.service'
 import { useCartStore } from '@/stores/cart.store'
 import { useCashStore } from '@/stores/cash.store'
@@ -61,6 +62,21 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
           throw new Error('El carrito está vacío')
         }
 
+        // Validar stock de todos los items antes de proceder
+        const stockErrors = items.filter(item => item.quantity > item.product.stock)
+        if (stockErrors.length > 0) {
+          const errorMessages = stockErrors.map(item => {
+            const unitType = item.product.unit_type || 'UNIT'
+            const unitLabel = unitType === 'UNIT' ? 'un' : unitType === 'KILOGRAM' ? 'kg' : unitType === 'GRAM' ? 'g' : unitType === 'LITER' ? 'l' : 'ml'
+            return `${item.product.name}: disponible ${item.product.stock} ${unitLabel}`
+          })
+          
+          toast.error('Stock insuficiente', {
+            description: errorMessages.join(', ')
+          })
+          throw new Error('Algunos productos no tienen stock suficiente')
+        }
+
         // Preparar datos
         const saleItems = items.map((item) => ({
           product_id: item.product.id,
@@ -68,6 +84,17 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
           unit_price: item.product.sale_price,
           subtotal: item.product.sale_price * item.quantity,
         }))
+
+        // Debug: Verificar cantidades decimales
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[useCheckout] Cart Items:', items.map(i => ({
+            name: i.product.name,
+            quantity: i.quantity,
+            unit_price: i.product.sale_price,
+            subtotal: i.product.sale_price * i.quantity
+          })))
+          console.log('[useCheckout] Sale Items:', saleItems)
+        }
 
         // Crear venta con la sesión activa
         const response = await saleService.createSale({

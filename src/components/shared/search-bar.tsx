@@ -28,13 +28,13 @@ export function SearchBar({
 
   return (
     <div className="relative w-full">
-      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50 pointer-events-none transition-colors" />
+      <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/60 pointer-events-none transition-colors" />
       <Input
         type="search"
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="pl-11 pr-11 h-11 text-base bg-muted/30 border-muted-foreground/20 focus:bg-background focus:border-primary/50 transition-all duration-200 placeholder:text-muted-foreground/50"
+        className="pl-12 pr-12 h-14 text-base rounded-xl bg-muted/30 border-border/50 focus:bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 focus:shadow-lg transition-all duration-200 placeholder:text-muted-foreground/60"
         autoComplete="off"
         autoFocus={autoFocus}
       />
@@ -43,15 +43,15 @@ export function SearchBar({
           variant="ghost"
           size="icon"
           onClick={handleClear}
-          className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-muted transition-colors"
+          className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-muted rounded-lg transition-colors"
           aria-label="Limpiar búsqueda"
         >
-          <X className="h-3.5 w-3.5" />
+          <X className="h-4 w-4" />
         </Button>
       )}
       {loading && (
-        <div className="absolute right-3.5 top-1/2 -translate-y-1/2">
-          <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        <div className="absolute right-4 top-1/2 -translate-y-1/2">
+          <div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       )}
     </div>
