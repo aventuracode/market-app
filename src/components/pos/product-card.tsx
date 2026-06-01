@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import type { ProductWithCategory } from '@/types/product'
 import { cn } from '@/lib/utils'
 import { formatPrice, formatUnit, getUnitBadgeVariant } from '@/lib/product-helpers'
+import { formatWeight } from '@/lib/utils/weight'
 
 interface ProductCardProps {
   product: ProductWithCategory
@@ -127,7 +128,7 @@ export function ProductCard({
       {/* In Cart Indicator */}
       {inCart && cartQuantity > 0 && (
         <div className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold shadow-sm">
-          {cartQuantity}
+          {formatWeight(cartQuantity)}
         </div>
       )}
     </div>

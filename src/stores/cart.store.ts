@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { ProductWithCategory } from '@/types/product'
 import { getProductStep } from '@/lib/product-helpers'
+import { roundWeight } from '@/lib/utils/weight'
 
 export interface CartItem {
   product: ProductWithCategory
@@ -121,7 +122,8 @@ export const useCartStore = create<CartStore>()(
       },
 
       getItemCount: () => {
-        return get().items.reduce((count, item) => count + item.quantity, 0)
+        const total = get().items.reduce((count, item) => count + item.quantity, 0)
+        return roundWeight(total)
       },
 
       getItem: (productId) => {
@@ -135,7 +137,7 @@ export const useCartStore = create<CartStore>()(
         }
 
         const step = getProductStep(item.product)
-        const newQuantity = item.quantity + step
+        const newQuantity = roundWeight(item.quantity + step)
 
         // Validar stock disponible
         if (newQuantity > item.product.stock) {
@@ -176,7 +178,7 @@ export const useCartStore = create<CartStore>()(
         if (!item) return
 
         const step = getProductStep(item.product)
-        const newQuantity = item.quantity - step
+        const newQuantity = roundWeight(item.quantity - step)
 
         // Log temporal para debugging
         if (process.env.NODE_ENV === 'development') {
@@ -196,7 +198,7 @@ export const useCartStore = create<CartStore>()(
           set((state) => ({
             items: state.items.map((i) =>
               i.product.id === productId
-                ? { ...i, quantity: newQuantity }
+                ? { ...i, quantity: roundWeight(newQuantity) }
                 : i
             ),
           }))

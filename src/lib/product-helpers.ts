@@ -1,4 +1,15 @@
 import type { Product, ProductWithCategory, UnitType } from '@/types/product'
+import { roundWeight, formatWeight } from '@/lib/utils/weight'
+
+/**
+ * Constante para incremento/decremento de peso
+ */
+export const STEP_WEIGHT = 0.100
+
+/**
+ * Constante para cantidad inicial de productos pesables
+ */
+export const DEFAULT_WEIGHT_QUANTITY = 0.100
 
 /**
  * Formatea un precio en formato chileno
@@ -12,6 +23,43 @@ export function formatPrice(price: number): string {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(price)
+}
+
+/**
+ * Incrementa el peso en 0.100 kg
+ * @param quantity - Cantidad actual
+ * @returns Nueva cantidad incrementada
+ */
+export function incrementWeight(quantity: number): number {
+  const newQuantity = quantity + STEP_WEIGHT
+  return roundWeight(newQuantity)
+}
+
+/**
+ * Decrementa el peso en 0.100 kg
+ * @param quantity - Cantidad actual
+ * @returns Nueva cantidad decrementada (mínimo 0.100)
+ */
+export function decrementWeight(quantity: number): number {
+  const newQuantity = Math.max(STEP_WEIGHT, quantity - STEP_WEIGHT)
+  return roundWeight(newQuantity)
+}
+
+/**
+ * Obtiene la cantidad inicial apropiada para un producto
+ * @param product - Producto
+ * @returns 1 para productos UNIT, 0.100 para productos pesables (KILOGRAM, etc)
+ */
+export function getInitialQuantity(product: Product | ProductWithCategory): number {
+  const unitType = product.unit_type || 'UNIT'
+  
+  // Productos pesables inician con 0.100 kg/l/g/ml
+  if (unitType === 'KILOGRAM' || unitType === 'GRAM' || unitType === 'LITER' || unitType === 'MILLILITER') {
+    return DEFAULT_WEIGHT_QUANTITY
+  }
+  
+  // Productos UNIT inician con 1
+  return 1
 }
 
 /**
@@ -45,7 +93,7 @@ export function formatQuantity(
   showUnit: boolean = true
 ): string {
   // Redondear para evitar problemas de floating point
-  const roundedQuantity = Number(quantity.toFixed(3))
+  const roundedQuantity = roundWeight(quantity)
   const unitType = product.unit_type || 'UNIT'
   
   // GRAM: mostrar en gramos
@@ -60,13 +108,13 @@ export function formatQuantity(
       const grams = Math.round(roundedQuantity * 1000)
       return showUnit ? `${grams} g` : grams.toString()
     }
-    const formatted = roundedQuantity.toFixed(3).replace(/\.?0+$/, '')
+    const formatted = formatWeight(roundedQuantity)
     return showUnit ? `${formatted} kg` : formatted
   }
   
   // LITER: mostrar en litros con decimales
   if (unitType === 'LITER') {
-    const formatted = roundedQuantity.toFixed(3).replace(/\.?0+$/, '')
+    const formatted = formatWeight(roundedQuantity)
     return showUnit ? `${formatted} l` : formatted
   }
   

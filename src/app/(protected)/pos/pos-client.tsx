@@ -7,7 +7,8 @@ import { useProductSearch } from '@/hooks/use-product-search'
 import { useCartStore } from '@/stores/cart.store'
 import { useTenant } from '@/hooks/use-tenant'
 import { productService } from '@/services/product.service'
-import { formatQuantity } from '@/lib/product-helpers'
+import { formatQuantity, getInitialQuantity } from '@/lib/product-helpers'
+import { formatWeight } from '@/lib/utils/weight'
 import { PageHeader } from '@/components/shared/page-header'
 import { SearchBar } from '@/components/shared/search-bar'
 import { ProductCard } from '@/components/pos/product-card'
@@ -36,7 +37,9 @@ export function POSClient() {
   }, [])
 
   const handleAddToCart = (product: ProductWithCategory) => {
-    const result = addItem(product, 1)
+    // Obtener cantidad inicial según tipo de producto
+    const initialQuantity = getInitialQuantity(product)
+    const result = addItem(product, initialQuantity)
     
     if (!result.success) {
       if (result.error === 'INSUFFICIENT_STOCK') {
@@ -173,7 +176,7 @@ export function POSClient() {
               <div className="flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5 text-primary" />
                 <span className="font-semibold">
-                  {cartItemCount} {cartItemCount === 1 ? 'producto' : 'productos'}
+                  {formatWeight(cartItemCount)} {cartItemCount === 1 ? 'producto' : 'productos'}
                 </span>
               </div>
               <span className="text-2xl font-bold text-primary">

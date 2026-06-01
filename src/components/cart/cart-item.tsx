@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Plus, Minus, Trash2, Tag } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import type { CartItem as CartItemType, StockValidationResult } from '@/stores/cart.store'
 import { cn } from '@/lib/utils'
-import { formatQuantity, formatPrice } from '@/lib/product-helpers'
+import { formatQuantity, formatPrice, incrementWeight, decrementWeight, STEP_WEIGHT } from '@/lib/product-helpers'
+import { roundWeight, formatWeight } from '@/lib/utils/weight'
 
 interface CartItemProps {
   item: CartItemType
@@ -20,13 +21,24 @@ interface CartItemProps {
 
 export function CartItem({ item, onIncrease, onDecrease, onRemove, onUpdateQuantity }: CartItemProps) {
   const { product, quantity } = item
-  const [inputValue, setInputValue] = useState(quantity.toString())
+  
+  // Redondear para evitar problemas de floating point
+  const roundedQuantity = roundWeight(quantity)
+  const [inputValue, setInputValue] = useState(formatWeight(roundedQuantity))
   const [isEditing, setIsEditing] = useState(false)
 
-  // Redondear para evitar problemas de floating point
-  const roundedQuantity = Number(quantity.toFixed(3))
   const itemTotal = product.sale_price * roundedQuantity
   const isDecimal = product.allow_decimal === true
+
+  // Sincronizar inputValue cuando quantity cambia (desde botones +/-)
+  useEffect(() => {
+    if (!isEditing) {
+      const formattedValue = formatWeight(roundedQuantity)
+      if (inputValue !== formattedValue) {
+        setInputValue(formattedValue)
+      }
+    }
+  }, [quantity, isEditing])
 
   const unitType = product.unit_type || 'UNIT'
   const unitLabel = unitType === 'UNIT' ? 'un' : unitType === 'KILOGRAM' ? 'kg' : unitType === 'GRAM' ? 'g' : unitType === 'LITER' ? 'l' : 'ml'
@@ -50,7 +62,7 @@ export function CartItem({ item, onIncrease, onDecrease, onRemove, onUpdateQuant
     const numValue = parseFloat(inputValue)
     
     if (validateQuantity(numValue)) {
-      const roundedValue = Number(numValue.toFixed(3))
+      const roundedValue = roundWeight(numValue)
       if (roundedValue !== roundedQuantity) {
         const result = onUpdateQuantity?.(product.id, roundedValue)
         
@@ -59,22 +71,17 @@ export function CartItem({ item, onIncrease, onDecrease, onRemove, onUpdateQuant
           toast.error('Stock insuficiente', {
             description: `Stock disponible: ${result.available} ${unitLabel}`
           })
-          setInputValue(roundedQuantity.toString())
+          setInputValue(formatWeight(roundedQuantity))
         }
       }
     } else {
       // Restaurar valor anterior si es inválido
-      setInputValue(roundedQuantity.toString())
+      setInputValue(formatWeight(roundedQuantity))
     }
   }
 
   const handleQuantityFocus = () => {
     setIsEditing(true)
-  }
-
-  // Actualizar inputValue cuando quantity cambia externamente
-  if (!isEditing && inputValue !== quantity.toString()) {
-    setInputValue(quantity.toString())
   }
 
   return (
@@ -100,12 +107,41 @@ export function CartItem({ item, onIncrease, onDecrease, onRemove, onUpdateQuant
         {/* Quantity Controls */}
         <div className="flex items-center justify-between gap-4">
           {isDecimal ? (
-            // Input numérico para productos decimales
+            // Botones +/- e input para productos decimales (KILOGRAM, etc)
             <div className="flex-1 space-y-1.5">
               <Label htmlFor={`quantity-${product.id}`} className="text-xs text-muted-foreground">
                 Cantidad
               </Label>
               <div className="flex items-center gap-2">
+                {/* Botón - */}
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="h-11 w-11 rounded-lg touch-manipulation active:scale-95 transition-transform flex-shrink-0"
+                  onClick={() => {
+                    // Si está en cantidad mínima o menos, eliminar directamente
+                    if (roundedQuantity <= STEP_WEIGHT) {
+                      onRemove(product.id)
+                    } else {
+                      const newQuantity = decrementWeight(roundedQuantity)
+                      const result = onUpdateQuantity?.(product.id, newQuantity)
+                      if (result && !result.success && result.error === 'INSUFFICIENT_STOCK') {
+                        const unitLabel = unitType === 'KILOGRAM' ? 'kg' : unitType === 'GRAM' ? 'g' : unitType === 'LITER' ? 'l' : 'ml'
+                        toast.error('Stock insuficiente', {
+                          description: `Stock disponible: ${result.available} ${unitLabel}`
+                        })
+                      }
+                    }
+                  }}
+                >
+                  {roundedQuantity <= STEP_WEIGHT ? (
+                    <Trash2 className="h-5 w-5 text-destructive" />
+                  ) : (
+                    <Minus className="h-5 w-5" />
+                  )}
+                </Button>
+
+                {/* Input editable */}
                 <div className="relative flex-1">
                   <Input
                     id={`quantity-${product.id}`}
@@ -123,17 +159,28 @@ export function CartItem({ item, onIncrease, onDecrease, onRemove, onUpdateQuant
                     {unitLabel}
                   </span>
                 </div>
+
+                {/* Botón + */}
                 <Button
                   size="icon"
                   variant="outline"
-                  className="h-11 w-11 rounded-lg flex-shrink-0"
-                  onClick={() => onRemove(product.id)}
+                  className="h-11 w-11 rounded-lg border-primary/50 text-primary hover:bg-primary hover:text-white touch-manipulation active:scale-95 transition-all flex-shrink-0"
+                  onClick={() => {
+                    const newQuantity = incrementWeight(roundedQuantity)
+                    const result = onUpdateQuantity?.(product.id, newQuantity)
+                    if (result && !result.success && result.error === 'INSUFFICIENT_STOCK') {
+                      const unitLabel = unitType === 'KILOGRAM' ? 'kg' : unitType === 'GRAM' ? 'g' : unitType === 'LITER' ? 'l' : 'ml'
+                      toast.error('Stock insuficiente', {
+                        description: `Stock disponible: ${result.available} ${unitLabel}`
+                      })
+                    }
+                  }}
                 >
-                  <Trash2 className="h-5 w-5 text-destructive" />
+                  <Plus className="h-5 w-5" />
                 </Button>
               </div>
               <p className="text-[10px] text-muted-foreground/60">
-                Ingresa la cantidad en {unitType === 'KILOGRAM' ? 'kilogramos' : unitType === 'GRAM' ? 'gramos' : unitType === 'LITER' ? 'litros' : 'mililitros'}
+                Usa +/- para ajustar en pasos de {STEP_WEIGHT} kg, o ingresa manualmente
               </p>
             </div>
           ) : (

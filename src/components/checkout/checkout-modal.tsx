@@ -9,6 +9,7 @@ import { PaymentMethodSelector } from './payment-method-selector'
 import { useCheckout } from '@/hooks/use-checkout'
 import { useCartStore } from '@/stores/cart.store'
 import type { PaymentMethod } from '@/types/sale'
+import { formatWeight } from '@/lib/utils/weight'
 
 interface CheckoutModalProps {
   open: boolean
@@ -119,7 +120,7 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
                 <div>
                   <h2 className="text-2xl font-bold">Finalizar venta</h2>
                   <p className="text-sm text-muted-foreground mt-1">
-                    {itemCount} {itemCount === 1 ? 'producto' : 'productos'}
+                    {formatWeight(itemCount)} {itemCount === 1 ? 'producto' : 'productos'}
                   </p>
                 </div>
                 <Button
