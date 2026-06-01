@@ -104,10 +104,15 @@ export class ProductService {
       .eq('tenant_id', tenantId)
       .eq('barcode', barcode)
       .eq('is_active', true)
-      .single()
+      .maybeSingle()
 
     if (error) {
       console.error('Error getting product by barcode:', error)
+      return null
+    }
+
+    // Si no se encontró el producto, retornar null sin error
+    if (!data) {
       return null
     }
 

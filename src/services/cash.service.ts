@@ -389,7 +389,14 @@ class CashService {
 
     const { data, error } = await this.supabase
       .from('cash_movements')
-      .select('*')
+      .select(`
+        *,
+        users (
+          id,
+          first_name,
+          last_name
+        )
+      `)
       .eq('cash_session_id', sessionId)
       .order('created_at', { ascending: false })
       .limit(limit)
@@ -403,14 +410,23 @@ class CashService {
       console.log('[getCashMovements] Movements fetched for session:', data?.length)
     }
 
-    // Mapear datos sin user info (temporal)
+    // Mapear datos con user info
     const movements = (data || []).map((movement: any) => ({
-      ...movement,
-      user: {
-        id: movement.user_id || '',
-        first_name: 'Usuario',
-        last_name: '',
-      }
+      id: movement.id,
+      tenant_id: movement.tenant_id,
+      cash_register_id: movement.cash_register_id,
+      cash_session_id: movement.cash_session_id,
+      user_id: movement.user_id,
+      type: movement.type,
+      amount: Number(movement.amount),
+      reference_id: movement.reference_id,
+      notes: movement.notes,
+      created_at: movement.created_at,
+      user: movement.users ? {
+        id: movement.users.id,
+        first_name: movement.users.first_name,
+        last_name: movement.users.last_name,
+      } : null
     }))
 
     return movements as CashMovementWithUser[]
