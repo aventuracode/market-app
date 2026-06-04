@@ -66,13 +66,8 @@ export function useBarcodeScanner({
         (result, error) => {
           if (result) {
             const barcode = result.getText()
-            console.log('Barcode detected:', barcode)
             onScan(barcode)
             stopScanning()
-          }
-          
-          if (error && !(error instanceof NotFoundException)) {
-            console.error('Scanner error:', error)
           }
         }
       )

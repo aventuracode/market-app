@@ -49,10 +49,6 @@ export function useCashRegister() {
         await queryClient.invalidateQueries({ 
           queryKey: ['sales'] 
         })
-        
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[useCashRegister] Sesión de caja cargada, invalidando queries de ventas')
-        }
       } else {
         clearActiveCash()
         
@@ -60,10 +56,6 @@ export function useCashRegister() {
         await queryClient.invalidateQueries({ 
           queryKey: ['sales'] 
         })
-        
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[useCashRegister] Caja cerrada, invalidando queries de ventas')
-        }
       }
     } catch (err) {
       console.error('Error loading active cash:', err)
@@ -115,31 +107,18 @@ export function useCashRegister() {
       return
     }
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[useCashRegister] Setting up realtime subscription')
-    }
-
     // Subscribe to cash movements changes
     const unsubscribe = cashRealtimeService.subscribeToCashMovements(
       activeSession.cash_register_id,
       tenant.id,
       {
         onInsert: () => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[useCashRegister] Movement inserted, refreshing...')
-          }
           debouncedRefreshSummaryRef.current?.()
         },
         onUpdate: () => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[useCashRegister] Movement updated, refreshing...')
-          }
           debouncedRefreshSummaryRef.current?.()
         },
         onDelete: () => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[useCashRegister] Movement deleted, refreshing...')
-          }
           debouncedRefreshSummaryRef.current?.()
         },
         onError: (err) => {
@@ -174,14 +153,7 @@ export function useCashRegister() {
     }
 
     // Setup polling fallback
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[useCashRegister] Setting up polling fallback')
-    }
-
     pollingIntervalRef.current = setInterval(() => {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[useCashRegister] Polling refresh...')
-      }
       loadSummary()
     }, POLLING_INTERVAL)
 

@@ -14,17 +14,6 @@ class SalesHistoryService {
    */
   async getSales(filters: SalesQueryFilters): Promise<SaleWithRelations[]> {
     try {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[SalesHistoryService] Fetching sales with filters:', {
-          tenant_id: filters.tenant_id,
-          user_id: filters.user_id || 'ALL',
-          start_date: filters.start_date,
-          end_date: filters.end_date,
-          payment_method: filters.payment_method,
-          search: filters.search,
-        })
-      }
-
       let query = this.supabase
         .from('sales')
         .select(`
@@ -64,10 +53,6 @@ class SalesHistoryService {
       // Filtro por usuario (CAJERO)
       if (filters.user_id) {
         query = query.eq('user_id', filters.user_id)
-        
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[SalesHistoryService] Aplicando filtro user_id:', filters.user_id)
-        }
       }
 
       // Filtro por búsqueda (número de venta)
@@ -86,13 +71,6 @@ class SalesHistoryService {
         throw error
       }
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[SalesHistoryService] Sales fetched:', {
-          count: data?.length || 0,
-          filtered_by_user: !!filters.user_id,
-        })
-      }
-      
       return (data as SaleWithRelations[]) || []
     } catch (error) {
       console.error('[SalesHistoryService] getSales error:', error)
@@ -105,8 +83,6 @@ class SalesHistoryService {
    */
   async getSaleById(saleId: string, tenantId: string): Promise<SaleWithRelations | null> {
     try {
-      console.log('[SalesHistoryService] Fetching sale:', saleId)
-
       const { data, error } = await this.supabase
         .from('sales')
         .select(`
@@ -148,8 +124,6 @@ class SalesHistoryService {
    */
   async getSalesStats(filters: SalesQueryFilters): Promise<SalesStats> {
     try {
-      console.log('[SalesHistoryService] Calculating stats with filters:', filters)
-
       const sales = await this.getSales(filters)
 
       if (sales.length === 0) {
@@ -193,7 +167,6 @@ class SalesHistoryService {
         sales_by_payment_method: sales_by_payment_method as SalesStats['sales_by_payment_method'],
       }
 
-      console.log('[SalesHistoryService] Stats calculated:', stats)
       return stats
     } catch (error) {
       console.error('[SalesHistoryService] getSalesStats error:', error)
@@ -239,8 +212,6 @@ class SalesHistoryService {
     tenantId: string,
     callback: (payload: any) => void
   ) {
-    console.log('[SalesHistoryService] Setting up realtime subscription for sales')
-
     const channel = this.supabase
       .channel(`sales:${tenantId}`)
       .on(
@@ -252,14 +223,12 @@ class SalesHistoryService {
           filter: `tenant_id=eq.${tenantId}`,
         },
         (payload) => {
-          console.log('[SalesHistoryService] Realtime update:', payload)
           callback(payload)
         }
       )
       .subscribe()
 
     return () => {
-      console.log('[SalesHistoryService] Unsubscribing from sales')
       channel.unsubscribe()
     }
   }

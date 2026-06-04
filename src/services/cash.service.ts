@@ -75,13 +75,6 @@ class CashService {
     // Verificar si el usuario ya tiene una caja abierta
     const activeSession = await this.getActiveCashRegister(tenantId, userId)
     if (activeSession) {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('[openCash] Usuario ya tiene una caja abierta:', {
-          userId,
-          sessionId: activeSession.session.id,
-          registerId: activeSession.register.id,
-        })
-      }
       throw new Error('Ya tienes una caja abierta')
     }
 
@@ -102,13 +95,6 @@ class CashService {
       if (error) {
         // Detectar error de concurrencia (constraint violation)
         if (error.code === '23505' && error.message?.includes('unique_open_session_per_register')) {
-          if (process.env.NODE_ENV === 'development') {
-            console.warn('[openCash] Conflicto de concurrencia detectado:', {
-              code: error.code,
-              constraint: 'unique_open_session_per_register',
-              cashRegisterId,
-            })
-          }
           throw new CashConcurrencyError('Esta caja ya se encuentra abierta por otro cajero.')
         }
 
@@ -119,15 +105,6 @@ class CashService {
           details: error.details,
         })
         throw new Error(error.message || 'Error al abrir la caja')
-      }
-
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[openCash] Caja abierta exitosamente:', {
-          sessionId: data.id,
-          cashRegisterId: data.cash_register_id,
-          userId: data.user_id,
-          openingAmount: data.opening_amount,
-        })
       }
 
       return {
@@ -164,16 +141,6 @@ class CashService {
     const expectedAmount = summary.expected_balance
     const difference = closingAmount - expectedAmount
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[closeCash] Closing cash session:', {
-        sessionId,
-        closingAmount,
-        expectedAmount,
-        difference,
-        notes,
-      })
-    }
-
     const { data, error } = await this.supabase
       .from('cash_sessions')
       .update({
@@ -191,17 +158,6 @@ class CashService {
     if (error) {
       console.error('[closeCash] Error closing cash:', error)
       throw new Error(error.message || 'Error al cerrar la caja')
-    }
-
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[closeCash] Cash session closed successfully:', {
-        id: data.id,
-        status: data.status,
-        closing_amount: data.closing_amount,
-        expected_amount: data.expected_amount,
-        difference: data.difference,
-        closed_at: data.closed_at,
-      })
     }
 
     return {
@@ -236,11 +192,6 @@ class CashService {
       .select('type, amount, created_at, reference_id')
       .eq('cash_session_id', sessionId)
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[getCashSummary] Session opened_at:', session.opened_at)
-      console.log('[getCashSummary] Movements found:', movements?.length)
-      console.log('[getCashSummary] Movements:', movements)
-    }
 
     const openingAmount = Number(session.opening_amount)
     let totalCashSales = 0
@@ -274,25 +225,11 @@ class CashService {
           .filter(sale => sale.payment_method === 'TRANSFER')
           .reduce((sum, sale) => sum + Number(sale.total), 0)
 
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[getCashSummary] Total sales:', sales.length)
-          console.log('[getCashSummary] Cash sales:', sales.filter(s => s.payment_method === 'CASH').length, '- Amount:', totalCashSales)
-          console.log('[getCashSummary] Card sales:', sales.filter(s => s.payment_method === 'CARD').length, '- Amount:', totalCardSales)
-          console.log('[getCashSummary] Transfer sales:', sales.filter(s => s.payment_method === 'TRANSFER').length, '- Amount:', totalTransferSales)
-        }
       }
     }
 
-    movements?.forEach((movement, index) => {
+    movements?.forEach((movement) => {
       const amount = Number(movement.amount)
-      
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`[getCashSummary] Movement ${index}:`, {
-          type: movement.type,
-          amount: amount,
-          created_at: movement.created_at
-        })
-      }
       
       switch (movement.type) {
         case 'SALE':
@@ -305,21 +242,9 @@ class CashService {
           totalExpenses += amount
           break
         default:
-          if (process.env.NODE_ENV === 'development') {
-            console.warn(`[getCashSummary] Unknown movement type: ${movement.type}`)
-          }
+          break
       }
     })
-
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[getCashSummary] Opening:', openingAmount)
-      console.log('[getCashSummary] Cash Sales:', totalCashSales)
-      console.log('[getCashSummary] Card Sales:', totalCardSales)
-      console.log('[getCashSummary] Transfer Sales:', totalTransferSales)
-      console.log('[getCashSummary] Income:', totalIncome)
-      console.log('[getCashSummary] Expenses:', totalExpenses)
-      console.log('[getCashSummary] Expected balance:', openingAmount + totalCashSales + totalIncome - totalExpenses)
-    }
 
     const expectedBalance = openingAmount + totalCashSales + totalIncome - totalExpenses
 
@@ -383,10 +308,6 @@ class CashService {
     sessionId: string,
     limit: number = 50
   ): Promise<CashMovementWithUser[]> {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[getCashMovements] Fetching movements for session:', sessionId)
-    }
-
     const { data, error } = await this.supabase
       .from('cash_movements')
       .select(`
@@ -404,10 +325,6 @@ class CashService {
     if (error) {
       console.error('[getCashMovements] Error fetching cash movements:', error)
       throw new Error(error.message || 'Error al obtener los movimientos')
-    }
-
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[getCashMovements] Movements fetched for session:', data?.length)
     }
 
     // Mapear datos con user info

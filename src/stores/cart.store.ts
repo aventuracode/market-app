@@ -152,18 +152,6 @@ export const useCartStore = create<CartStore>()(
         set((state) => ({
           items: state.items.map((i) => {
             if (i.product.id === productId) {
-              // Log temporal para debugging
-              if (process.env.NODE_ENV === 'development') {
-                console.log('[Cart] Increase quantity:', {
-                  product: i.product.name,
-                  oldQuantity: i.quantity,
-                  newQuantity,
-                  step,
-                  decimal: i.product.allow_decimal,
-                  stock: i.product.stock
-                })
-              }
-
               return { ...i, quantity: newQuantity }
             }
             return i
@@ -179,17 +167,6 @@ export const useCartStore = create<CartStore>()(
 
         const step = getProductStep(item.product)
         const newQuantity = roundWeight(item.quantity - step)
-
-        // Log temporal para debugging
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[Cart] Decrease quantity:', {
-            product: item.product.name,
-            oldQuantity: item.quantity,
-            newQuantity,
-            step,
-            decimal: item.product.allow_decimal
-          })
-        }
 
         // Si la nueva cantidad es <= 0, remover el item
         if (newQuantity <= 0) {

@@ -37,10 +37,6 @@ class CashRealtimeService {
       this.channels.delete(channelName)
     }
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[Realtime] Setting up subscription for session:', sessionId)
-    }
-
     // Create new channel and configure ALL callbacks BEFORE subscribe
     const channel = this.supabase
       .channel(channelName)
@@ -53,26 +49,10 @@ class CashRealtimeService {
           filter: `cash_session_id=eq.${sessionId}`,
         },
         (payload) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[Realtime] 🔵 INSERT event received:', payload)
-          }
-          
-          // Additional tenant validation for security
           const record = payload.new as CashMovement
           
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[Realtime] Tenant check - Record:', record.tenant_id, 'Expected:', tenantId, 'Match:', record.tenant_id === tenantId)
-          }
-          
           if (record.tenant_id === tenantId) {
-            if (process.env.NODE_ENV === 'development') {
-              console.log('[Realtime] ✅ Calling onInsert callback')
-            }
             callbacks.onInsert?.(payload as RealtimePostgresChangesPayload<CashMovement>)
-          } else {
-            if (process.env.NODE_ENV === 'development') {
-              console.log('[Realtime] ❌ Tenant mismatch, ignoring')
-            }
           }
         }
       )
@@ -87,9 +67,6 @@ class CashRealtimeService {
         (payload) => {
           const record = payload.new as CashMovement
           if (record.tenant_id === tenantId) {
-            if (process.env.NODE_ENV === 'development') {
-              console.log('[Realtime] Cash movement updated:', record)
-            }
             callbacks.onUpdate?.(payload as RealtimePostgresChangesPayload<CashMovement>)
           }
         }
@@ -103,18 +80,10 @@ class CashRealtimeService {
           filter: `cash_session_id=eq.${sessionId}`,
         },
         (payload) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[Realtime] Cash movement deleted:', payload.old)
-          }
           callbacks.onDelete?.(payload as RealtimePostgresChangesPayload<CashMovement>)
         }
       )
       .subscribe((status, err) => {
-        if (status === 'SUBSCRIBED') {
-          if (process.env.NODE_ENV === 'development') {
-            console.log(`[Realtime] Subscribed to ${channelName}`)
-          }
-        }
         if (status === 'CHANNEL_ERROR') {
           console.error(`[Realtime] Channel error on ${channelName}:`, err)
           callbacks.onError?.(new Error(err?.message || 'Channel error'))
@@ -164,10 +133,6 @@ class CashRealtimeService {
           filter: `tenant_id=eq.${tenantId}`,
         },
         (payload) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[Realtime] Cash session changed:', payload)
-          }
-          
           if (payload.eventType === 'INSERT') {
             callbacks.onInsert?.(payload)
           } else if (payload.eventType === 'UPDATE') {
@@ -176,11 +141,6 @@ class CashRealtimeService {
         }
       )
       .subscribe((status, err) => {
-        if (status === 'SUBSCRIBED') {
-          if (process.env.NODE_ENV === 'development') {
-            console.log(`[Realtime] Subscribed to ${channelName}`)
-          }
-        }
         if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
           console.error(`[Realtime] Error on ${channelName}:`, err)
           callbacks.onError?.(new Error(err?.message || 'Subscription error'))
@@ -200,9 +160,6 @@ class CashRealtimeService {
     if (channel) {
       await this.supabase.removeChannel(channel)
       this.channels.delete(channelName)
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`[Realtime] Unsubscribed from ${channelName}`)
-      }
     }
   }
 
@@ -213,9 +170,6 @@ class CashRealtimeService {
   async unsubscribeAll(): Promise<void> {
     const channelNames = Array.from(this.channels.keys())
     await Promise.all(channelNames.map((name) => this.unsubscribe(name)))
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[Realtime] Unsubscribed from all channels')
-    }
   }
 
   /**

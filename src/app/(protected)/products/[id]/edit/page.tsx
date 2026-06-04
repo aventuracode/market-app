@@ -20,22 +20,16 @@ export default function EditProductPage() {
   const productId = params.id as string
 
   useEffect(() => {
-    if (!tenant?.id || !productId) {
-      console.log('Waiting for tenant or productId:', { tenant: tenant?.id, productId })
-      return
-    }
+    if (!tenant?.id || !productId) return
 
     const loadProduct = async () => {
       try {
-        console.log('Loading product:', { tenantId: tenant.id, productId })
         setLoading(true)
         setError(null)
         
         const data = await productService.getProductById(tenant.id, productId)
-        console.log('Product loaded:', data)
         
         if (!data) {
-          console.error('Product not found')
           setError('Producto no encontrado')
           return
         }

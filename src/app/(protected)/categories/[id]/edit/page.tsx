@@ -20,22 +20,16 @@ export default function EditCategoryPage() {
   const categoryId = params.id as string
 
   useEffect(() => {
-    if (!tenant?.id || !categoryId) {
-      console.log('Waiting for tenant or categoryId:', { tenant: tenant?.id, categoryId })
-      return
-    }
+    if (!tenant?.id || !categoryId) return
 
     const loadCategory = async () => {
       try {
-        console.log('Loading category:', { tenantId: tenant.id, categoryId })
         setLoading(true)
         setError(null)
         
         const data = await categoryService.getCategoryById(tenant.id, categoryId)
-        console.log('Category loaded:', data)
         
         if (!data) {
-          console.error('Category not found')
           setError('Categoría no encontrada')
           return
         }

@@ -38,12 +38,6 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
       })
 
       try {
-        // Debug logs
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[useCheckout] User:', user)
-          console.log('[useCheckout] Tenant:', tenant)
-        }
-
         // Validaciones
         if (!user?.id) {
           throw new Error('Usuario no autenticado')
@@ -84,17 +78,6 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
           unit_price: item.product.sale_price,
           subtotal: item.product.sale_price * item.quantity,
         }))
-
-        // Debug: Verificar cantidades decimales
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[useCheckout] Cart Items:', items.map(i => ({
-            name: i.product.name,
-            quantity: i.quantity,
-            unit_price: i.product.sale_price,
-            subtotal: i.product.sale_price * i.quantity
-          })))
-          console.log('[useCheckout] Sale Items:', saleItems)
-        }
 
         // Crear venta con la sesión activa
         const response = await saleService.createSale({

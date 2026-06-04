@@ -68,16 +68,6 @@ export function useSales(period: SalesPeriod = 'today') {
         ...dateRange,
       }
 
-      if (process.env.NODE_ENV === 'development') {
-        console.group('[useSales] USER DEBUG')
-        console.log('User completo:', user)
-        console.log('user.id:', user?.id)
-        console.log('user.role:', user?.role)
-        console.log('activeSession:', activeSession)
-        console.log('tenant:', tenant)
-        console.groupEnd()
-      }
-
       // Aplicar filtro de usuario y sesión para CAJERO
       if (user.role === 'CAJERO') {
         filters.userId = user.id
@@ -88,34 +78,8 @@ export function useSales(period: SalesPeriod = 'today') {
         }
       }
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[useSales] Fetching sales:', {
-          userId: user.id,
-          userRole: user.role,
-          period,
-          activeSessionId: activeSession?.id,
-          willFilterByUser: user.role === 'CAJERO',
-          willFilterBySession: user.role === 'CAJERO' && !!activeSession?.id,
-        })
-      }
-
-      if (process.env.NODE_ENV === 'development') {
-        console.group('[useSales] Filters Generated')
-        console.log('userRole:', user?.role)
-        console.log('filters:', filters)
-        console.groupEnd()
-      }
-
       try {
         const sales = await salesService.getSales(filters, user.role)
-
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[useSales] Sales loaded:', {
-            count: sales.length,
-            role: user.role,
-            filteredBySession: !!filters.cashSessionId,
-          })
-        }
 
         return sales
       } catch (error) {
@@ -168,16 +132,6 @@ export function useSalesStats(period: SalesPeriod = 'today') {
         ...dateRange,
       }
 
-      if (process.env.NODE_ENV === 'development') {
-        console.group('[useSalesStats] USER DEBUG')
-        console.log('User completo:', user)
-        console.log('user.id:', user?.id)
-        console.log('user.role:', user?.role)
-        console.log('activeSession:', activeSession)
-        console.log('tenant:', tenant)
-        console.groupEnd()
-      }
-
       // Aplicar filtro de usuario y sesión para CAJERO
       if (user.role === 'CAJERO') {
         filters.userId = user.id
@@ -186,16 +140,6 @@ export function useSalesStats(period: SalesPeriod = 'today') {
         if (activeSession?.id) {
           filters.cashSessionId = activeSession.id
         }
-      }
-
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[useSalesStats] Fetching stats:', {
-          userId: user.id,
-          userRole: user.role,
-          period,
-          activeSessionId: activeSession?.id,
-          willFilterBySession: user.role === 'CAJERO' && !!activeSession?.id,
-        })
       }
 
       return salesService.getSalesStats(filters, user.role)

@@ -26,9 +26,6 @@ export const useCashStore = create<CashState>()(
         }),
 
       updateBalance: (balance) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[CashStore] Updating balance to:', balance)
-        }
         set({ currentBalance: balance })
       },
 

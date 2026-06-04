@@ -28,19 +28,11 @@ export function useCashMovements(options: UseCashMovementsOptions = {}) {
   const loadMovements = useCallback(async () => {
     if (!sessionId) return
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[useCashMovements] Loading movements for session:', sessionId)
-    }
-
     try {
       setLoading(true)
       setError(null)
       const data = await cashService.getCashMovements(sessionId, limit)
       setMovements(data)
-      
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[useCashMovements] Loaded movements:', data.length)
-      }
     } catch (err) {
       console.error('Error loading cash movements:', err)
       setError(err instanceof Error ? err.message : 'Error al cargar los movimientos')
@@ -74,31 +66,18 @@ export function useCashMovements(options: UseCashMovementsOptions = {}) {
       return
     }
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[useCashMovements] Setting up realtime subscription for session:', sessionId)
-    }
-
     // Subscribe to cash movements changes
     const unsubscribe = cashRealtimeService.subscribeToCashMovements(
       sessionId,
       tenant.id,
       {
         onInsert: () => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[useCashMovements] Movement inserted, refreshing...')
-          }
           debouncedRefreshRef.current?.()
         },
         onUpdate: () => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[useCashMovements] Movement updated, refreshing...')
-          }
           debouncedRefreshRef.current?.()
         },
         onDelete: () => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[useCashMovements] Movement deleted, refreshing...')
-          }
           debouncedRefreshRef.current?.()
         },
         onError: (err) => {

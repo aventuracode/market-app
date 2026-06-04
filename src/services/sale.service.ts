@@ -17,15 +17,6 @@ class SaleService {
       // Validaciones previas
       this.validateSaleParams(params)
 
-      console.log('Creating sale with params:', {
-        tenant_id: params.tenant_id,
-        user_id: params.user_id,
-        cash_register_id: params.cash_register_id,
-        cash_session_id: params.cash_session_id,
-        payment_method: params.payment_method,
-        items_count: params.items.length,
-      })
-
       // Llamada a RPC
       const { data, error } = await this.supabase.rpc('create_sale', {
         p_tenant_id: params.tenant_id,
@@ -45,12 +36,9 @@ class SaleService {
         throw new Error('No se recibió respuesta del servidor')
       }
 
-      console.log('Sale created successfully - Raw response:', data)
-
       // Si la RPC retorna solo el ID (string), consultar los detalles
       if (typeof data === 'string') {
         const saleId = data
-        console.log('RPC returned sale_id, fetching details:', saleId)
 
         // Consultar la venta completa
         const { data: saleData, error: saleError } = await this.supabase
@@ -70,11 +58,6 @@ class SaleService {
           }
         }
 
-        console.log('Sale details fetched:', {
-          sale_id: saleData.id,
-          sale_number: saleData.sale_number,
-        })
-
         return {
           sale: saleData as any,
           sale_items: [],
@@ -85,13 +68,6 @@ class SaleService {
 
       // Si retorna objeto completo
       const saleData = data.sale || data
-      
-      console.log('Sale created successfully:', {
-        sale_id: saleData?.id,
-        sale_number: saleData?.sale_number,
-        items_created: data.sale_items?.length || 0,
-        stock_movements: data.stock_movements?.length || 0,
-      })
 
       return data as CreateSaleResponse
     } catch (error) {

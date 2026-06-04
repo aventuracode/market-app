@@ -119,7 +119,6 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
   // Resetear formulario cuando el producto cambie Y las categorías estén cargadas
   useEffect(() => {
     if (product && !loadingCategories) {
-      console.log('[ProductForm] Resetting form with product.category_id:', product.category_id)
       form.reset({
         name: product.name,
         description: product.description || '',
@@ -137,7 +136,6 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
       // Sincronizar inputs locales
       setCostPriceInput(product.cost_price ? product.cost_price.toString() : '')
       setSalePriceInput(product.sale_price ? product.sale_price.toString() : '')
-      console.log('[ProductForm] Form reset complete. watch(category_id):', watch('category_id'))
     }
   }, [product, loadingCategories, form])
 
@@ -147,7 +145,6 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
     try {
       setLoadingCategories(true)
       const data = await productService.getCategories(tenant.id)
-      console.log('[ProductForm] Categories loaded:', data.length, 'categories')
       setCategories(data)
     } catch (error) {
       console.error('Error loading categories:', error)

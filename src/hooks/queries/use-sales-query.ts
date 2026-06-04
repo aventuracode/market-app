@@ -55,20 +55,6 @@ export function useSalesByPeriod(period: SalesPeriod, additionalFilters?: Partia
       // CAJERO solo puede ver sus propias ventas
       if (user?.role === 'CAJERO' && user?.id) {
         filters.user_id = user.id
-        
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[useSalesByPeriod] Aplicando filtro CAJERO:', {
-            userId: user.id,
-            role: user.role,
-            period,
-          })
-        }
-      } else if (process.env.NODE_ENV === 'development') {
-        console.log('[useSalesByPeriod] Usuario ADMIN - sin filtro por usuario:', {
-          userId: user?.id,
-          role: user?.role,
-          period,
-        })
       }
       
       return salesHistoryService.getSales(filters)
@@ -143,14 +129,6 @@ export function useSalesStatsByPeriod(period: SalesPeriod) {
       // CAJERO solo puede ver estadísticas de sus propias ventas
       if (user?.role === 'CAJERO' && user?.id) {
         filters.user_id = user.id
-        
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[useSalesStatsByPeriod] Aplicando filtro CAJERO:', {
-            userId: user.id,
-            role: user.role,
-            period,
-          })
-        }
       }
       
       return salesHistoryService.getSalesStats(filters)
@@ -172,25 +150,15 @@ export function useSalesRealtime() {
   useEffect(() => {
     if (!tenant?.id) return
 
-    console.log('[useSalesRealtime] Setting up realtime subscription')
-
     const unsubscribe = salesHistoryService.subscribeToSales(
       tenant.id,
-      (payload) => {
-        console.log('[useSalesRealtime] Received update, invalidating queries')
-        
+      () => {
         // Invalidar todas las queries de ventas
         queryClient.invalidateQueries({ queryKey: ['sales'] })
-        
-        // Mostrar notificación si es una nueva venta
-        if (payload.eventType === 'INSERT') {
-          console.log('[useSalesRealtime] Nueva venta detectada:', payload.new)
-        }
       }
     )
 
     return () => {
-      console.log('[useSalesRealtime] Cleaning up realtime subscription')
       unsubscribe()
     }
   }, [tenant?.id, queryClient])
