@@ -93,37 +93,20 @@ export function formatQuantity(
   const roundedQuantity = roundWeight(quantity)
   const unitType = product.unit_type || 'UNIT'
   
-  // GRAM: mostrar en gramos
-  if (unitType === 'GRAM') {
-    const formatted = Math.round(roundedQuantity)
-    return showUnit ? `${formatted} g` : formatted.toString()
-  }
-  
-  // KILOGRAM: convertir a gramos si es menos de 1kg
-  if (unitType === 'KILOGRAM') {
-    if (roundedQuantity < 1) {
-      const grams = Math.round(roundedQuantity * 1000)
-      return showUnit ? `${grams} g` : grams.toString()
+  if (!showUnit) {
+    // Sin unidad, solo el número
+    if (unitType === 'KILOGRAM' || unitType === 'LITER') {
+      if (roundedQuantity < 1) {
+        return Math.round(roundedQuantity * 1000).toString()
+      }
+      return formatWeight(roundedQuantity)
     }
-    const formatted = formatWeight(roundedQuantity)
-    return showUnit ? `${formatted} kg` : formatted
+    return Math.floor(roundedQuantity).toString()
   }
   
-  // LITER: mostrar en litros con decimales
-  if (unitType === 'LITER') {
-    const formatted = formatWeight(roundedQuantity)
-    return showUnit ? `${formatted} l` : formatted
-  }
-  
-  // MILLILITER: mostrar en mililitros
-  if (unitType === 'MILLILITER') {
-    const formatted = Math.round(roundedQuantity)
-    return showUnit ? `${formatted} ml` : formatted.toString()
-  }
-  
-  // UNIT: sin decimales
-  const formatted = Math.floor(roundedQuantity)
-  return showUnit ? `${formatted} un` : formatted.toString()
+  // Con unidad, usar el helper de measurement
+  const { formatQuantity: formatQty } = require('@/lib/utils/measurement')
+  return formatQty(roundedQuantity, unitType)
 }
 
 /**

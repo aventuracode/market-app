@@ -9,6 +9,7 @@ import type { ProductWithCategory } from '@/types/product'
 import { cn } from '@/lib/utils'
 import { formatPrice, formatUnit, getUnitBadgeVariant } from '@/lib/product-helpers'
 import { formatWeight } from '@/lib/utils/weight'
+import { formatStock } from '@/lib/utils/measurement'
 
 interface ProductCardProps {
   product: ProductWithCategory
@@ -106,7 +107,7 @@ export function ProductCard({
             isLowStock && 'text-yellow-600',
             !isOutOfStock && !isLowStock && 'text-muted-foreground/70'
           )}>
-            {isOutOfStock ? 'Sin stock' : `${product.stock} ${unitType === 'UNIT' ? 'un' : unitType === 'KILOGRAM' ? 'kg' : unitType === 'GRAM' ? 'g' : unitType === 'LITER' ? 'l' : 'ml'}`}
+            {isOutOfStock ? 'Sin stock' : formatStock(product.stock, unitType)}
           </span>
         </div>
       </div>
