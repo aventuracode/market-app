@@ -106,9 +106,9 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed inset-x-4 top-4 bottom-20 sm:top-1/2 sm:-translate-y-1/2 sm:bottom-auto sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-full sm:max-w-lg sm:max-h-[90vh] z-50"
+            className="fixed inset-x-4 top-4 bottom-20 sm:inset-0 sm:flex sm:items-center sm:justify-center sm:p-4 z-50"
           >
-            <div className="bg-background rounded-3xl shadow-2xl overflow-hidden h-full flex flex-col">
+            <div className="bg-background rounded-3xl shadow-2xl overflow-hidden h-full flex flex-col sm:w-full sm:max-w-lg sm:max-h-[90vh] sm:h-auto">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b flex-shrink-0">
                 <div>

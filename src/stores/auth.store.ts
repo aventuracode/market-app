@@ -15,6 +15,13 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
 
       setUser: (user) => {
+        if (process.env.NODE_ENV === 'development') {
+          console.group('[AuthStore] setUser')
+          console.log('User data:', user)
+          console.log('Role:', user?.role)
+          console.log('Role ID:', user?.role_id)
+          console.groupEnd()
+        }
         set({ user })
       },
 

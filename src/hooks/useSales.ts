@@ -5,6 +5,7 @@ import { startOfDay, startOfWeek, startOfMonth, endOfDay } from 'date-fns'
 import { salesService, SalesPermissionError } from '@/services/sales.service'
 import { useTenant } from '@/hooks/use-tenant'
 import { useAuthStore } from '@/stores/auth.store'
+import { useCashStore } from '@/stores/cash.store'
 import type { SalesPeriod } from '@/types/sales'
 import type { SalesFilters } from '@/services/sales.service'
 
@@ -46,11 +47,12 @@ function getDateRangeForPeriod(period: SalesPeriod): {
 export function useSales(period: SalesPeriod = 'today') {
   const { tenant } = useTenant()
   const { user } = useAuthStore()
+  const activeSession = useCashStore((state) => state.activeSession)
 
   const dateRange = getDateRangeForPeriod(period)
 
   return useQuery({
-    queryKey: ['sales', tenant?.id, user?.id, user?.role, period],
+    queryKey: ['sales', tenant?.id, user?.id, user?.role, activeSession?.id, period],
     queryFn: async () => {
       if (!tenant?.id) {
         throw new Error('No hay tenant activo')
@@ -66,9 +68,24 @@ export function useSales(period: SalesPeriod = 'today') {
         ...dateRange,
       }
 
-      // Aplicar filtro de usuario para CAJERO
+      if (process.env.NODE_ENV === 'development') {
+        console.group('[useSales] USER DEBUG')
+        console.log('User completo:', user)
+        console.log('user.id:', user?.id)
+        console.log('user.role:', user?.role)
+        console.log('activeSession:', activeSession)
+        console.log('tenant:', tenant)
+        console.groupEnd()
+      }
+
+      // Aplicar filtro de usuario y sesión para CAJERO
       if (user.role === 'CAJERO') {
         filters.userId = user.id
+        
+        // Filtrar por sesión activa si existe
+        if (activeSession?.id) {
+          filters.cashSessionId = activeSession.id
+        }
       }
 
       if (process.env.NODE_ENV === 'development') {
@@ -76,8 +93,17 @@ export function useSales(period: SalesPeriod = 'today') {
           userId: user.id,
           userRole: user.role,
           period,
+          activeSessionId: activeSession?.id,
           willFilterByUser: user.role === 'CAJERO',
+          willFilterBySession: user.role === 'CAJERO' && !!activeSession?.id,
         })
+      }
+
+      if (process.env.NODE_ENV === 'development') {
+        console.group('[useSales] Filters Generated')
+        console.log('userRole:', user?.role)
+        console.log('filters:', filters)
+        console.groupEnd()
       }
 
       try {
@@ -87,6 +113,7 @@ export function useSales(period: SalesPeriod = 'today') {
           console.log('[useSales] Sales loaded:', {
             count: sales.length,
             role: user.role,
+            filteredBySession: !!filters.cashSessionId,
           })
         }
 
@@ -120,11 +147,12 @@ export function useSales(period: SalesPeriod = 'today') {
 export function useSalesStats(period: SalesPeriod = 'today') {
   const { tenant } = useTenant()
   const { user } = useAuthStore()
+  const activeSession = useCashStore((state) => state.activeSession)
 
   const dateRange = getDateRangeForPeriod(period)
 
   return useQuery({
-    queryKey: ['sales', 'stats', tenant?.id, user?.id, user?.role, period],
+    queryKey: ['sales', 'stats', tenant?.id, user?.id, user?.role, activeSession?.id, period],
     queryFn: async () => {
       if (!tenant?.id) {
         throw new Error('No hay tenant activo')
@@ -140,9 +168,24 @@ export function useSalesStats(period: SalesPeriod = 'today') {
         ...dateRange,
       }
 
-      // Aplicar filtro de usuario para CAJERO
+      if (process.env.NODE_ENV === 'development') {
+        console.group('[useSalesStats] USER DEBUG')
+        console.log('User completo:', user)
+        console.log('user.id:', user?.id)
+        console.log('user.role:', user?.role)
+        console.log('activeSession:', activeSession)
+        console.log('tenant:', tenant)
+        console.groupEnd()
+      }
+
+      // Aplicar filtro de usuario y sesión para CAJERO
       if (user.role === 'CAJERO') {
         filters.userId = user.id
+        
+        // Filtrar por sesión activa si existe
+        if (activeSession?.id) {
+          filters.cashSessionId = activeSession.id
+        }
       }
 
       if (process.env.NODE_ENV === 'development') {
@@ -150,6 +193,8 @@ export function useSalesStats(period: SalesPeriod = 'today') {
           userId: user.id,
           userRole: user.role,
           period,
+          activeSessionId: activeSession?.id,
+          willFilterBySession: user.role === 'CAJERO' && !!activeSession?.id,
         })
       }
 

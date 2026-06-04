@@ -5,6 +5,12 @@ import { createClient } from '@/lib/supabase/client'
 import { useAuthStore } from '@/stores/auth.store'
 import type { User } from '@/types'
 
+const ROLE_MAP = {
+  1: 'ADMIN',
+  2: 'CAJERO',
+  3: 'SUPERVISOR',
+} as const
+
 export function useAuth() {
   const { user, setUser, clearUser } = useAuthStore()
   const [loading, setLoading] = useState(true)
@@ -34,8 +40,28 @@ export function useAuth() {
           console.error('Error fetching user data:', userError)
         }
 
+        if (process.env.NODE_ENV === 'development') {
+          console.group('[useAuth] Profile Loaded from DB')
+          console.log('Raw profile from DB:', userData)
+          console.log('Role field:', userData?.role)
+          console.log('Role ID field:', userData?.role_id)
+          console.groupEnd()
+        }
+
         if (userData) {
-          setUser(userData as User)
+          const mappedUser = {
+            ...userData,
+            role: ROLE_MAP[userData.role_id as keyof typeof ROLE_MAP]
+          }
+
+          if (process.env.NODE_ENV === 'development') {
+            console.group('[useAuth] User Mapped')
+            console.log('role_id:', userData.role_id)
+            console.log('role:', mappedUser.role)
+            console.groupEnd()
+          }
+
+          setUser(mappedUser as User)
         } else {
           // Fallback a datos básicos de auth si no hay datos en la tabla
           setUser({
@@ -74,8 +100,30 @@ export function useAuth() {
           console.error('Error fetching user on auth change:', error)
         }
 
+        if (process.env.NODE_ENV === 'development') {
+          console.group('[useAuth] Auth State Change - SIGNED_IN')
+          console.log('Session:', session)
+          console.log('User from auth:', session?.user)
+          console.log('Profile from DB:', userData)
+          console.log('Role field:', userData?.role)
+          console.log('Role ID field:', userData?.role_id)
+          console.groupEnd()
+        }
+
         if (userData) {
-          setUser(userData as User)
+          const mappedUser = {
+            ...userData,
+            role: ROLE_MAP[userData.role_id as keyof typeof ROLE_MAP]
+          }
+
+          if (process.env.NODE_ENV === 'development') {
+            console.group('[useAuth] User Mapped (Auth Change)')
+            console.log('role_id:', userData.role_id)
+            console.log('role:', mappedUser.role)
+            console.groupEnd()
+          }
+
+          setUser(mappedUser as User)
         }
       } else if (event === 'SIGNED_OUT') {
         clearUser()

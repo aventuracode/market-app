@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { cashService } from '@/services/cash.service'
 import { cashRealtimeService } from '@/services/cash-realtime.service'
 import { useTenant } from '@/hooks/use-tenant'
@@ -15,6 +16,7 @@ const POLLING_INTERVAL = 30000 // 30 seconds fallback
 export function useCashRegister() {
   const { tenant } = useTenant()
   const { user } = useAuthStore()
+  const queryClient = useQueryClient()
   
   // Usar selectores reactivos para que se actualicen automáticamente
   const activeCashRegister = useCashStore((state) => state.activeCashRegister)
@@ -42,8 +44,26 @@ export function useCashRegister() {
       
       if (data) {
         setActiveCash(data.register, data.session)
+        
+        // Invalidar queries de ventas cuando cambia la sesión
+        await queryClient.invalidateQueries({ 
+          queryKey: ['sales'] 
+        })
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[useCashRegister] Sesión de caja cargada, invalidando queries de ventas')
+        }
       } else {
         clearActiveCash()
+        
+        // También invalidar cuando se cierra la caja
+        await queryClient.invalidateQueries({ 
+          queryKey: ['sales'] 
+        })
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[useCashRegister] Caja cerrada, invalidando queries de ventas')
+        }
       }
     } catch (err) {
       console.error('Error loading active cash:', err)
@@ -51,7 +71,7 @@ export function useCashRegister() {
     } finally {
       setLoading(false)
     }
-  }, [tenant?.id, user?.id, setActiveCash, clearActiveCash])
+  }, [tenant?.id, user?.id, setActiveCash, clearActiveCash, queryClient])
 
   const loadSummary = useCallback(async () => {
     if (!activeSession?.id) return
