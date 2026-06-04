@@ -18,6 +18,7 @@ export class SalesPermissionError extends Error {
 export interface SalesFilters {
   tenantId: string
   userId?: string
+  cashSessionId?: string
   startDate?: string
   endDate?: string
   paymentMethod?: 'CASH' | 'CARD' | 'TRANSFER'
@@ -38,13 +39,24 @@ class SalesService {
    */
   async getSales(filters: SalesFilters, userRole?: Role): Promise<SaleWithDetails[]> {
     try {
+
       if (process.env.NODE_ENV === 'development') {
         console.log('[SalesService] getSales called:', {
           tenantId: filters.tenantId,
           userId: filters.userId,
+          cashSessionId: filters.cashSessionId,
           userRole,
           hasDateFilter: !!(filters.startDate || filters.endDate),
         })
+      }
+
+      if (process.env.NODE_ENV === 'development') {
+        console.group('[SalesService] Final Filters')
+        console.log('userRole:', userRole)
+        console.log('tenantId:', filters.tenantId)
+        console.log('userId:', filters.userId)
+        console.log('cashSessionId:', filters.cashSessionId)
+        console.groupEnd()
       }
 
       let query = this.supabase
@@ -73,6 +85,8 @@ class SalesService {
         .eq('tenant_id', filters.tenantId)
         .order('created_at', { ascending: false })
 
+        
+
       // Filtro por usuario (CAJERO)
       // RLS ya filtra en backend, pero lo aplicamos también en frontend
       if (userRole === 'CAJERO' && filters.userId) {
@@ -80,6 +94,16 @@ class SalesService {
         
         if (process.env.NODE_ENV === 'development') {
           console.log('[SalesService] Aplicando filtro CAJERO:', filters.userId)
+        }
+      }
+
+      // Filtro por sesión de caja (CAJERO)
+      // Solo muestra ventas de la sesión activa
+      if (filters.cashSessionId) {
+        query = query.eq('cash_session_id', filters.cashSessionId)
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[SalesService] Aplicando filtro por sesión de caja:', filters.cashSessionId)
         }
       }
 
@@ -129,6 +153,14 @@ class SalesService {
           filteredByUser: userRole === 'CAJERO',
         })
       }
+
+      console.log(
+        '[SalesService] Ventas retornadas:',
+        data?.map((s: any) => ({
+          sale_number: s.sale_number,
+          cash_session_id: s.cash_session_id,
+        }))
+      )
 
       return (data as SaleWithDetails[]) || []
     } catch (err) {
