@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Loader2 } from 'lucide-react'
+import { Loader2, DollarSign } from 'lucide-react'
 import { useProductForm } from '@/hooks/use-product-form'
 import { productService } from '@/services/product.service'
 import { useTenant } from '@/hooks/use-tenant'
@@ -24,7 +24,9 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
   const { tenant } = useTenant()
   const [categories, setCategories] = useState<Category[]>([])
   const [loadingCategories, setLoadingCategories] = useState(true)
-
+  const [margin, setMargin] = useState<number>(0)
+  const [displayCostPrice, setDisplayCostPrice] = useState('')
+  const [displaySalePrice, setDisplaySalePrice] = useState('')
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   const { form, loading, onSubmit } = useProductForm({
@@ -43,11 +45,79 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
     register,
     formState: { errors },
     watch,
+    setValue,
   } = form
 
   // Helper para identificar productos pesables
   const unitType = watch('unit_type')
   const isWeightedProduct = unitType === 'KILOGRAM' || unitType === 'GRAM' || unitType === 'LITER' || unitType === 'MILLILITER'
+
+  // Watch precios para cálculos
+  const costPrice = watch('cost_price') || 0
+  const salePrice = watch('sale_price') || 0
+
+  // Calcular ganancia
+  const profit = salePrice - costPrice
+
+  // Helper para parsear input de moneda
+  const parseCurrencyInput = (value: string): number => {
+    const numericString = value.replace(/[^0-9]/g, '')
+    const numericValue = parseInt(numericString, 10)
+    return isNaN(numericValue) ? 0 : numericValue
+  }
+
+  // Importar formatCurrency
+  const { formatCurrency } = require('@/lib/utils/currency')
+
+  // Manejar cambio de precio de costo
+  const handleCostPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value
+    const numericValue = parseCurrencyInput(inputValue)
+
+    setValue('cost_price', numericValue)
+    setDisplayCostPrice(numericValue > 0 ? formatCurrency(numericValue) : '')
+  }
+
+  // Manejar cambio de precio de venta
+  const handleSalePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value
+    const numericValue = parseCurrencyInput(inputValue)
+
+    setValue('sale_price', numericValue)
+    setDisplaySalePrice(numericValue > 0 ? formatCurrency(numericValue) : '')
+  }
+
+  // Calcular margen cuando cambian los precios
+  useEffect(() => {
+    if (costPrice > 0 && salePrice > 0) {
+      const calculatedMargin = ((salePrice - costPrice) / costPrice) * 100
+      setMargin(Math.round(calculatedMargin * 100) / 100) // 2 decimales
+    } else {
+      setMargin(0)
+    }
+  }, [costPrice, salePrice])
+
+  // Aplicar margen rápido
+  const applyQuickMargin = (marginPercent: number) => {
+    if (costPrice > 0) {
+      const newSalePrice = Math.round(costPrice * (1 + marginPercent / 100))
+      setValue('sale_price', newSalePrice)
+      setDisplaySalePrice(formatCurrency(newSalePrice))
+      setMargin(marginPercent)
+    }
+  }
+
+  // Manejar cambio de margen manual
+  const handleMarginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value) || 0
+    setMargin(value)
+    
+    if (costPrice > 0) {
+      const newSalePrice = Math.round(costPrice * (1 + value / 100))
+      setValue('sale_price', newSalePrice)
+      setDisplaySalePrice(formatCurrency(newSalePrice))
+    }
+  }
 
   // Cargar categorías primero
   useEffect(() => {
@@ -66,14 +136,21 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
         sku: product.sku || '',
         category_id: product.category_id || '',
         sale_price: product.sale_price,
-        cost_price: product.cost_price || undefined,
+        cost_price: product.cost_price || 0,
         stock: product.stock,
         minimum_stock: product.minimum_stock,
         unit_type: product.unit_type || 'UNIT',
         allow_decimal: product.allow_decimal || false,
         is_active: product.is_active,
       })
+      // Actualizar displays
+      setDisplayCostPrice(product.cost_price ? formatCurrency(product.cost_price) : '')
+      setDisplaySalePrice(product.sale_price ? formatCurrency(product.sale_price) : '')
       console.log('[ProductForm] Form reset complete. watch(category_id):', watch('category_id'))
+    } else if (!product) {
+      // Limpiar displays para nuevo producto
+      setDisplayCostPrice('')
+      setDisplaySalePrice('')
     }
   }, [product, loadingCategories, form])
 
@@ -199,58 +276,129 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
       {/* Precios */}
       <Card className="p-4">
         <h3 className="font-semibold mb-4">Precios</h3>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-4">
+          {/* Precio de Costo */}
+          <div className="space-y-2">
+            <Label htmlFor="cost_price">
+              Precio Costo <span className="text-destructive">*</span>
+            </Label>
+            <div className="relative">
+              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input
+                id="cost_price"
+                type="text"
+                value={displayCostPrice}
+                onChange={handleCostPriceChange}
+                placeholder="$ 0"
+                className="h-11 pl-10 pr-4 text-right font-semibold"
+                inputMode="numeric"
+              />
+            </div>
+            {errors.cost_price && (
+              <p className="text-sm text-destructive">{errors.cost_price.message}</p>
+            )}
+          </div>
+
+          {/* Margen % */}
+          <div className="space-y-2">
+            <Label htmlFor="margin">
+              Margen %
+            </Label>
+            <Input
+              id="margin"
+              type="number"
+              step="0.01"
+              min="0"
+              value={margin || ''}
+              onChange={handleMarginChange}
+              placeholder="0"
+              className="h-11"
+              inputMode="decimal"
+            />
+          </div>
+
+          {/* Botones Rápidos de Margen */}
+          <div className="space-y-2">
+            <Label className="text-xs text-muted-foreground">Margen rápido</Label>
+            <div className="grid grid-cols-4 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => applyQuickMargin(20)}
+                className="h-9 text-xs font-semibold"
+                disabled={!costPrice}
+              >
+                +20%
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => applyQuickMargin(30)}
+                className="h-9 text-xs font-semibold"
+                disabled={!costPrice}
+              >
+                +30%
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => applyQuickMargin(50)}
+                className="h-9 text-xs font-semibold"
+                disabled={!costPrice}
+              >
+                +50%
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => applyQuickMargin(100)}
+                className="h-9 text-xs font-semibold"
+                disabled={!costPrice}
+              >
+                +100%
+              </Button>
+            </div>
+          </div>
+
           {/* Precio de Venta */}
           <div className="space-y-2">
             <Label htmlFor="sale_price">
               Precio Venta <span className="text-destructive">*</span>
             </Label>
-            <Input
-              id="sale_price"
-              type="number"
-              step="1"
-              min="0"
-              {...register('sale_price', { 
-                valueAsNumber: true,
-                setValueAs: (v) => {
-                  if (v === '' || v === null || v === undefined) return 0
-                  const num = Number(v)
-                  return isNaN(num) ? 0 : Math.round(num)
-                }
-              })}
-              placeholder="0"
-              className="h-11"
-              inputMode="numeric"
-            />
+            <div className="relative">
+              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input
+                id="sale_price"
+                type="text"
+                value={displaySalePrice}
+                onChange={handleSalePriceChange}
+                placeholder="$ 0"
+                className="h-11 pl-10 pr-4 text-right font-semibold"
+                inputMode="numeric"
+              />
+            </div>
             {errors.sale_price && (
               <p className="text-sm text-destructive">{errors.sale_price.message}</p>
             )}
           </div>
 
-          {/* Precio de Costo */}
-          <div className="space-y-2">
-            <Label htmlFor="cost_price">Precio Costo</Label>
-            <Input
-              id="cost_price"
-              type="number"
-              step="1"
-              min="0"
-              {...register('cost_price', { 
-                valueAsNumber: true,
-                setValueAs: (v) => {
-                  if (v === '' || v === null || v === undefined) return undefined
-                  const num = Number(v)
-                  return isNaN(num) ? undefined : Math.round(num)
-                }
-              })}
-              placeholder="0"
-              className="h-11"
-              inputMode="numeric"
-            />
-            {errors.cost_price && (
-              <p className="text-sm text-destructive">{errors.cost_price.message}</p>
-            )}
-          </div>
+          {/* Ganancia por Unidad */}
+          {costPrice > 0 && salePrice > 0 && (
+            <div className="p-3 bg-muted/50 rounded-lg border">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Ganancia por unidad:</span>
+                <span className={`text-base font-bold ${
+                  profit > 0 ? 'text-green-600' : profit < 0 ? 'text-red-600' : 'text-muted-foreground'
+                }`}>
+                  ${profit.toLocaleString('es-AR')}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       </Card>
 
