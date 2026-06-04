@@ -50,13 +50,11 @@ export const productFormSchema = z.object({
 
   stock: z
     .number({ required_error: 'El stock es requerido' })
-    .int('El stock debe ser un número entero')
     .min(0, 'El stock no puede ser negativo')
     .max(999999, 'El stock es demasiado alto'),
 
   minimum_stock: z
     .number({ required_error: 'El stock mínimo es requerido' })
-    .int('El stock mínimo debe ser un número entero')
     .min(0, 'El stock mínimo no puede ser negativo')
     .max(999999, 'El stock mínimo es demasiado alto'),
 

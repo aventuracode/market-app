@@ -66,13 +66,10 @@ export function CashRegisterSelector({
   // Estado de carga
   if (loading) {
     return (
-      <Card className="p-6">
-        <div className="flex items-center gap-3">
-          <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-          <div>
-            <p className="text-sm font-medium">Cargando cajas disponibles...</p>
-            <p className="text-xs text-muted-foreground">Un momento por favor</p>
-          </div>
+      <Card className="p-4 border-dashed">
+        <div className="flex items-center gap-2.5">
+          <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">Cargando cajas...</p>
         </div>
       </Card>
     )
@@ -81,12 +78,12 @@ export function CashRegisterSelector({
   // Estado de error
   if (error) {
     return (
-      <Card className="p-6 border-destructive/50 bg-destructive/5">
-        <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-destructive mt-0.5" />
+      <Card className="p-4 border-destructive/50 bg-destructive/5">
+        <div className="flex items-start gap-2.5">
+          <AlertCircle className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm font-medium text-destructive">Error al cargar cajas</p>
-            <p className="text-xs text-destructive/80 mt-1">{error}</p>
+            <p className="text-xs text-destructive/70 mt-0.5">{error}</p>
           </div>
         </div>
       </Card>
@@ -96,15 +93,15 @@ export function CashRegisterSelector({
   // Sin cajas disponibles
   if (cashRegisters.length === 0) {
     return (
-      <Card className="p-6 border-amber-500/50 bg-amber-50 dark:bg-amber-950/20">
-        <div className="flex items-start gap-3">
-          <Store className="w-5 h-5 text-amber-600 dark:text-amber-500 mt-0.5" />
+      <Card className="p-4 border-amber-500/50 bg-amber-50 dark:bg-amber-950/20">
+        <div className="flex items-start gap-2.5">
+          <Store className="w-4 h-4 text-amber-600 dark:text-amber-500 mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
               No hay cajas configuradas
             </p>
-            <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
-              Contacta al administrador para configurar las cajas registradoras
+            <p className="text-xs text-amber-700 dark:text-amber-300 mt-0.5">
+              Contacta al administrador
             </p>
           </div>
         </div>
@@ -114,13 +111,13 @@ export function CashRegisterSelector({
 
   // Selector de cajas
   return (
-    <div className="space-y-3">
+    <div className="space-y-2.5">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium">
+        <label className="text-sm font-semibold">
           Seleccionar Caja
         </label>
-        <Badge variant="secondary" className="text-xs">
-          {cashRegisters.length} {cashRegisters.length === 1 ? 'caja' : 'cajas'} disponible{cashRegisters.length === 1 ? '' : 's'}
+        <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
+          {cashRegisters.length} disponible{cashRegisters.length === 1 ? '' : 's'}
         </Badge>
       </div>
 
@@ -129,8 +126,8 @@ export function CashRegisterSelector({
         onValueChange={handleValueChange}
         disabled={disabled}
       >
-        <SelectTrigger className="h-12">
-          <SelectValue placeholder="Selecciona una caja registradora" />
+        <SelectTrigger className="h-11 rounded-lg">
+          <SelectValue placeholder="Selecciona una caja" />
         </SelectTrigger>
         <SelectContent>
           {cashRegisters.map((register) => (
@@ -139,18 +136,15 @@ export function CashRegisterSelector({
               value={register.id}
               className="cursor-pointer"
             >
-              <div className="flex items-center gap-3 py-1">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Store className="w-4 h-4 text-primary" />
+              <div className="flex items-center gap-2.5 py-0.5">
+                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Store className="w-3.5 h-3.5 text-primary" />
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium">{register.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    Caja registradora
-                  </p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">{register.name}</p>
                 </div>
                 {value === register.id && (
-                  <Check className="w-4 h-4 text-primary" />
+                  <Check className="w-4 h-4 text-primary flex-shrink-0" />
                 )}
               </div>
             </SelectItem>
@@ -159,10 +153,10 @@ export function CashRegisterSelector({
       </Select>
 
       {value && (
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Check className="w-3.5 h-3.5 text-green-600" />
-          <span>
-            Caja seleccionada: <span className="font-medium text-foreground">
+        <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary/5 border border-primary/20">
+          <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+          <span className="text-xs text-muted-foreground">
+            <span className="font-medium text-foreground">
               {cashRegisters.find((r) => r.id === value)?.name}
             </span>
           </span>

@@ -42,14 +42,40 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
   const {
     register,
     formState: { errors },
+    watch,
   } = form
 
-  // Cargar categorías
+  // Helper para identificar productos pesables
+  const unitType = watch('unit_type')
+  const isWeightedProduct = unitType === 'KILOGRAM' || unitType === 'GRAM' || unitType === 'LITER' || unitType === 'MILLILITER'
+
+  // Cargar categorías primero
   useEffect(() => {
     if (!tenant?.id) return
-
     loadCategories()
   }, [tenant?.id])
+
+  // Resetear formulario cuando el producto cambie Y las categorías estén cargadas
+  useEffect(() => {
+    if (product && !loadingCategories) {
+      console.log('[ProductForm] Resetting form with product.category_id:', product.category_id)
+      form.reset({
+        name: product.name,
+        description: product.description || '',
+        barcode: product.barcode || '',
+        sku: product.sku || '',
+        category_id: product.category_id || '',
+        sale_price: product.sale_price,
+        cost_price: product.cost_price || undefined,
+        stock: product.stock,
+        minimum_stock: product.minimum_stock,
+        unit_type: product.unit_type || 'UNIT',
+        allow_decimal: product.allow_decimal || false,
+        is_active: product.is_active,
+      })
+      console.log('[ProductForm] Form reset complete. watch(category_id):', watch('category_id'))
+    }
+  }, [product, loadingCategories, form])
 
   const loadCategories = async () => {
     if (!tenant?.id) return
@@ -57,6 +83,7 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
     try {
       setLoadingCategories(true)
       const data = await productService.getCategories(tenant.id)
+      console.log('[ProductForm] Categories loaded:', data.length, 'categories')
       setCategories(data)
     } catch (error) {
       console.error('Error loading categories:', error)
@@ -297,10 +324,23 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
             <Input
               id="stock"
               type="number"
-              {...register('stock', { valueAsNumber: true })}
+              step={isWeightedProduct ? "0.001" : "1"}
+              min="0"
+              {...register('stock', { 
+                valueAsNumber: true,
+                setValueAs: (v) => {
+                  if (v === '' || v === null || v === undefined) return 0
+                  const num = parseFloat(v)
+                  if (isNaN(num)) return 0
+                  // Para productos UNIT, redondear a entero
+                  if (!isWeightedProduct) return Math.round(num)
+                  // Para productos pesables, permitir hasta 3 decimales
+                  return Number(num.toFixed(3))
+                }
+              })}
               placeholder="0"
               className="h-11"
-              inputMode="numeric"
+              inputMode="decimal"
             />
             {errors.stock && (
               <p className="text-sm text-destructive">{errors.stock.message}</p>
@@ -315,10 +355,23 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
             <Input
               id="minimum_stock"
               type="number"
-              {...register('minimum_stock', { valueAsNumber: true })}
+              step={isWeightedProduct ? "0.001" : "1"}
+              min="0"
+              {...register('minimum_stock', { 
+                valueAsNumber: true,
+                setValueAs: (v) => {
+                  if (v === '' || v === null || v === undefined) return 0
+                  const num = parseFloat(v)
+                  if (isNaN(num)) return 0
+                  // Para productos UNIT, redondear a entero
+                  if (!isWeightedProduct) return Math.round(num)
+                  // Para productos pesables, permitir hasta 3 decimales
+                  return Number(num.toFixed(3))
+                }
+              })}
               placeholder="0"
               className="h-11"
-              inputMode="numeric"
+              inputMode="decimal"
             />
             {errors.minimum_stock && (
               <p className="text-sm text-destructive">

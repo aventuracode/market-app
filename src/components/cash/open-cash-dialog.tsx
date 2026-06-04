@@ -125,15 +125,15 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Abrir Caja</DialogTitle>
-          <DialogDescription>
-            Ingresa el monto inicial con el que abres la caja
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader className="space-y-1">
+          <DialogTitle className="text-2xl font-bold">Abrir Caja</DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground/70">
+            Selecciona la caja e ingresa el monto inicial
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 pt-2">
           {/* Selector de Caja */}
           <CashRegisterSelector
             value={selectedRegisterId}
@@ -145,12 +145,12 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
             disabled={loading}
           />
 
-          <div className="space-y-2">
-            <Label htmlFor="opening_amount">
+          <div className="space-y-2.5">
+            <Label htmlFor="opening_amount" className="text-sm font-semibold">
               Monto Inicial <span className="text-destructive">*</span>
             </Label>
             <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold text-muted-foreground/50">$</span>
               <Input
                 id="opening_amount"
                 type="number"
@@ -165,7 +165,7 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
                   },
                 })}
                 placeholder="0"
-                className="h-12 pl-10 text-lg"
+                className="h-16 pl-12 pr-4 text-3xl font-bold text-center border-2 focus:border-primary rounded-xl"
                 inputMode="numeric"
                 autoFocus
               />
@@ -176,12 +176,12 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Notas (opcional)</Label>
+            <Label htmlFor="notes" className="text-sm font-medium text-muted-foreground">Notas (opcional)</Label>
             <Textarea
               id="notes"
               {...register('notes')}
-              placeholder="Observaciones al abrir la caja..."
-              className="min-h-[80px] resize-none"
+              placeholder="Observaciones..."
+              className="min-h-[60px] resize-none text-sm rounded-lg"
             />
             {errors.notes && (
               <p className="text-sm text-destructive">{errors.notes.message}</p>
@@ -189,25 +189,25 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
           </div>
 
           {error && (
-            <div className="p-3 bg-destructive/10 text-destructive rounded-lg text-sm">
+            <div className="p-3 bg-destructive/10 text-destructive rounded-lg text-sm border border-destructive/20">
               {error}
             </div>
           )}
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 pt-2">
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               onClick={handleClose}
               disabled={loading}
-              className="flex-1 h-11"
+              className="flex-1 h-12 rounded-xl"
             >
               Cancelar
             </Button>
             <Button 
               type="submit" 
               disabled={loading || !selectedRegisterId} 
-              className="flex-1 h-11 gap-2"
+              className="flex-1 h-12 gap-2 rounded-xl bg-primary hover:bg-primary/90 shadow-sm"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               Abrir Caja
