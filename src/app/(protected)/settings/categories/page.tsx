@@ -125,7 +125,7 @@ export default function CategoriesPage() {
       ) : search ? (
         <div className="text-center py-12">
           <p className="text-sm text-muted-foreground">
-            No se encontraron categorías con "{search}"
+            {`No se encontraron categorías con ${search}`}
           </p>
         </div>
       ) : (
