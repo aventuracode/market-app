@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, DollarSign, AlertCircle } from 'lucide-react'
@@ -38,12 +38,14 @@ export function CloseCashDialog({
 }: CloseCashDialogProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [displayAmount, setDisplayAmount] = useState('')
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<CloseCashFormData>({
     resolver: zodResolver(closeCashSchema),
     defaultValues: {
@@ -54,6 +56,34 @@ export function CloseCashDialog({
 
   const closingAmount = watch('closing_amount')
   const difference = closingAmount - (summary?.expected_balance || 0)
+
+  // Inicializar displayAmount cuando se abre el modal
+  useEffect(() => {
+    if (open && summary) {
+      const initialAmount = summary.expected_balance || 0
+      setDisplayAmount(initialAmount > 0 ? formatCurrency(initialAmount) : '')
+    }
+  }, [open, summary])
+
+  // Helper para parsear input de moneda (eliminar caracteres no numéricos)
+  const parseCurrencyInput = (value: string): number => {
+    // Eliminar todo excepto dígitos
+    const numericString = value.replace(/[^0-9]/g, '')
+    const numericValue = parseInt(numericString, 10)
+    return isNaN(numericValue) ? 0 : numericValue
+  }
+
+  // Manejar cambios en el input de efectivo
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value
+    const numericValue = parseCurrencyInput(inputValue)
+
+    // Actualizar valor real del formulario
+    setValue('closing_amount', numericValue)
+
+    // Actualizar valor visual formateado
+    setDisplayAmount(numericValue > 0 ? formatCurrency(numericValue) : '')
+  }
 
   const onSubmit = async (data: CloseCashFormData) => {
     if (!session?.id) {
@@ -94,39 +124,69 @@ export function CloseCashDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Card className="p-4 bg-muted/50">
+          {/* Resumen de Ventas por Método de Pago */}
+          <Card className="p-4 bg-muted/30 border-muted">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Resumen de Ventas</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Apertura:</span>
-                <span className="font-medium">{formatCurrency(summary.opening_amount)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Ventas (Efectivo):</span>
-                <span className="font-medium text-green-600">+{formatCurrency(summary.total_sales)}</span>
+                <span className="text-muted-foreground">Efectivo:</span>
+                <span className="font-medium text-green-600">{formatCurrency(summary.total_sales)}</span>
               </div>
               {summary.total_card_sales > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground text-xs pl-4">Ventas (Tarjeta):</span>
-                  <span className="font-medium text-blue-600 text-xs">{formatCurrency(summary.total_card_sales)}</span>
+                  <span className="text-muted-foreground">Tarjeta:</span>
+                  <span className="font-medium text-blue-600">{formatCurrency(summary.total_card_sales)}</span>
                 </div>
               )}
               {summary.total_transfer_sales > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground text-xs pl-4">Ventas (Transferencia):</span>
-                  <span className="font-medium text-purple-600 text-xs">{formatCurrency(summary.total_transfer_sales)}</span>
+                  <span className="text-muted-foreground">Transferencia:</span>
+                  <span className="font-medium text-purple-600">{formatCurrency(summary.total_transfer_sales)}</span>
                 </div>
               )}
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Ingresos:</span>
-                <span className="font-medium text-green-600">+{formatCurrency(summary.total_income)}</span>
+            </div>
+          </Card>
+
+          {/* Caja Física - Efectivo Esperado */}
+          <Card className="p-5 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 shadow-sm">
+            <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-primary" />
+              Caja Física
+            </h3>
+            <div className="space-y-2.5 text-sm">
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Apertura</span>
+                <span className="font-semibold">{formatCurrency(summary.opening_amount)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Egresos:</span>
-                <span className="font-medium text-red-600">-{formatCurrency(summary.total_expenses)}</span>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-green-700 dark:text-green-400 flex items-center gap-1">
+                  <span className="text-lg">+</span> Efectivo
+                </span>
+                <span className="font-semibold text-green-700 dark:text-green-400">{formatCurrency(summary.total_sales)}</span>
               </div>
-              <div className="border-t pt-2 flex justify-between">
-                <span className="font-semibold">Esperado:</span>
-                <span className="font-bold text-lg">{formatCurrency(summary.expected_balance)}</span>
+              
+              {summary.total_income > 0 && (
+                <div className="flex justify-between items-center">
+                  <span className="text-green-700 dark:text-green-400 flex items-center gap-1">
+                    <span className="text-lg">+</span> Ingresos
+                  </span>
+                  <span className="font-semibold text-green-700 dark:text-green-400">{formatCurrency(summary.total_income)}</span>
+                </div>
+              )}
+              
+              {summary.total_expenses > 0 && (
+                <div className="flex justify-between items-center">
+                  <span className="text-red-700 dark:text-red-400 flex items-center gap-1">
+                    <span className="text-lg">−</span> Egresos
+                  </span>
+                  <span className="font-semibold text-red-700 dark:text-red-400">{formatCurrency(summary.total_expenses)}</span>
+                </div>
+              )}
+              
+              <div className="border-t border-primary/20 pt-3 mt-3 flex justify-between items-center">
+                <span className="font-bold text-base">Total esperado</span>
+                <span className="font-bold text-xl text-primary">{formatCurrency(summary.expected_balance)}</span>
               </div>
             </div>
           </Card>
@@ -139,19 +199,11 @@ export function CloseCashDialog({
               <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 id="closing_amount"
-                type="number"
-                step="1"
-                min="0"
-                {...register('closing_amount', {
-                  valueAsNumber: true,
-                  setValueAs: (v) => {
-                    if (v === '' || v === null || v === undefined) return 0
-                    const num = Number(v)
-                    return isNaN(num) ? 0 : Math.round(num)
-                  },
-                })}
-                placeholder="0"
-                className="h-12 pl-10 text-lg"
+                type="text"
+                value={displayAmount}
+                onChange={handleAmountChange}
+                placeholder="$ 0"
+                className="h-12 pl-10 pr-4 text-lg font-semibold text-right"
                 inputMode="numeric"
                 autoFocus
               />

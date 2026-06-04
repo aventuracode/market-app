@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, DollarSign } from 'lucide-react'
@@ -36,12 +36,14 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
   const [error, setError] = useState<string | null>(null)
   const [selectedRegisterId, setSelectedRegisterId] = useState<string>('')
   const [selectedRegisterName, setSelectedRegisterName] = useState<string>('')
+  const [displayAmount, setDisplayAmount] = useState('')
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<OpenCashFormData>({
     resolver: zodResolver(openCashSchema),
     defaultValues: {
@@ -49,6 +51,29 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
       notes: '',
     },
   })
+
+  // Limpiar displayAmount cuando se abre el modal
+  useEffect(() => {
+    if (open) {
+      setDisplayAmount('')
+    }
+  }, [open])
+
+  // Helper para parsear input de moneda
+  const parseCurrencyInput = (value: string): number => {
+    const numericString = value.replace(/[^0-9]/g, '')
+    const numericValue = parseInt(numericString, 10)
+    return isNaN(numericValue) ? 0 : numericValue
+  }
+
+  // Manejar cambios en el input de monto inicial
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value
+    const numericValue = parseCurrencyInput(inputValue)
+
+    setValue('opening_amount', numericValue)
+    setDisplayAmount(numericValue > 0 ? formatCurrency(numericValue) : '')
+  }
 
   const onSubmit = async (data: OpenCashFormData) => {
     if (!tenant?.id || !user?.id) {
@@ -151,22 +176,14 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
               Monto Inicial <span className="text-destructive">*</span>
             </Label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold text-muted-foreground/50">$</span>
+              <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground/50" />
               <Input
                 id="opening_amount"
-                type="number"
-                step="1"
-                min="0"
-                {...register('opening_amount', {
-                  valueAsNumber: true,
-                  setValueAs: (v) => {
-                    if (v === '' || v === null || v === undefined) return 0
-                    const num = Number(v)
-                    return isNaN(num) ? 0 : Math.round(num)
-                  },
-                })}
-                placeholder="0"
-                className="h-16 pl-12 pr-4 text-3xl font-bold text-center border-2 focus:border-primary rounded-xl"
+                type="text"
+                value={displayAmount}
+                onChange={handleAmountChange}
+                placeholder="$ 0"
+                className="h-16 pl-12 pr-4 text-3xl font-bold text-right border-2 focus:border-primary rounded-xl"
                 inputMode="numeric"
                 autoFocus
               />
