@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, DollarSign, AlertCircle } from 'lucide-react'
+import { Loader2, AlertCircle } from 'lucide-react'
+import CurrencyInput from 'react-currency-input-field'
 import { cashService } from '@/services/cash.service'
 import { closeCashSchema, type CloseCashFormData } from '@/types/cash'
 import {
@@ -38,7 +39,7 @@ export function CloseCashDialog({
 }: CloseCashDialogProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [displayAmount, setDisplayAmount] = useState('')
+  const [closingAmountInput, setClosingAmountInput] = useState<string>('')
 
   const {
     register,
@@ -54,36 +55,17 @@ export function CloseCashDialog({
     },
   })
 
-  const closingAmount = watch('closing_amount')
+  const closingAmount = watch('closing_amount') || 0
   const difference = closingAmount - (summary?.expected_balance || 0)
 
-  // Inicializar displayAmount cuando se abre el modal
+  // Inicializar closing_amount cuando se abre el modal
   useEffect(() => {
     if (open && summary) {
-      const initialAmount = summary.expected_balance || 0
-      setDisplayAmount(initialAmount > 0 ? formatCurrency(initialAmount) : '')
+      const expectedBalance = summary.expected_balance || 0
+      setValue('closing_amount', expectedBalance)
+      setClosingAmountInput(expectedBalance > 0 ? expectedBalance.toString() : '')
     }
-  }, [open, summary])
-
-  // Helper para parsear input de moneda (eliminar caracteres no numéricos)
-  const parseCurrencyInput = (value: string): number => {
-    // Eliminar todo excepto dígitos
-    const numericString = value.replace(/[^0-9]/g, '')
-    const numericValue = parseInt(numericString, 10)
-    return isNaN(numericValue) ? 0 : numericValue
-  }
-
-  // Manejar cambios en el input de efectivo
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value
-    const numericValue = parseCurrencyInput(inputValue)
-
-    // Actualizar valor real del formulario
-    setValue('closing_amount', numericValue)
-
-    // Actualizar valor visual formateado
-    setDisplayAmount(numericValue > 0 ? formatCurrency(numericValue) : '')
-  }
+  }, [open, summary, setValue])
 
   const onSubmit = async (data: CloseCashFormData) => {
     if (!session?.id) {
@@ -149,8 +131,7 @@ export function CloseCashDialog({
 
           {/* Caja Física - Efectivo Esperado */}
           <Card className="p-5 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 shadow-sm">
-            <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-primary" />
+            <h3 className="text-sm font-bold text-foreground mb-4">
               Caja Física
             </h3>
             <div className="space-y-2.5 text-sm">
@@ -195,19 +176,26 @@ export function CloseCashDialog({
             <Label htmlFor="closing_amount">
               Efectivo Contado <span className="text-destructive">*</span>
             </Label>
-            <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                id="closing_amount"
-                type="text"
-                value={displayAmount}
-                onChange={handleAmountChange}
-                placeholder="$ 0"
-                className="h-12 pl-10 pr-4 text-lg font-semibold text-right"
-                inputMode="numeric"
-                autoFocus
-              />
-            </div>
+            <CurrencyInput
+              id="closing_amount"
+              value={closingAmountInput}
+              decimalsLimit={2}
+              decimalSeparator=","
+              groupSeparator="."
+              allowNegativeValue={false}
+              placeholder="0"
+              className="flex h-12 w-full rounded-xl border-2 border-border bg-background px-4 py-3 text-lg font-semibold shadow-sm transition-all duration-200 placeholder:text-muted-foreground/60 placeholder:font-normal focus:border-primary/50 focus:ring-4 focus:ring-primary/10 focus:outline-none hover:border-border/80 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted text-right"
+              autoFocus
+              onValueChange={(value, name, values) => {
+                setClosingAmountInput(value || '')
+                
+                if (value && values?.float !== undefined && !isNaN(values.float)) {
+                  setValue('closing_amount', values.float)
+                } else if (!value) {
+                  setValue('closing_amount', 0)
+                }
+              }}
+            />
             {errors.closing_amount && (
               <p className="text-sm text-destructive">{errors.closing_amount.message}</p>
             )}

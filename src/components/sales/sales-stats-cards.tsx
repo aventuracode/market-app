@@ -1,6 +1,6 @@
 'use client'
 
-import { DollarSign, ShoppingCart, TrendingUp, CreditCard, Banknote, ArrowRightLeft } from 'lucide-react'
+import { ShoppingCart, TrendingUp, CreditCard, Banknote, ArrowRightLeft } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { SalesStats } from '@/types/sales'
@@ -42,7 +42,7 @@ export function SalesStatsCards({ stats, isLoading }: SalesStatsCardsProps) {
       <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
         <CardHeader className="pb-3 pt-4">
           <CardTitle className="text-xs font-medium text-muted-foreground/80 flex items-center gap-1.5">
-            <DollarSign className="w-3.5 h-3.5" />
+            <TrendingUp className="w-3.5 h-3.5 text-primary" />
             Total Ventas
           </CardTitle>
         </CardHeader>

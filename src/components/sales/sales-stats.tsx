@@ -1,6 +1,6 @@
 'use client'
 
-import { TrendingUp, ShoppingCart, DollarSign, CreditCard } from 'lucide-react'
+import { TrendingUp, ShoppingCart, CreditCard } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatCurrency } from '@/lib/utils/format'
@@ -33,7 +33,7 @@ export function SalesStatsComponent({ stats, isLoading }: SalesStatsProps) {
     {
       label: 'Total Ventas',
       value: formatCurrency(stats.total_sales),
-      icon: DollarSign,
+      icon: TrendingUp,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
     },

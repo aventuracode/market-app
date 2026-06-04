@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, DollarSign } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
+import CurrencyInput from 'react-currency-input-field'
 import { toast } from 'sonner'
 import { cashService, CashConcurrencyError } from '@/services/cash.service'
 import { useTenant } from '@/hooks/use-tenant'
@@ -21,7 +22,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { CashRegisterSelector } from './cash-register-selector'
-import { formatCurrency } from '@/lib/utils/currency'
 
 interface OpenCashDialogProps {
   open: boolean
@@ -36,7 +36,7 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
   const [error, setError] = useState<string | null>(null)
   const [selectedRegisterId, setSelectedRegisterId] = useState<string>('')
   const [selectedRegisterName, setSelectedRegisterName] = useState<string>('')
-  const [displayAmount, setDisplayAmount] = useState('')
+  const [openingAmountInput, setOpeningAmountInput] = useState<string>('')
 
   const {
     register,
@@ -44,6 +44,7 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
     formState: { errors },
     reset,
     setValue,
+    watch,
   } = useForm<OpenCashFormData>({
     resolver: zodResolver(openCashSchema),
     defaultValues: {
@@ -52,28 +53,18 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
     },
   })
 
-  // Limpiar displayAmount cuando se abre el modal
+  const openingAmount = watch('opening_amount') || 0
+
+  // Importar formatCurrency solo para el toast
+  const { formatCurrency } = require('@/lib/utils/currency')
+  
+  // Resetear input cuando se abre el modal
   useEffect(() => {
     if (open) {
-      setDisplayAmount('')
+      setOpeningAmountInput('')
     }
   }, [open])
 
-  // Helper para parsear input de moneda
-  const parseCurrencyInput = (value: string): number => {
-    const numericString = value.replace(/[^0-9]/g, '')
-    const numericValue = parseInt(numericString, 10)
-    return isNaN(numericValue) ? 0 : numericValue
-  }
-
-  // Manejar cambios en el input de monto inicial
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value
-    const numericValue = parseCurrencyInput(inputValue)
-
-    setValue('opening_amount', numericValue)
-    setDisplayAmount(numericValue > 0 ? formatCurrency(numericValue) : '')
-  }
 
   const onSubmit = async (data: OpenCashFormData) => {
     if (!tenant?.id || !user?.id) {
@@ -175,19 +166,26 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
             <Label htmlFor="opening_amount" className="text-sm font-semibold">
               Monto Inicial <span className="text-destructive">*</span>
             </Label>
-            <div className="relative">
-              <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground/50" />
-              <Input
-                id="opening_amount"
-                type="text"
-                value={displayAmount}
-                onChange={handleAmountChange}
-                placeholder="$ 0"
-                className="h-16 pl-12 pr-4 text-3xl font-bold text-right border-2 focus:border-primary rounded-xl"
-                inputMode="numeric"
-                autoFocus
-              />
-            </div>
+            <CurrencyInput
+              id="opening_amount"
+              value={openingAmountInput}
+              decimalsLimit={2}
+              decimalSeparator=","
+              groupSeparator="."
+              allowNegativeValue={false}
+              placeholder="0"
+              className="flex h-16 w-full rounded-xl border-2 border-border bg-background px-4 py-3 text-3xl font-bold shadow-sm transition-all duration-200 placeholder:text-muted-foreground/60 placeholder:font-normal focus:border-primary/50 focus:ring-4 focus:ring-primary/10 focus:outline-none hover:border-border/80 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted text-right"
+              autoFocus
+              onValueChange={(value, name, values) => {
+                setOpeningAmountInput(value || '')
+                
+                if (value && values?.float !== undefined && !isNaN(values.float)) {
+                  setValue('opening_amount', values.float)
+                } else if (!value) {
+                  setValue('opening_amount', 0)
+                }
+              }}
+            />
             {errors.opening_amount && (
               <p className="text-sm text-destructive">{errors.opening_amount.message}</p>
             )}

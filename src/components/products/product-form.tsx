@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Loader2, DollarSign } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
+import CurrencyInput from 'react-currency-input-field'
 import { useProductForm } from '@/hooks/use-product-form'
 import { productService } from '@/services/product.service'
 import { useTenant } from '@/hooks/use-tenant'
@@ -25,9 +26,11 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
   const [categories, setCategories] = useState<Category[]>([])
   const [loadingCategories, setLoadingCategories] = useState(true)
   const [margin, setMargin] = useState<number>(0)
-  const [displayCostPrice, setDisplayCostPrice] = useState('')
-  const [displaySalePrice, setDisplaySalePrice] = useState('')
   const [submitError, setSubmitError] = useState<string | null>(null)
+  
+  // Estados locales para los inputs (string) - permite escribir coma sin conversión inmediata
+  const [costPriceInput, setCostPriceInput] = useState<string>('')
+  const [salePriceInput, setSalePriceInput] = useState<string>('')
 
   const { form, loading, onSubmit } = useProductForm({
     product,
@@ -52,40 +55,28 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
   const unitType = watch('unit_type')
   const isWeightedProduct = unitType === 'KILOGRAM' || unitType === 'GRAM' || unitType === 'LITER' || unitType === 'MILLILITER'
 
-  // Watch precios para cálculos
+  // Watch precios para cálculos (valores numéricos del formulario)
   const costPrice = watch('cost_price') || 0
   const salePrice = watch('sale_price') || 0
+  
+  // Sincronizar inputs con valores del formulario cuando cambian programáticamente
+  useEffect(() => {
+    if (costPrice > 0 && costPriceInput === '') {
+      setCostPriceInput(costPrice.toString())
+    }
+  }, [costPrice])
+  
+  useEffect(() => {
+    if (salePrice > 0 && salePriceInput === '') {
+      setSalePriceInput(salePrice.toString())
+    }
+  }, [salePrice])
 
   // Calcular ganancia
   const profit = salePrice - costPrice
 
-  // Helper para parsear input de moneda
-  const parseCurrencyInput = (value: string): number => {
-    const numericString = value.replace(/[^0-9]/g, '')
-    const numericValue = parseInt(numericString, 10)
-    return isNaN(numericValue) ? 0 : numericValue
-  }
-
-  // Importar formatCurrency
+  // Importar formatCurrency solo para ganancia
   const { formatCurrency } = require('@/lib/utils/currency')
-
-  // Manejar cambio de precio de costo
-  const handleCostPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value
-    const numericValue = parseCurrencyInput(inputValue)
-
-    setValue('cost_price', numericValue)
-    setDisplayCostPrice(numericValue > 0 ? formatCurrency(numericValue) : '')
-  }
-
-  // Manejar cambio de precio de venta
-  const handleSalePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value
-    const numericValue = parseCurrencyInput(inputValue)
-
-    setValue('sale_price', numericValue)
-    setDisplaySalePrice(numericValue > 0 ? formatCurrency(numericValue) : '')
-  }
 
   // Calcular margen cuando cambian los precios
   useEffect(() => {
@@ -100,9 +91,9 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
   // Aplicar margen rápido
   const applyQuickMargin = (marginPercent: number) => {
     if (costPrice > 0) {
-      const newSalePrice = Math.round(costPrice * (1 + marginPercent / 100))
+      const newSalePrice = Math.round(costPrice * (1 + marginPercent / 100) * 100) / 100
       setValue('sale_price', newSalePrice)
-      setDisplaySalePrice(formatCurrency(newSalePrice))
+      setSalePriceInput(newSalePrice.toString()) // Actualizar input local
       setMargin(marginPercent)
     }
   }
@@ -113,9 +104,9 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
     setMargin(value)
     
     if (costPrice > 0) {
-      const newSalePrice = Math.round(costPrice * (1 + value / 100))
+      const newSalePrice = Math.round(costPrice * (1 + value / 100) * 100) / 100
       setValue('sale_price', newSalePrice)
-      setDisplaySalePrice(formatCurrency(newSalePrice))
+      setSalePriceInput(newSalePrice.toString()) // Actualizar input local
     }
   }
 
@@ -143,14 +134,10 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
         allow_decimal: product.allow_decimal || false,
         is_active: product.is_active,
       })
-      // Actualizar displays
-      setDisplayCostPrice(product.cost_price ? formatCurrency(product.cost_price) : '')
-      setDisplaySalePrice(product.sale_price ? formatCurrency(product.sale_price) : '')
+      // Sincronizar inputs locales
+      setCostPriceInput(product.cost_price ? product.cost_price.toString() : '')
+      setSalePriceInput(product.sale_price ? product.sale_price.toString() : '')
       console.log('[ProductForm] Form reset complete. watch(category_id):', watch('category_id'))
-    } else if (!product) {
-      // Limpiar displays para nuevo producto
-      setDisplayCostPrice('')
-      setDisplaySalePrice('')
     }
   }, [product, loadingCategories, form])
 
@@ -282,18 +269,27 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
             <Label htmlFor="cost_price">
               Precio Costo <span className="text-destructive">*</span>
             </Label>
-            <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                id="cost_price"
-                type="text"
-                value={displayCostPrice}
-                onChange={handleCostPriceChange}
-                placeholder="$ 0"
-                className="h-11 pl-10 pr-4 text-right font-semibold"
-                inputMode="numeric"
-              />
-            </div>
+            <CurrencyInput
+              id="cost_price"
+              value={costPriceInput}
+              decimalsLimit={2}
+              decimalSeparator=","
+              groupSeparator="."
+              allowNegativeValue={false}
+              placeholder="0"
+              className="flex h-11 w-full rounded-xl border-2 border-border bg-background px-4 py-3 text-base shadow-sm transition-all duration-200 placeholder:text-muted-foreground/60 placeholder:font-normal focus:border-primary/50 focus:ring-4 focus:ring-primary/10 focus:outline-none hover:border-border/80 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted text-right font-semibold"
+              onValueChange={(value, name, values) => {
+                // Actualizar estado local del input (permite escribir coma)
+                setCostPriceInput(value || '')
+                
+                // Solo actualizar formulario si el valor es válido
+                if (value && values?.float !== undefined && !isNaN(values.float)) {
+                  setValue('cost_price', values.float)
+                } else if (!value) {
+                  setValue('cost_price', 0)
+                }
+              }}
+            />
             {errors.cost_price && (
               <p className="text-sm text-destructive">{errors.cost_price.message}</p>
             )}
@@ -369,18 +365,27 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
             <Label htmlFor="sale_price">
               Precio Venta <span className="text-destructive">*</span>
             </Label>
-            <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                id="sale_price"
-                type="text"
-                value={displaySalePrice}
-                onChange={handleSalePriceChange}
-                placeholder="$ 0"
-                className="h-11 pl-10 pr-4 text-right font-semibold"
-                inputMode="numeric"
-              />
-            </div>
+            <CurrencyInput
+              id="sale_price"
+              value={salePriceInput}
+              decimalsLimit={2}
+              decimalSeparator=","
+              groupSeparator="."
+              allowNegativeValue={false}
+              placeholder="0"
+              className="flex h-11 w-full rounded-xl border-2 border-border bg-background px-4 py-3 text-base shadow-sm transition-all duration-200 placeholder:text-muted-foreground/60 placeholder:font-normal focus:border-primary/50 focus:ring-4 focus:ring-primary/10 focus:outline-none hover:border-border/80 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted text-right font-semibold"
+              onValueChange={(value, name, values) => {
+                // Actualizar estado local del input (permite escribir coma)
+                setSalePriceInput(value || '')
+                
+                // Solo actualizar formulario si el valor es válido
+                if (value && values?.float !== undefined && !isNaN(values.float)) {
+                  setValue('sale_price', values.float)
+                } else if (!value) {
+                  setValue('sale_price', 0)
+                }
+              }}
+            />
             {errors.sale_price && (
               <p className="text-sm text-destructive">{errors.sale_price.message}</p>
             )}

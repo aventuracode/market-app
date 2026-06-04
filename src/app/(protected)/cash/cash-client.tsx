@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Wallet, TrendingUp, TrendingDown, DollarSign, Clock, User, Plus, X, Loader2 } from 'lucide-react'
+import { Wallet, TrendingUp, TrendingDown, Clock, User, Plus, X, Loader2 } from 'lucide-react'
 import { useCashRegister } from '@/hooks/use-cash-register'
 import { useCashMovements } from '@/hooks/use-cash-movements'
 import { OpenCashDialog } from '@/components/cash/open-cash-dialog'
@@ -144,7 +144,7 @@ export function CashClient() {
               <p className="text-xs text-muted-foreground/60">Saldo actual</p>
             </div>
             <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <DollarSign className="w-7 h-7 text-primary/80" />
+              <Wallet className="w-7 h-7 text-primary/80" />
             </div>
           </div>
         </Card>
@@ -153,14 +153,9 @@ export function CashClient() {
         {summary && (
           <div className="grid grid-cols-2 gap-2.5">
             <Card className="p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950 flex items-center justify-center flex-shrink-0">
-                  <DollarSign className="w-4 h-4 text-blue-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] text-muted-foreground/70 font-medium">Apertura</p>
-                  <p className="text-base font-bold tracking-tight">{formatCurrency(summary.opening_amount)}</p>
-                </div>
+              <div className="flex flex-col">
+                <p className="text-[10px] text-muted-foreground/70 font-medium mb-1">Apertura</p>
+                <p className="text-base font-bold tracking-tight">{formatCurrency(summary.opening_amount)}</p>
               </div>
             </Card>
 

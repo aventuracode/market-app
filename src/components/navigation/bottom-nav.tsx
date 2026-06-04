@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { ShoppingCart, Package, DollarSign, BarChart3, Settings } from 'lucide-react'
+import { ShoppingCart, Package, Wallet, BarChart3, Settings } from 'lucide-react'
 
 const navItems = [
   {
@@ -21,7 +21,7 @@ const navItems = [
   {
     href: '/cash',
     label: 'Caja',
-    icon: DollarSign,
+    icon: Wallet,
     ariaLabel: 'Gestión de caja',
   },
   {

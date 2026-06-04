@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, DollarSign, TrendingUp, TrendingDown } from 'lucide-react'
+import { Loader2, TrendingUp, TrendingDown } from 'lucide-react'
+import CurrencyInput from 'react-currency-input-field'
 import { cashService } from '@/services/cash.service'
 import { useTenant } from '@/hooks/use-tenant'
 import { useAuthStore } from '@/stores/auth.store'
@@ -39,6 +40,7 @@ export function CashMovementDialog({
   const { user } = useAuthStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [amountInput, setAmountInput] = useState<string>('')
 
   const {
     register,
@@ -57,6 +59,14 @@ export function CashMovementDialog({
   })
 
   const type = watch('type')
+  const amount = watch('amount') || 0
+  
+  // Resetear input cuando se abre el modal
+  useEffect(() => {
+    if (open) {
+      setAmountInput('')
+    }
+  }, [open])
 
   const onSubmit = async (data: CashMovementFormData) => {
     if (!tenant?.id || !user?.id || !cashRegisterId || !sessionId) {
@@ -129,27 +139,26 @@ export function CashMovementDialog({
             <Label htmlFor="amount">
               Monto <span className="text-destructive">*</span>
             </Label>
-            <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                id="amount"
-                type="number"
-                step="1"
-                min="0"
-                {...register('amount', {
-                  valueAsNumber: true,
-                  setValueAs: (v) => {
-                    if (v === '' || v === null || v === undefined) return 0
-                    const num = Number(v)
-                    return isNaN(num) ? 0 : Math.round(num)
-                  },
-                })}
-                placeholder="0"
-                className="h-12 pl-10 text-lg"
-                inputMode="numeric"
-                autoFocus
-              />
-            </div>
+            <CurrencyInput
+              id="amount"
+              value={amountInput}
+              decimalsLimit={2}
+              decimalSeparator=","
+              groupSeparator="."
+              allowNegativeValue={false}
+              placeholder="0"
+              className="flex h-12 w-full rounded-xl border-2 border-border bg-background px-4 py-3 text-lg shadow-sm transition-all duration-200 placeholder:text-muted-foreground/60 placeholder:font-normal focus:border-primary/50 focus:ring-4 focus:ring-primary/10 focus:outline-none hover:border-border/80 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted text-right font-semibold"
+              autoFocus
+              onValueChange={(value, name, values) => {
+                setAmountInput(value || '')
+                
+                if (value && values?.float !== undefined && !isNaN(values.float)) {
+                  setValue('amount', values.float)
+                } else if (!value) {
+                  setValue('amount', 0)
+                }
+              }}
+            />
             {errors.amount && (
               <p className="text-sm text-destructive">{errors.amount.message}</p>
             )}
