@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import type { SaleWithDetails } from '@/types/sales'
+import { formatCurrency } from '@/lib/utils/currency'
 
 interface SalesTableProps {
   sales: SaleWithDetails[] | undefined
@@ -16,14 +17,6 @@ interface SalesTableProps {
 }
 
 export function SalesTable({ sales, isLoading, error }: SalesTableProps) {
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0,
-    }).format(amount)
-  }
-
   const getPaymentMethodIcon = (method: string) => {
     switch (method) {
       case 'CASH':

@@ -10,6 +10,7 @@ import { useCheckout } from '@/hooks/use-checkout'
 import { useCartStore } from '@/stores/cart.store'
 import type { PaymentMethod } from '@/types/sale'
 import { formatWeight } from '@/lib/utils/weight'
+import { formatCurrency } from '@/lib/utils/currency'
 
 interface CheckoutModalProps {
   open: boolean
@@ -67,13 +68,6 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
       document.body.style.overflow = ''
     }
   }, [open])
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-AR', {
-      style: 'currency',
-      currency: 'ARS',
-    }).format(price)
-  }
 
   const handleCheckout = async () => {
     if (!paymentMethod) {
@@ -148,13 +142,13 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span className="font-medium">{formatPrice(subtotal)}</span>
+                    <span className="font-medium">{formatCurrency(subtotal)}</span>
                   </div>
                   
                   {tax > 0 && (
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Impuestos</span>
-                      <span className="font-medium">{formatPrice(tax)}</span>
+                      <span className="font-medium">{formatCurrency(tax)}</span>
                     </div>
                   )}
                   
@@ -162,7 +156,7 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Descuento</span>
                       <span className="font-medium text-green-600">
-                        -{formatPrice(discount)}
+                        -{formatCurrency(discount)}
                       </span>
                     </div>
                   )}
@@ -172,7 +166,7 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
                   <div className="flex items-center justify-between">
                     <span className="text-lg font-semibold">Total</span>
                     <span className="text-3xl font-bold text-primary">
-                      {formatPrice(total)}
+                      {formatCurrency(total)}
                     </span>
                   </div>
                 </div>
@@ -211,7 +205,7 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
                         ¡Venta completada!
                       </>
                     ) : (
-                      `Cobrar ${formatPrice(total)}`
+                      `Cobrar ${formatCurrency(total)}`
                     )}
                   </Button>
 
@@ -258,7 +252,7 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
                       </div>
                     )}
                     <p className="text-lg text-white/70">
-                      {formatPrice(checkoutTotal)} cobrados
+                      {formatCurrency(checkoutTotal)} cobrados
                     </p>
                   </div>
                 </motion.div>

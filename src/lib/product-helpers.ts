@@ -1,5 +1,6 @@
 import type { Product, ProductWithCategory, UnitType } from '@/types/product'
 import { roundWeight, formatWeight } from '@/lib/utils/weight'
+import { formatCurrency } from '@/lib/utils/currency'
 
 /**
  * Constante para incremento/decremento de peso
@@ -12,17 +13,13 @@ export const STEP_WEIGHT = 0.100
 export const DEFAULT_WEIGHT_QUANTITY = 0.100
 
 /**
- * Formatea un precio en formato chileno
+ * Formatea un precio en formato argentino
  * @param price - Precio a formatear
  * @returns Precio formateado
+ * @deprecated Usar formatCurrency de @/lib/utils/currency
  */
 export function formatPrice(price: number): string {
-  return new Intl.NumberFormat('es-CL', {
-    style: 'currency',
-    currency: 'CLP',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(price)
+  return formatCurrency(price)
 }
 
 /**

@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MOVEMENT_TYPE_LABELS } from '@/types/cash'
 import type { CashMovementWithUser } from '@/types/cash'
+import { formatCurrency } from '@/lib/utils/currency'
 
 interface CashMovementItemProps {
   movement: CashMovementWithUser
@@ -88,7 +89,7 @@ export function CashMovementItem({ movement }: CashMovementItemProps) {
             <span className={`text-xl font-bold flex-shrink-0 tracking-tight group-hover:scale-105 transition-transform ${
               movement.type === 'EXPENSE' ? 'text-red-600' : 'text-green-600'
             }`}>
-              {movement.type === 'EXPENSE' ? '-' : '+'}${movement.amount.toLocaleString('es-CL')}
+              {movement.type === 'EXPENSE' ? '-' : '+'}{formatCurrency(movement.amount)}
             </span>
           </div>
 

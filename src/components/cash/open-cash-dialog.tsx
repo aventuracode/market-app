@@ -21,6 +21,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { CashRegisterSelector } from './cash-register-selector'
+import { formatCurrency } from '@/lib/utils/currency'
 
 interface OpenCashDialogProps {
   open: boolean
@@ -79,7 +80,7 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
 
       // Toast de éxito
       toast.success('Caja abierta exitosamente', {
-        description: `${selectedRegisterName} - Monto inicial: $${data.opening_amount.toLocaleString('es-CL')}`,
+        description: `${selectedRegisterName} - Monto inicial: ${formatCurrency(data.opening_amount)}`,
       })
 
       // Reset y cerrar

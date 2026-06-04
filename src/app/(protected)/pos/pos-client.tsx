@@ -9,6 +9,7 @@ import { useTenant } from '@/hooks/use-tenant'
 import { productService } from '@/services/product.service'
 import { formatQuantity, getInitialQuantity } from '@/lib/product-helpers'
 import { formatWeight } from '@/lib/utils/weight'
+import { formatCurrency } from '@/lib/utils/currency'
 import { PageHeader } from '@/components/shared/page-header'
 import { SearchBar } from '@/components/shared/search-bar'
 import { ProductCard } from '@/components/pos/product-card'
@@ -93,13 +94,6 @@ export function POSClient() {
   const cartItemCount = getItemCount()
   const cartTotal = getTotal()
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-AR', {
-      style: 'currency',
-      currency: 'ARS',
-    }).format(price)
-  }
-
   return (
     <div className="flex flex-col h-full">
       {/* Header con search sticky */}
@@ -180,7 +174,7 @@ export function POSClient() {
                 </span>
               </div>
               <span className="text-2xl font-bold text-primary">
-                {formatPrice(cartTotal)}
+                {formatCurrency(cartTotal)}
               </span>
             </div>
             <Button

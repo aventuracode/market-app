@@ -1,14 +1,8 @@
 /**
  * Formatea un número como moneda ARS
+ * @deprecated Importar desde @/lib/utils/currency
  */
-export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('es-AR', {
-    style: 'currency',
-    currency: 'ARS',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount)
-}
+export { formatCurrency } from './currency'
 
 /**
  * Formatea una fecha de forma relativa

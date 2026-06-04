@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { formatStock } from '@/lib/format-stock'
 import { formatUnit, getUnitBadgeVariant, formatPriceByUnit } from '@/lib/product-helpers'
 import type { ProductWithCategory } from '@/types/product'
+import { formatCurrency } from '@/lib/utils/currency'
 
 interface ProductListItemProps {
   product: ProductWithCategory
@@ -131,7 +132,7 @@ export function ProductListItem({
               {/* Precio principal con unidad */}
               <div className="flex flex-col">
                 <span className="text-2xl font-bold tracking-tight leading-none">
-                  ${product.sale_price.toLocaleString('es-CL')}
+                  {formatCurrency(product.sale_price)}
                 </span>
                 <span className="text-[10px] text-muted-foreground/60 font-medium mt-0.5">
                   {formatPriceByUnit(product.sale_price, unitType)}

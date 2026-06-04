@@ -4,6 +4,7 @@ import { DollarSign, ShoppingCart, TrendingUp, CreditCard, Banknote, ArrowRightL
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { SalesStats } from '@/types/sales'
+import { formatCurrency } from '@/lib/utils/currency'
 
 interface SalesStatsCardsProps {
   stats: SalesStats | undefined
@@ -31,14 +32,6 @@ export function SalesStatsCards({ stats, isLoading }: SalesStatsCardsProps) {
 
   if (!stats) {
     return null
-  }
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0,
-    }).format(amount)
   }
 
   const totalTransfer = stats.totalSales - stats.totalCash - stats.totalCard

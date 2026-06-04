@@ -19,6 +19,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
 import type { CashSession, CashSummary } from '@/types/cash'
+import { formatCurrency } from '@/lib/utils/currency'
 
 interface CloseCashDialogProps {
   open: boolean
@@ -97,35 +98,35 @@ export function CloseCashDialog({
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Apertura:</span>
-                <span className="font-medium">${summary.opening_amount.toLocaleString('es-CL')}</span>
+                <span className="font-medium">{formatCurrency(summary.opening_amount)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Ventas (Efectivo):</span>
-                <span className="font-medium text-green-600">+${summary.total_sales.toLocaleString('es-CL')}</span>
+                <span className="font-medium text-green-600">+{formatCurrency(summary.total_sales)}</span>
               </div>
               {summary.total_card_sales > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground text-xs pl-4">Ventas (Tarjeta):</span>
-                  <span className="font-medium text-blue-600 text-xs">${summary.total_card_sales.toLocaleString('es-CL')}</span>
+                  <span className="font-medium text-blue-600 text-xs">{formatCurrency(summary.total_card_sales)}</span>
                 </div>
               )}
               {summary.total_transfer_sales > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground text-xs pl-4">Ventas (Transferencia):</span>
-                  <span className="font-medium text-purple-600 text-xs">${summary.total_transfer_sales.toLocaleString('es-CL')}</span>
+                  <span className="font-medium text-purple-600 text-xs">{formatCurrency(summary.total_transfer_sales)}</span>
                 </div>
               )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Ingresos:</span>
-                <span className="font-medium text-green-600">+${summary.total_income.toLocaleString('es-CL')}</span>
+                <span className="font-medium text-green-600">+{formatCurrency(summary.total_income)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Egresos:</span>
-                <span className="font-medium text-red-600">-${summary.total_expenses.toLocaleString('es-CL')}</span>
+                <span className="font-medium text-red-600">-{formatCurrency(summary.total_expenses)}</span>
               </div>
               <div className="border-t pt-2 flex justify-between">
                 <span className="font-semibold">Esperado:</span>
-                <span className="font-bold text-lg">${summary.expected_balance.toLocaleString('es-CL')}</span>
+                <span className="font-bold text-lg">{formatCurrency(summary.expected_balance)}</span>
               </div>
             </div>
           </Card>
@@ -169,7 +170,7 @@ export function CloseCashDialog({
                     {difference > 0 ? 'Sobrante' : 'Faltante'}
                   </p>
                   <p className={`text-2xl font-bold ${difference > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    ${Math.abs(difference).toLocaleString('es-CL')}
+                    {formatCurrency(Math.abs(difference))}
                   </p>
                 </div>
               </div>

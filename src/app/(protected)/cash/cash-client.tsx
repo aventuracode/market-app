@@ -13,6 +13,7 @@ import { Card } from '@/components/ui/card'
 import { useAuthStore } from '@/stores/auth.store'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { formatCurrency } from '@/lib/utils/currency'
 
 export function CashClient() {
   const { user } = useAuthStore()
@@ -139,7 +140,7 @@ export function CashClient() {
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-[11px] font-medium text-muted-foreground/70 mb-1.5 uppercase tracking-wide">Disponible en caja</p>
-              <p className="text-4xl font-bold tracking-tight mb-0.5">${currentBalance.toLocaleString('es-CL')}</p>
+              <p className="text-4xl font-bold tracking-tight mb-0.5">{formatCurrency(currentBalance)}</p>
               <p className="text-xs text-muted-foreground/60">Saldo actual</p>
             </div>
             <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
@@ -158,7 +159,7 @@ export function CashClient() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[10px] text-muted-foreground/70 font-medium">Apertura</p>
-                  <p className="text-base font-bold tracking-tight">${summary.opening_amount.toLocaleString('es-CL')}</p>
+                  <p className="text-base font-bold tracking-tight">{formatCurrency(summary.opening_amount)}</p>
                 </div>
               </div>
             </Card>
@@ -170,7 +171,7 @@ export function CashClient() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[10px] text-muted-foreground/70 font-medium">Ventas</p>
-                  <p className="text-base font-bold tracking-tight text-green-600">${summary.total_sales.toLocaleString('es-CL')}</p>
+                  <p className="text-base font-bold tracking-tight text-green-600">{formatCurrency(summary.total_sales)}</p>
                 </div>
               </div>
             </Card>
@@ -182,7 +183,7 @@ export function CashClient() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[10px] text-muted-foreground/70 font-medium">Ingresos</p>
-                  <p className="text-base font-bold tracking-tight text-green-600">${summary.total_income.toLocaleString('es-CL')}</p>
+                  <p className="text-base font-bold tracking-tight text-green-600">{formatCurrency(summary.total_income)}</p>
                 </div>
               </div>
             </Card>
@@ -194,7 +195,7 @@ export function CashClient() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[10px] text-muted-foreground/70 font-medium">Egresos</p>
-                  <p className="text-base font-bold tracking-tight text-red-600">${summary.total_expenses.toLocaleString('es-CL')}</p>
+                  <p className="text-base font-bold tracking-tight text-red-600">{formatCurrency(summary.total_expenses)}</p>
                 </div>
               </div>
             </Card>
