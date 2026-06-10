@@ -24,7 +24,7 @@ export type Database = {
           notes: string | null
           reference_id: string | null
           tenant_id: string
-          type: string
+          type: Database["public"]["Enums"]["cash_movement_type"]
           user_id: string | null
         }
         Insert: {
@@ -36,7 +36,7 @@ export type Database = {
           notes?: string | null
           reference_id?: string | null
           tenant_id: string
-          type: string
+          type: Database["public"]["Enums"]["cash_movement_type"]
           user_id?: string | null
         }
         Update: {
@@ -48,7 +48,7 @@ export type Database = {
           notes?: string | null
           reference_id?: string | null
           tenant_id?: string
-          type?: string
+          type?: Database["public"]["Enums"]["cash_movement_type"]
           user_id?: string | null
         }
         Relationships: [
@@ -359,7 +359,7 @@ export type Database = {
           discount: number | null
           id: string
           notes: string | null
-          payment_method: string
+          payment_method: Database["public"]["Enums"]["payment_method"]
           sale_number: number
           status: string | null
           subtotal: number
@@ -374,7 +374,7 @@ export type Database = {
           discount?: number | null
           id?: string
           notes?: string | null
-          payment_method: string
+          payment_method: Database["public"]["Enums"]["payment_method"]
           sale_number?: number
           status?: string | null
           subtotal: number
@@ -389,7 +389,7 @@ export type Database = {
           discount?: number | null
           id?: string
           notes?: string | null
-          payment_method?: string
+          payment_method?: Database["public"]["Enums"]["payment_method"]
           sale_number?: number
           status?: string | null
           subtotal?: number
@@ -606,7 +606,14 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      cash_movement_type:
+        | "OPENING"
+        | "SALE"
+        | "INCOME"
+        | "EXPENSE"
+        | "CLOSING"
+        | "ADJUSTMENT"
+      payment_method: "CASH" | "CARD" | "TRANSFER"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -733,6 +740,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      cash_movement_type: [
+        "OPENING",
+        "SALE",
+        "INCOME",
+        "EXPENSE",
+        "CLOSING",
+        "ADJUSTMENT",
+      ],
+      payment_method: ["CASH", "CARD", "TRANSFER"],
+    },
   },
 } as const

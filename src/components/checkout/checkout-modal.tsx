@@ -46,7 +46,6 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
 
   const total = getTotal()
   const subtotal = total
-  const tax = 0
   const discount = 0
 
   // Reset states when opening
@@ -144,13 +143,6 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
                     <span className="text-muted-foreground">Subtotal</span>
                     <span className="font-medium">{formatCurrency(subtotal)}</span>
                   </div>
-                  
-                  {tax > 0 && (
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Impuestos</span>
-                      <span className="font-medium">{formatCurrency(tax)}</span>
-                    </div>
-                  )}
                   
                   {discount > 0 && (
                     <div className="flex items-center justify-between text-sm">

@@ -35,7 +35,7 @@ export function SaleCard({ sale, onClick, isNew }: SaleCardProps) {
             <div className="flex items-center gap-1.5 mt-1">
               <Clock className="h-3 w-3 text-muted-foreground" />
               <span className="text-xs text-muted-foreground">
-                {formatTime(sale.created_at)}
+                {formatTime(sale.created_at ?? new Date().toISOString())}
               </span>
             </div>
           </div>

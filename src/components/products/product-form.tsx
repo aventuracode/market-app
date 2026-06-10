@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { QuickCreateCategory } from '@/components/settings/categories/quick-create-category'
-import type { Product, Category } from '@/types/product'
+import type { Product, Category, UnitType } from '@/types/product'
 import { UNIT_TYPE_OPTIONS } from '@/types/product'
 
 interface ProductFormProps {
@@ -130,7 +130,7 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
         cost_price: product.cost_price || 0,
         stock: product.stock,
         minimum_stock: product.minimum_stock,
-        unit_type: product.unit_type || 'UNIT',
+        unit_type: (product.unit_type as UnitType) || 'UNIT',
         allow_decimal: product.allow_decimal || false,
         is_active: product.is_active,
       })

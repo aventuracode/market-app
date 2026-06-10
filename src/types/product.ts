@@ -1,34 +1,31 @@
 import type { Money } from '@/lib/money'
+import type { Database } from './supabase.generated'
+
+type Tables<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Row']
+type Inserts<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Insert']
+type Updates<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Update']
 
 export type UnitType = 'UNIT' | 'GRAM' | 'KILOGRAM' | 'LITER' | 'MILLILITER'
 
-export interface Product {
-  id: string
-  tenant_id: string
-  name: string
-  description: string | null
-  sku: string | null
-  barcode: string | null
+// Product with Money fields instead of number
+export type Product = Omit<Tables<'products'>, 'sale_price' | 'cost_price' | 'barcode' | 'created_at' | 'updated_at' | 'is_active' | 'minimum_stock'> & {
   sale_price: Money
   cost_price: Money
-  stock: number
-  minimum_stock: number
-  category_id: string | null
-  unit_type: UnitType
-  allow_decimal: boolean
-  is_active: boolean
+  barcode: string | null
   created_at: string
   updated_at: string
+  is_active: boolean
+  minimum_stock: number
 }
 
-export interface Category {
-  id: string
-  tenant_id: string
-  name: string
-  description: string | null
-  is_active: boolean
+// Category with non-null fields
+export type Category = Omit<Tables<'categories'>, 'created_at' | 'updated_at' | 'is_active'> & {
   created_at: string
   updated_at: string
+  is_active: boolean
 }
 
 export interface ProductWithCategory extends Product {
@@ -64,34 +61,7 @@ export const UNIT_TYPE_OPTIONS: UnitTypeOption[] = [
 ]
 
 // Params para crear producto
-export interface CreateProductParams {
-  tenant_id: string
-  name: string
-  description?: string | null
-  barcode: string
-  sku?: string | null
-  category_id?: string | null
-  sale_price: number
-  cost_price?: number
-  stock: number
-  minimum_stock: number
-  unit_type?: UnitType
-  allow_decimal?: boolean
-  is_active?: boolean
-}
+export type CreateProductParams = Omit<Inserts<'products'>, 'id' | 'created_at' | 'updated_at'>
 
 // Params para actualizar producto
-export interface UpdateProductParams {
-  name?: string
-  description?: string | null
-  barcode?: string
-  sku?: string | null
-  category_id?: string | null
-  sale_price?: number
-  cost_price?: number
-  stock?: number
-  minimum_stock?: number
-  unit_type?: UnitType
-  allow_decimal?: boolean
-  is_active?: boolean
-}
+export type UpdateProductParams = Omit<Updates<'products'>, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>

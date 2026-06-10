@@ -70,9 +70,6 @@ class SaleService {
         }
       }
 
-      // Si retorna objeto completo
-      const saleData = data.sale || data
-
       return data as CreateSaleResponse
     } catch (error) {
       console.error('Error in createSale:', error)

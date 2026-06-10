@@ -24,7 +24,12 @@ class CategoryService {
       throw new Error(error.message || 'Error al obtener las categorías')
     }
 
-    return data || []
+    return (data || []).map(cat => ({
+      ...cat,
+      is_active: cat.is_active ?? true,
+      created_at: cat.created_at ?? new Date().toISOString(),
+      updated_at: cat.updated_at ?? new Date().toISOString(),
+    }))
   }
 
   async getCategoryById(tenantId: string, categoryId: string): Promise<Category | null> {
@@ -45,7 +50,14 @@ class CategoryService {
       throw new Error(error.message || 'Error al obtener la categoría')
     }
 
-    return data
+    if (!data) return null
+
+    return {
+      ...data,
+      is_active: data.is_active ?? true,
+      created_at: data.created_at ?? new Date().toISOString(),
+      updated_at: data.updated_at ?? new Date().toISOString(),
+    }
   }
 
   async createCategory(categoryData: CreateCategoryData): Promise<Category> {
@@ -75,7 +87,12 @@ class CategoryService {
       throw new Error('No se recibió respuesta del servidor')
     }
 
-    return data
+    return {
+      ...data,
+      is_active: data.is_active ?? true,
+      created_at: data.created_at ?? new Date().toISOString(),
+      updated_at: data.updated_at ?? new Date().toISOString(),
+    }
   }
 
   async updateCategory(
@@ -103,7 +120,12 @@ class CategoryService {
       throw new Error('No se recibió respuesta del servidor')
     }
 
-    return data
+    return {
+      ...data,
+      is_active: data.is_active ?? true,
+      created_at: data.created_at ?? new Date().toISOString(),
+      updated_at: data.updated_at ?? new Date().toISOString(),
+    }
   }
 
   async deleteCategory(categoryId: string): Promise<void> {

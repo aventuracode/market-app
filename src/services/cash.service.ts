@@ -39,7 +39,7 @@ class CashService {
     }
 
     const typedSessions = sessions as CashSession[]
-const session = typedSessions[0]
+    const session = typedSessions[0]
 
     const { data: register } = await this.supabase
       .from('cash_registers')
@@ -51,17 +51,22 @@ const session = typedSessions[0]
     if (!register) return null
 
     return {
-      register,
+      register: {
+        ...register,
+        is_active: register.is_active ?? true,
+        created_at: register.created_at ?? new Date().toISOString(),
+      },
       session: {
         id: session.id,
+        tenant_id: session.tenant_id,
         cash_register_id: session.cash_register_id,
         user_id: session.user_id,
         opening_amount: money(session.opening_amount),
-        closing_amount: money(session.closing_amount),
-        expected_amount: money(session.expected_amount),
-        difference: money(session.difference),
-        status: session.status,
-        opened_at: session.opened_at,
+        closing_amount: money(session.closing_amount ?? 0),
+        expected_amount: money(session.expected_amount ?? 0),
+        difference: money(session.difference ?? 0),
+        status: (session.status as 'open' | 'closed'),
+        opened_at: session.opened_at ?? new Date().toISOString(),
         closed_at: session.closed_at,
         notes: session.notes,
       },
@@ -112,14 +117,15 @@ const session = typedSessions[0]
 
       return {
         id: data.id,
+        tenant_id: data.tenant_id,
         cash_register_id: data.cash_register_id,
         user_id: data.user_id,
         opening_amount: money(data.opening_amount),
         closing_amount: 0,
         expected_amount: 0,
         difference: 0,
-        status: data.status,
-        opened_at: data.opened_at,
+        status: (data.status as 'open' | 'closed'),
+        opened_at: data.opened_at ?? new Date().toISOString(),
         closed_at: null,
         notes: data.notes,
       }
@@ -165,14 +171,15 @@ const session = typedSessions[0]
 
     return {
       id: data.id,
+      tenant_id: data.tenant_id,
       cash_register_id: data.cash_register_id,
       user_id: data.user_id,
       opening_amount: money(data.opening_amount),
-      closing_amount: money(data.closing_amount),
-      expected_amount: money(data.expected_amount),
-      difference: money(data.difference),
-      status: data.status,
-      opened_at: data.opened_at,
+      closing_amount: money(data.closing_amount ?? 0),
+      expected_amount: money(data.expected_amount ?? 0),
+      difference: money(data.difference ?? 0),
+      status: (data.status as 'open' | 'closed'),
+      opened_at: data.opened_at ?? new Date().toISOString(),
       closed_at: data.closed_at,
       notes: data.notes,
     }
@@ -206,7 +213,8 @@ const session = typedSessions[0]
     // Obtener IDs de ventas para filtrar por método de pago
     const saleMovementIds = movements
       ?.filter(m => m.type === 'SALE' && m.reference_id)
-      .map(m => m.reference_id) || []
+      .map(m => m.reference_id)
+      .filter((id): id is string => id !== null) || []
 
     if (saleMovementIds.length > 0) {
       // Consultar ventas para separar por método de pago
@@ -297,13 +305,13 @@ const session = typedSessions[0]
       id: data.id,
       tenant_id: data.tenant_id,
       cash_register_id: data.cash_register_id,
-      cash_session_id: data.cash_session_id,
+      cash_session_id: data.cash_session_id ?? '',
       user_id: data.user_id,
       type: data.type,
       amount: money(data.amount),
       reference_id: data.reference_id,
       notes: data.notes,
-      created_at: data.created_at,
+      created_at: data.created_at ?? new Date().toISOString(),
     }
   }
 
@@ -385,7 +393,11 @@ const session = typedSessions[0]
       return null
     }
 
-    return data
+    return {
+      ...data,
+      is_active: data.is_active ?? true,
+      created_at: data.created_at ?? new Date().toISOString(),
+    }
   }
 
   async getAvailableCashRegisters(tenantId: string): Promise<CashRegister[]> {
@@ -401,7 +413,11 @@ const session = typedSessions[0]
       throw new Error(error.message || 'Error al obtener las cajas')
     }
 
-    return data || []
+    return (data || []).map(reg => ({
+      ...reg,
+      is_active: reg.is_active ?? true,
+      created_at: reg.created_at ?? new Date().toISOString(),
+    }))
   }
 }
 

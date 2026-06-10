@@ -1,6 +1,9 @@
 import type { Money } from '@/lib/money'
 
-export type PaymentMethod = 'CASH' | 'CARD' | 'TRANSFER'
+import type { Database } from './supabase.generated'
+
+export type PaymentMethod =
+  Database['public']['Enums']['payment_method']
 
 export type SaleStatus = 'COMPLETED' | 'PENDING' | 'CANCELLED'
 
@@ -27,12 +30,10 @@ export interface Sale {
   sale_number: string
   payment_method: PaymentMethod
   subtotal: Money
-  tax: Money
   discount: Money
   total: Money
   status: SaleStatus
-  created_at: string
-  updated_at: string
+  created_at: string | null
 }
 
 export interface SaleItemResponse extends SaleItem {

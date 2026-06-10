@@ -2,6 +2,10 @@
  * Tipos para el sistema de ventas
  */
 import type { Money } from '@/lib/money'
+import type { Database } from './supabase.generated'
+
+export type PaymentMethod =
+  Database['public']['Enums']['payment_method']
 
 export interface Sale {
   id: string
@@ -11,12 +15,10 @@ export interface Sale {
   sale_number: string
   total: Money
   subtotal: Money
-  tax: Money
   discount: Money
-  payment_method: 'CASH' | 'CARD' | 'TRANSFER'
+  payment_method: PaymentMethod
   status: 'COMPLETED' | 'CANCELLED' | 'PENDING'
-  created_at: string
-  updated_at: string
+  created_at: string | null
   notes?: string | null
 }
 
@@ -28,7 +30,7 @@ export interface SaleItem {
   unit_price: Money
   subtotal: Money
   discount: Money
-  created_at: string
+  created_at: string | null
 }
 
 export interface Product {

@@ -5,7 +5,7 @@ import { Package, Tag, Plus, Minus, Weight } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import type { ProductWithCategory } from '@/types/product'
+import type { ProductWithCategory, UnitType } from '@/types/product'
 import { cn } from '@/lib/utils'
 import { formatPrice, formatUnit, getUnitBadgeVariant } from '@/lib/product-helpers'
 import { formatWeight } from '@/lib/utils/weight'
@@ -33,7 +33,7 @@ export function ProductCard({
   const isLowStock = product.stock <= product.minimum_stock && product.stock > 0
   const isOutOfStock = product.stock <= 0
   const isPesable = product.allow_decimal === true
-  const unitType = product.unit_type || 'UNIT'
+  const unitType = (product.unit_type as UnitType) || 'UNIT'
   const unitLabel = unitType === 'UNIT' ? 'c/u' : unitType === 'KILOGRAM' ? 'kg' : unitType === 'GRAM' ? 'g' : unitType === 'LITER' ? 'l' : 'ml'
 
   const handleAdd = () => {

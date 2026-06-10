@@ -2,6 +2,9 @@ import { createClient } from '@/lib/supabase/client'
 import type { Sale, SaleWithDetails } from '@/types/sales'
 import type { Role } from '@/types'
 
+// TODO: Refactor Sale, SaleWithDetails, SaleWithRelations types to derive from Supabase generated types
+// Current types are missing fields like 'tax', 'updated_at' and have type mismatches with DB schema
+
 /**
  * Error personalizado para permisos RLS
  */

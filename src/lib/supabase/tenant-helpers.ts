@@ -17,7 +17,12 @@ export async function getCurrentTenant(): Promise<Tenant | null> {
     .eq('id', tenantId)
     .single()
 
-  return tenant
+  if (!tenant) return null
+
+  return {
+    ...tenant,
+    created_at: tenant.created_at ?? new Date().toISOString(),
+  }
 }
 
 export async function requireTenant(): Promise<Tenant> {
@@ -39,7 +44,12 @@ export async function getTenantById(tenantId: string): Promise<Tenant | null> {
     .eq('id', tenantId)
     .single()
 
-  return tenant
+  if (!tenant) return null
+
+  return {
+    ...tenant,
+    created_at: tenant.created_at ?? new Date().toISOString(),
+  }
 }
 
 export function withTenantIsolation<T extends { tenant_id: string }>(

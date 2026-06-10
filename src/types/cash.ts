@@ -1,42 +1,35 @@
 import { z } from 'zod'
 import type { Money } from '@/lib/money'
+import type { Database } from './supabase.generated'
+
+type Tables<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Row']
+type Inserts<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Insert']
+type Updates<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Update']
 
 // Cash Register Types
-export interface CashRegister {
-  id: string
-  tenant_id: string
-  name: string
+export type CashRegister = Omit<Tables<'cash_registers'>, 'is_active' | 'created_at'> & {
   is_active: boolean
   created_at: string
 }
 
-export interface CashSession {
-  id: string
-  cash_register_id: string
-  user_id: string
+export type CashSession = Omit<Tables<'cash_sessions'>, 'opening_amount' | 'closing_amount' | 'expected_amount' | 'difference' | 'opened_at'> & {
   opening_amount: Money
   closing_amount: Money
   expected_amount: Money
   difference: Money
   status: 'open' | 'closed'
   opened_at: string
-  closed_at: string | null
-  notes: string | null
 }
 
 // Cash Movement Types - UPPERCASE para coincidir con la base de datos
 export type CashMovementType = 'SALE' | 'EXPENSE' | 'INCOME' | 'OPENING' | 'CLOSING' | 'ADJUSTMENT'
 
-export interface CashMovement {
-  id: string
-  tenant_id: string
-  cash_register_id: string
-  cash_session_id: string
-  user_id: string | null
-  type: CashMovementType
+export type CashMovement = Omit<Tables<'cash_movements'>, 'amount' | 'created_at' | 'cash_session_id'> & {
   amount: Money
-  reference_id: string | null
-  notes: string | null
+  cash_session_id: string
   created_at: string
 }
 

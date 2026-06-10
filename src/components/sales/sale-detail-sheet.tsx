@@ -30,7 +30,7 @@ export function SaleDetailSheet({ sale, open, onOpenChange }: SaleDetailSheetPro
   if (!sale) return null
 
   const paymentMethodConfig = getPaymentMethodConfig(sale.payment_method)
-
+  const discount = sale.discount ?? 0
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="h-[85vh] rounded-t-3xl">
@@ -57,7 +57,7 @@ export function SaleDetailSheet({ sale, open, onOpenChange }: SaleDetailSheetPro
                 <span>Fecha y hora</span>
               </div>
               <span className="text-sm font-medium">
-                {formatDateTime(sale.created_at)}
+                {formatDateTime(sale.created_at ?? new Date().toISOString())}
               </span>
             </div>
 
@@ -141,20 +141,15 @@ export function SaleDetailSheet({ sale, open, onOpenChange }: SaleDetailSheetPro
               <span className="text-muted-foreground">Subtotal</span>
               <span className="font-medium">{formatCurrency(sale.subtotal)}</span>
             </div>
-            {sale.discount > 0 && (
+            {discount > 0 && (
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Descuento</span>
                 <span className="font-medium text-red-600">
-                  -{formatCurrency(sale.discount)}
+                  -{formatCurrency(discount)}
                 </span>
               </div>
             )}
-            {sale.tax > 0 && (
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Impuestos</span>
-                <span className="font-medium">{formatCurrency(sale.tax)}</span>
-              </div>
-            )}
+            
             <Separator />
             <div className="flex items-center justify-between text-base font-bold">
               <span>Total</span>

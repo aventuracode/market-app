@@ -18,7 +18,16 @@ export async function getCurrentUser(): Promise<User | null> {
     .eq('id', authUser.id)
     .single()
 
-  return user
+  if (!user) return null
+
+  return {
+    ...user,
+    email: authUser.email,
+    role_id: user.role_id,
+    is_active: user.is_active ?? true,
+    created_at: user.created_at ?? new Date().toISOString(),
+    updated_at: user.updated_at ?? new Date().toISOString(),
+  }
 }
 
 export async function getCurrentTenantId(): Promise<string | null> {

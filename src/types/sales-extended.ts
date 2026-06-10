@@ -1,6 +1,9 @@
 import type { Tables } from '@/lib/supabase/client'
 import type { Money } from '@/lib/money'
+import type { Database } from './supabase.generated'
 
+export type PaymentMethod =
+  Database['public']['Enums']['payment_method']
 /**
  * Venta con relaciones completas
  */
@@ -33,7 +36,7 @@ export interface SalesStats {
   total_sales: Money
   sales_count: number
   average_ticket: Money
-  most_used_payment_method: 'CASH' | 'CARD' | 'TRANSFER'
+  most_used_payment_method: PaymentMethod
   sales_by_payment_method: {
     CASH: Money
     CARD: Money
@@ -48,7 +51,7 @@ export interface SalesQueryFilters {
   tenant_id: string
   start_date?: string
   end_date?: string
-  payment_method?: 'CASH' | 'CARD' | 'TRANSFER'
+  payment_method?: PaymentMethod
   user_id?: string
   search?: string
 }

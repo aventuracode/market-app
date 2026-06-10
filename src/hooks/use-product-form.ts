@@ -9,7 +9,7 @@ import {
   productFormSchema,
   type ProductFormData,
 } from '@/types/product-form'
-import type { Product } from '@/types/product'
+import type { Product, UnitType } from '@/types/product'
 
 interface UseProductFormOptions {
   product?: Product
@@ -35,7 +35,7 @@ const form = useForm<ProductFormData>({
           cost_price: product.cost_price || undefined,
           stock: product.stock,
           minimum_stock: product.minimum_stock,
-          unit_type: product.unit_type || 'UNIT',
+          unit_type: (product.unit_type as UnitType) || 'UNIT',
           allow_decimal: product.allow_decimal || false,
           is_active: product.is_active,
         }

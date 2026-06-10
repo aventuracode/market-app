@@ -154,7 +154,12 @@ export class ProductService {
       return []
     }
 
-    return data || []
+    return (data || []).map(cat => ({
+      ...cat,
+      is_active: cat.is_active ?? true,
+      created_at: cat.created_at ?? new Date().toISOString(),
+      updated_at: cat.updated_at ?? new Date().toISOString(),
+    }))
   }
 
   /**
@@ -169,13 +174,15 @@ export class ProductService {
       tenant_id: tenantId,
     }
     // Validar que el código de barras no exista
-    const existing = await this.getProductByBarcode(
-      tenantId,
-      fullData.barcode
-    )
+    if (fullData.barcode) {
+      const existing = await this.getProductByBarcode(
+        tenantId,
+        fullData.barcode
+      )
 
-    if (existing) {
-      throw new Error('Ya existe un producto con este código de barras')
+      if (existing) {
+        throw new Error('Ya existe un producto con este código de barras')
+      }
     }
 
     const { data, error } = await this.supabase
@@ -210,7 +217,16 @@ export class ProductService {
       throw new Error('No se recibió respuesta del servidor')
     }
 
-    return data
+    return {
+      ...data,
+      sale_price: money(data.sale_price),
+      cost_price: money(data.cost_price),
+      barcode: data.barcode,
+      is_active: data.is_active ?? true,
+      minimum_stock: data.minimum_stock ?? 0,
+      created_at: data.created_at ?? new Date().toISOString(),
+      updated_at: data.updated_at ?? new Date().toISOString(),
+    }
   }
 
   /**
@@ -257,7 +273,16 @@ export class ProductService {
       throw new Error('No se recibió respuesta del servidor')
     }
 
-    return data
+    return {
+      ...data,
+      sale_price: money(data.sale_price),
+      cost_price: money(data.cost_price),
+      barcode: data.barcode,
+      is_active: data.is_active ?? true,
+      minimum_stock: data.minimum_stock ?? 0,
+      created_at: data.created_at ?? new Date().toISOString(),
+      updated_at: data.updated_at ?? new Date().toISOString(),
+    }
   }
 
   /**

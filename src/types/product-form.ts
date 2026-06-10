@@ -37,22 +37,22 @@ export const productFormSchema = z.object({
     .nullable(),
 
   sale_price: z
-    .number({ required_error: 'El precio de venta es requerido' })
+    .number()
     .positive('El precio debe ser mayor a 0')
     .max(999999999, 'El precio es demasiado alto'),
 
   cost_price: z
-    .number({ required_error: 'El precio de costo es requerido' })
+    .number()
     .min(0, 'El costo no puede ser negativo')
     .max(999999999, 'El costo es demasiado alto'),
 
   stock: z
-    .number({ required_error: 'El stock es requerido' })
+    .number()
     .min(0, 'El stock no puede ser negativo')
     .max(999999, 'El stock es demasiado alto'),
 
   minimum_stock: z
-    .number({ required_error: 'El stock mínimo es requerido' })
+    .number()
     .min(0, 'El stock mínimo no puede ser negativo')
     .max(999999, 'El stock mínimo es demasiado alto'),
 

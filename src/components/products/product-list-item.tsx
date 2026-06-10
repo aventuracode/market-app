@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { formatStock } from '@/lib/format-stock'
 import { formatUnit, getUnitBadgeVariant, formatPriceByUnit } from '@/lib/product-helpers'
-import type { ProductWithCategory } from '@/types/product'
+import type { ProductWithCategory, UnitType } from '@/types/product'
 import { formatCurrency } from '@/lib/utils/currency'
 
 interface ProductListItemProps {
@@ -28,7 +28,7 @@ export function ProductListItem({
   const getStockBadge = () => {
     const formattedStock = formatStock(
       product.stock, 
-      product.unit_type || 'UNIT', 
+      (product.unit_type as UnitType) || 'UNIT', 
       product.allow_decimal || false
     )
     
@@ -62,7 +62,7 @@ export function ProductListItem({
 
   const stockBadge = getStockBadge()
 
-  const unitType = product.unit_type || 'UNIT'
+  const unitType = (product.unit_type as UnitType) || 'UNIT'
   const unitBadgeVariant = getUnitBadgeVariant(unitType)
 
   return (

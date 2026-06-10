@@ -36,7 +36,10 @@ export function useTenant() {
           .single()
 
         if (data) {
-          setTenant(data)
+          setTenant({
+            ...data,
+            created_at: data.created_at ?? new Date().toISOString(),
+          })
           fetchedRef.current = user.tenant_id
         }
       } catch (error) {
