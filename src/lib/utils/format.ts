@@ -27,9 +27,13 @@ export function formatRelativeDate(date: string | Date): string {
 /**
  * Formatea una fecha y hora
  */
-export function formatDateTime(date: string | Date): string {
+export function formatDateTime(date?: string | Date | null): string {
+  if (!date) return "—"
+
   const targetDate = typeof date === 'string' ? new Date(date) : date
-  
+
+  if (isNaN(targetDate.getTime())) return "—"
+
   return new Intl.DateTimeFormat('es-AR', {
     day: '2-digit',
     month: '2-digit',

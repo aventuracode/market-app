@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import type { SaleWithDetails } from '@/types/sales'
 import { formatCurrency } from '@/lib/utils/currency'
+import { formatDateTime } from '@/lib/utils/format'
 
 interface SalesTableProps {
   sales: SaleWithDetails[] | undefined
@@ -174,7 +175,7 @@ export function SalesTable({ sales, isLoading, error }: SalesTableProps) {
               <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground/80">
                 {/* Date */}
                 <span className="font-medium">
-                  {format(new Date(sale.created_at), "d MMM, HH:mm", { locale: es })}
+                  {formatDateTime(sale.created_at)}
                 </span>
 
                 {/* User */}
