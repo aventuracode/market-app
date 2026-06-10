@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, AlertCircle } from 'lucide-react'
 import CurrencyInput from 'react-currency-input-field'
+import { money } from '@/lib/money'
 import { cashService } from '@/services/cash.service'
 import { closeCashSchema, type CloseCashFormData } from '@/types/cash'
 import {
@@ -188,12 +189,7 @@ export function CloseCashDialog({
               autoFocus
               onValueChange={(value, name, values) => {
                 setClosingAmountInput(value || '')
-                
-                if (value && values?.float !== undefined && !isNaN(values.float)) {
-                  setValue('closing_amount', values.float)
-                } else if (!value) {
-                  setValue('closing_amount', 0)
-                }
+                setValue('closing_amount', money(values?.float))
               }}
             />
             {errors.closing_amount && (

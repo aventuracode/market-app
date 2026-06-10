@@ -5,7 +5,11 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { categoryService } from '@/services/category.service'
 import { useTenant } from '@/hooks/use-tenant'
-import { categoryFormSchema, type CategoryFormData } from '@/types/category-form'
+import {
+  categoryFormSchema,
+  type CategoryFormInput,
+  type CategoryFormData,
+} from '@/types/category-form'
 import type { Category } from '@/types/product'
 
 interface UseCategoryFormOptions {
@@ -19,7 +23,7 @@ export function useCategoryForm(options: UseCategoryFormOptions = {}) {
   const { tenant } = useTenant()
   const [loading, setLoading] = useState(false)
 
-  const form = useForm<CategoryFormData>({
+  const form = useForm<CategoryFormInput>({
     resolver: zodResolver(categoryFormSchema),
     defaultValues: category
       ? {
@@ -34,7 +38,8 @@ export function useCategoryForm(options: UseCategoryFormOptions = {}) {
         },
   })
 
-  const onSubmit = async (data: CategoryFormData) => {
+  const onSubmit = async (data: CategoryFormInput) => {
+    const parsedData = categoryFormSchema.parse(data)
     if (!tenant?.id) {
       onError?.(new Error('No hay tenant activo'))
       return
@@ -47,14 +52,14 @@ export function useCategoryForm(options: UseCategoryFormOptions = {}) {
 
       if (category) {
         result = await categoryService.updateCategory(category.id, {
-          ...data,
-          description: data.description || null,
+          ...parsedData,
+          description: parsedData.description || null,
         })
       } else {
         result = await categoryService.createCategory({
           tenant_id: tenant.id,
-          ...data,
-          description: data.description || null,
+          ...parsedData,
+          description: parsedData.description || null,
         })
       }
 

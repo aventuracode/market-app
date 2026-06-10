@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
+import { money, validateCheckoutTotal, isValidMoney } from '@/lib/money'
 import type { CreateSaleParams, CreateSaleResponse } from '@/types/sale'
 
 class SaleService {
@@ -16,15 +17,18 @@ class SaleService {
     try {
       // Validaciones previas
       this.validateSaleParams(params)
+      
+      // Sanitizar valores financieros antes de enviar
+      const sanitizedParams = this.sanitizeSaleParams(params)
 
-      // Llamada a RPC
+      // Llamada a RPC con parámetros sanitizados
       const { data, error } = await this.supabase.rpc('create_sale', {
-        p_tenant_id: params.tenant_id,
-        p_user_id: params.user_id,
-        p_cash_register_id: params.cash_register_id,
-        p_cash_session_id: params.cash_session_id,
-        p_payment_method: params.payment_method,
-        p_items: params.items,
+        p_tenant_id: sanitizedParams.tenant_id,
+        p_user_id: sanitizedParams.user_id,
+        p_cash_register_id: sanitizedParams.cash_register_id,
+        p_cash_session_id: sanitizedParams.cash_session_id,
+        p_payment_method: sanitizedParams.payment_method,
+        p_items: sanitizedParams.items,
       })
 
       if (error) {
@@ -77,6 +81,27 @@ class SaleService {
   }
 
   /**
+   * Sanitiza valores financieros para prevenir NaN
+   */
+  private sanitizeSaleParams(params: CreateSaleParams): CreateSaleParams {
+    const sanitizedItems = params.items.map(item => ({
+      ...item,
+      unit_price: money(item.unit_price),
+      subtotal: money(item.subtotal),
+      quantity: item.quantity || 0,
+    }))
+
+    // Calcular y validar total
+    const total = sanitizedItems.reduce((sum, item) => sum + money(item.subtotal), 0)
+    validateCheckoutTotal(total)
+
+    return {
+      ...params,
+      items: sanitizedItems,
+    }
+  }
+
+  /**
    * Valida los parámetros de la venta
    */
   private validateSaleParams(params: CreateSaleParams): void {
@@ -112,8 +137,11 @@ class SaleService {
       if (item.quantity <= 0) {
         throw new Error(`Item ${index + 1}: cantidad debe ser mayor a cero`)
       }
-      if (item.unit_price < 0) {
-        throw new Error(`Item ${index + 1}: precio no puede ser negativo`)
+      if (!isValidMoney(item.unit_price)) {
+        throw new Error(`Item ${index + 1}: precio inválido`)
+      }
+      if (!isValidMoney(item.subtotal)) {
+        throw new Error(`Item ${index + 1}: subtotal inválido`)
       }
     })
   }

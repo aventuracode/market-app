@@ -1,4 +1,5 @@
 import type { Tables } from '@/lib/supabase/client'
+import type { Money } from '@/lib/money'
 
 /**
  * Venta con relaciones completas
@@ -29,14 +30,14 @@ export interface SaleItemWithProduct extends Tables<'sale_items'> {
  * Estadísticas de ventas
  */
 export interface SalesStats {
-  total_sales: number
+  total_sales: Money
   sales_count: number
-  average_ticket: number
+  average_ticket: Money
   most_used_payment_method: 'CASH' | 'CARD' | 'TRANSFER'
   sales_by_payment_method: {
-    CASH: number
-    CARD: number
-    TRANSFER: number
+    CASH: Money
+    CARD: Money
+    TRANSFER: Money
   }
 }
 

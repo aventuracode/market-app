@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
+import { money } from '@/lib/money'
 import type { SaleWithRelations, SalesStats, SalesQueryFilters } from '@/types/sales-extended'
 import { startOfDay, startOfWeek, startOfMonth, endOfDay } from 'date-fns'
 
@@ -128,27 +129,27 @@ class SalesHistoryService {
 
       if (sales.length === 0) {
         return {
-          total_sales: 0,
+          total_sales: money(0),
           sales_count: 0,
-          average_ticket: 0,
+          average_ticket: money(0),
           most_used_payment_method: 'CASH',
           sales_by_payment_method: {
-            CASH: 0,
-            CARD: 0,
-            TRANSFER: 0,
+            CASH: money(0),
+            CARD: money(0),
+            TRANSFER: money(0),
           },
         }
       }
 
-      // Calcular totales
-      const total_sales = sales.reduce((sum, sale) => sum + sale.total, 0)
+      // Calcular totales con sanitización financiera
+      const total_sales = money(sales.reduce((sum, sale) => sum + money(sale.total), 0))
       const sales_count = sales.length
-      const average_ticket = total_sales / sales_count
+      const average_ticket = money(total_sales / sales_count)
 
       // Contar por método de pago
       const sales_by_payment_method = sales.reduce(
         (acc, sale) => {
-          acc[sale.payment_method] = (acc[sale.payment_method] || 0) + sale.total
+          acc[sale.payment_method] = money((acc[sale.payment_method] || 0) + money(sale.total))
           return acc
         },
         { CASH: 0, CARD: 0, TRANSFER: 0 } as Record<string, number>
@@ -160,11 +161,15 @@ class SalesHistoryService {
       )[0]?.[0] || 'CASH') as 'CASH' | 'CARD' | 'TRANSFER'
 
       const stats: SalesStats = {
-        total_sales,
+        total_sales: money(total_sales),
         sales_count,
-        average_ticket,
+        average_ticket: money(average_ticket),
         most_used_payment_method,
-        sales_by_payment_method: sales_by_payment_method as SalesStats['sales_by_payment_method'],
+        sales_by_payment_method: {
+          CASH: money(sales_by_payment_method.CASH),
+          CARD: money(sales_by_payment_method.CARD),
+          TRANSFER: money(sales_by_payment_method.TRANSFER),
+        },
       }
 
       return stats

@@ -1,3 +1,5 @@
+import type { Money } from '@/lib/money'
+
 export type UnitType = 'UNIT' | 'GRAM' | 'KILOGRAM' | 'LITER' | 'MILLILITER'
 
 export interface Product {
@@ -7,8 +9,8 @@ export interface Product {
   description: string | null
   sku: string | null
   barcode: string | null
-  sale_price: number
-  cost_price: number | null
+  sale_price: Money
+  cost_price: Money
   stock: number
   minimum_stock: number
   category_id: string | null
@@ -60,3 +62,36 @@ export const UNIT_TYPE_OPTIONS: UnitTypeOption[] = [
   { value: 'LITER', label: 'Litro', abbreviation: 'l' },
   { value: 'MILLILITER', label: 'Mililitro', abbreviation: 'ml' },
 ]
+
+// Params para crear producto
+export interface CreateProductParams {
+  tenant_id: string
+  name: string
+  description?: string | null
+  barcode: string
+  sku?: string | null
+  category_id?: string | null
+  sale_price: number
+  cost_price?: number
+  stock: number
+  minimum_stock: number
+  unit_type?: UnitType
+  allow_decimal?: boolean
+  is_active?: boolean
+}
+
+// Params para actualizar producto
+export interface UpdateProductParams {
+  name?: string
+  description?: string | null
+  barcode?: string
+  sku?: string | null
+  category_id?: string | null
+  sale_price?: number
+  cost_price?: number
+  stock?: number
+  minimum_stock?: number
+  unit_type?: UnitType
+  allow_decimal?: boolean
+  is_active?: boolean
+}

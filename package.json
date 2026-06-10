@@ -9,7 +9,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write \"src/**/*.{ts,tsx,json,css,md}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,json,css,md}\"",
+    "types:generate": "supabase gen types typescript --project-id <REFERENCE_ID> --schema public > src/types/supabase.generated.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

@@ -1,0 +1,13 @@
+# Browsers that we support
+
+# Production
+> 0.5%
+last 2 versions
+not dead
+not op_mini all
+
+# Mobile specific
+iOS >= 12
+Android >= 5
+ChromeAndroid >= 90
+FirefoxAndroid >= 90

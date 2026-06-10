@@ -45,19 +45,19 @@ export function useProductQuery(productId: string | null) {
 /**
  * Hook para buscar productos
  */
-export function useProductSearchQuery(searchTerm: string) {
-  const { tenant } = useTenant()
+// export function useProductSearchQuery(searchTerm: string) {
+//   const { tenant } = useTenant()
 
-  return useQuery({
-    queryKey: ['products', 'search', searchTerm, tenant?.id],
-    queryFn: async () => {
-      if (!tenant?.id) throw new Error('No tenant active')
-      return productService.searchProducts(tenant.id, searchTerm)
-    },
-    enabled: !!tenant?.id && searchTerm.length >= 2,
-    staleTime: 30 * 1000, // 30 segundos
-  })
-}
+//   return useQuery({
+//     queryKey: ['products', 'search', searchTerm, tenant?.id],
+//     queryFn: async () => {
+//       if (!tenant?.id) throw new Error('No tenant active')
+//       return productService.searchProducts(tenant.id, searchTerm)
+//     },
+//     enabled: !!tenant?.id && searchTerm.length >= 2,
+//     staleTime: 30 * 1000, // 30 segundos
+//   })
+// }
 
 /**
  * Hook para crear un producto
@@ -88,7 +88,7 @@ export function useUpdateProductMutation() {
   return useMutation({
     mutationFn: async ({ productId, params }: { productId: string; params: UpdateProductParams }) => {
       if (!tenant?.id) throw new Error('No tenant active')
-      return productService.updateProduct(tenant.id, productId, params)
+      return productService.updateProduct(productId, tenant.id, params)
     },
     onSuccess: (_, variables) => {
       // Invalidar cache del producto específico y lista de productos
@@ -104,11 +104,10 @@ export function useUpdateProductMutation() {
 export function useDeleteProductMutation() {
   const queryClient = useQueryClient()
   const { tenant } = useTenant()
-
   return useMutation({
     mutationFn: async (productId: string) => {
       if (!tenant?.id) throw new Error('No tenant active')
-      return productService.deleteProduct(tenant.id, productId)
+      return productService.deleteProduct(productId, tenant.id)
     },
     onSuccess: () => {
       // Invalidar cache de productos

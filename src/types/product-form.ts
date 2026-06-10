@@ -56,11 +56,11 @@ export const productFormSchema = z.object({
     .min(0, 'El stock mínimo no puede ser negativo')
     .max(999999, 'El stock mínimo es demasiado alto'),
 
-  unit_type: z.enum(['UNIT', 'GRAM', 'KILOGRAM', 'LITER', 'MILLILITER']).default('UNIT'),
+  unit_type: z.enum(['UNIT', 'GRAM', 'KILOGRAM', 'LITER', 'MILLILITER']),
 
-  allow_decimal: z.boolean().default(false),
+  allow_decimal: z.boolean(),
 
-  is_active: z.boolean().default(true),
+  is_active: z.boolean(),
 })
 
 export type ProductFormData = z.infer<typeof productFormSchema>

@@ -1,6 +1,7 @@
 /**
  * Tipos para el sistema de ventas
  */
+import type { Money } from '@/lib/money'
 
 export interface Sale {
   id: string
@@ -8,10 +9,10 @@ export interface Sale {
   user_id: string
   cash_register_id: string
   sale_number: string
-  total: number
-  subtotal: number
-  tax: number
-  discount: number
+  total: Money
+  subtotal: Money
+  tax: Money
+  discount: Money
   payment_method: 'CASH' | 'CARD' | 'TRANSFER'
   status: 'COMPLETED' | 'CANCELLED' | 'PENDING'
   created_at: string
@@ -24,9 +25,9 @@ export interface SaleItem {
   sale_id: string
   product_id: string
   quantity: number
-  unit_price: number
-  subtotal: number
-  discount: number
+  unit_price: Money
+  subtotal: Money
+  discount: Money
   created_at: string
 }
 
@@ -59,12 +60,12 @@ export interface SaleWithDetails extends Sale {
 }
 
 export interface SalesStats {
-  totalSales: number
+  totalSales: Money
   salesCount: number
-  averageTicket: number
-  totalCash: number
-  totalCard: number
-  totalTransfer: number
+  averageTicket: Money
+  totalCash: Money
+  totalCard: Money
+  totalTransfer: Money
 }
 
 export type SalesPeriod = 'all' | 'today' | 'week' | 'month'

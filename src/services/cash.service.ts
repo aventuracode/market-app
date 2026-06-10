@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
+import { money } from '@/lib/money'
 import type {
   CashRegister,
   CashSession,
@@ -33,16 +34,18 @@ class CashService {
       .eq('status', 'open')
       .order('opened_at', { ascending: false })
       .limit(1)
-
     if (error || !sessions || sessions.length === 0) {
       return null
     }
 
-    const session = sessions[0]
+    const typedSessions = sessions as CashSession[]
+const session = typedSessions[0]
+
     const { data: register } = await this.supabase
       .from('cash_registers')
       .select('*')
       .eq('id', session.cash_register_id)
+      .eq('tenant_id', tenantId)
       .single()
 
     if (!register) return null
@@ -53,10 +56,10 @@ class CashService {
         id: session.id,
         cash_register_id: session.cash_register_id,
         user_id: session.user_id,
-        opening_amount: Number(session.opening_amount),
-        closing_amount: session.closing_amount ? Number(session.closing_amount) : null,
-        expected_amount: session.expected_amount ? Number(session.expected_amount) : null,
-        difference: session.difference ? Number(session.difference) : null,
+        opening_amount: money(session.opening_amount),
+        closing_amount: money(session.closing_amount),
+        expected_amount: money(session.expected_amount),
+        difference: money(session.difference),
         status: session.status,
         opened_at: session.opened_at,
         closed_at: session.closed_at,
@@ -111,10 +114,10 @@ class CashService {
         id: data.id,
         cash_register_id: data.cash_register_id,
         user_id: data.user_id,
-        opening_amount: Number(data.opening_amount),
-        closing_amount: null,
-        expected_amount: null,
-        difference: null,
+        opening_amount: money(data.opening_amount),
+        closing_amount: 0,
+        expected_amount: 0,
+        difference: 0,
         status: data.status,
         opened_at: data.opened_at,
         closed_at: null,
@@ -138,8 +141,8 @@ class CashService {
     notes?: string
   ): Promise<CashSession> {
     const summary = await this.getCashSummary(sessionId)
-    const expectedAmount = summary.expected_balance
-    const difference = closingAmount - expectedAmount
+    const expectedAmount = money(summary.expected_balance)
+    const difference = money(closingAmount - expectedAmount)
 
     const { data, error } = await this.supabase
       .from('cash_sessions')
@@ -164,10 +167,10 @@ class CashService {
       id: data.id,
       cash_register_id: data.cash_register_id,
       user_id: data.user_id,
-      opening_amount: Number(data.opening_amount),
-      closing_amount: Number(data.closing_amount),
-      expected_amount: Number(data.expected_amount),
-      difference: Number(data.difference),
+      opening_amount: money(data.opening_amount),
+      closing_amount: money(data.closing_amount),
+      expected_amount: money(data.expected_amount),
+      difference: money(data.difference),
       status: data.status,
       opened_at: data.opened_at,
       closed_at: data.closed_at,
@@ -193,7 +196,7 @@ class CashService {
       .eq('cash_session_id', sessionId)
 
 
-    const openingAmount = Number(session.opening_amount)
+    const openingAmount = money(session.opening_amount)
     let totalCashSales = 0
     let totalCardSales = 0
     let totalTransferSales = 0
@@ -213,50 +216,50 @@ class CashService {
         .in('id', saleMovementIds)
 
       if (sales) {
-        totalCashSales = sales
+        totalCashSales = money(sales
           .filter(sale => sale.payment_method === 'CASH')
-          .reduce((sum, sale) => sum + Number(sale.total), 0)
+          .reduce((sum, sale) => sum + money(sale.total), 0))
 
-        totalCardSales = sales
+        totalCardSales = money(sales
           .filter(sale => sale.payment_method === 'CARD')
-          .reduce((sum, sale) => sum + Number(sale.total), 0)
+          .reduce((sum, sale) => sum + money(sale.total), 0))
 
-        totalTransferSales = sales
+        totalTransferSales = money(sales
           .filter(sale => sale.payment_method === 'TRANSFER')
-          .reduce((sum, sale) => sum + Number(sale.total), 0)
+          .reduce((sum, sale) => sum + money(sale.total), 0))
 
       }
     }
 
     movements?.forEach((movement) => {
-      const amount = Number(movement.amount)
+      const amount = money(movement.amount)
       
       switch (movement.type) {
         case 'SALE':
           // Ya calculamos solo las ventas en efectivo arriba
           break
         case 'INCOME':
-          totalIncome += amount
+          totalIncome = money(totalIncome + amount)
           break
         case 'EXPENSE':
-          totalExpenses += amount
+          totalExpenses = money(totalExpenses + amount)
           break
         default:
           break
       }
     })
 
-    const expectedBalance = openingAmount + totalCashSales + totalIncome - totalExpenses
+    const expectedBalance = money(openingAmount + totalCashSales + totalIncome - totalExpenses)
 
     return {
-      opening_amount: openingAmount,
-      total_sales: totalCashSales,
-      total_income: totalIncome,
-      total_expenses: totalExpenses,
-      total_card_sales: totalCardSales,
-      total_transfer_sales: totalTransferSales,
-      current_balance: expectedBalance,
-      expected_balance: expectedBalance,
+      opening_amount: money(openingAmount),
+      total_sales: money(totalCashSales),
+      total_income: money(totalIncome),
+      total_expenses: money(totalExpenses),
+      total_card_sales: money(totalCardSales),
+      total_transfer_sales: money(totalTransferSales),
+      current_balance: money(expectedBalance),
+      expected_balance: money(expectedBalance),
     }
   }
 
@@ -297,7 +300,7 @@ class CashService {
       cash_session_id: data.cash_session_id,
       user_id: data.user_id,
       type: data.type,
-      amount: Number(data.amount),
+      amount: money(data.amount),
       reference_id: data.reference_id,
       notes: data.notes,
       created_at: data.created_at,
@@ -335,7 +338,7 @@ class CashService {
       cash_session_id: movement.cash_session_id,
       user_id: movement.user_id,
       type: movement.type,
-      amount: Number(movement.amount),
+      amount: money(movement.amount),
       reference_id: movement.reference_id,
       notes: movement.notes,
       created_at: movement.created_at,

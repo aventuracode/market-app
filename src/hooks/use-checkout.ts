@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { toast } from 'sonner'
+import { money, validateCheckoutTotal } from '@/lib/money'
 import { saleService } from '@/services/sale.service'
 import { useCartStore } from '@/stores/cart.store'
 import { useCashStore } from '@/stores/cash.store'
@@ -71,13 +72,17 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
           throw new Error('Algunos productos no tienen stock suficiente')
         }
 
-        // Preparar datos
+        // Preparar datos con sanitización financiera
         const saleItems = items.map((item) => ({
           product_id: item.product.id,
           quantity: item.quantity,
-          unit_price: item.product.sale_price,
-          subtotal: item.product.sale_price * item.quantity,
+          unit_price: money(item.product.sale_price),
+          subtotal: money(money(item.product.sale_price) * item.quantity),
         }))
+
+        // Calcular y validar total (protección anti-NaN)
+        const total = saleItems.reduce((sum, item) => sum + money(item.subtotal), 0)
+        validateCheckoutTotal(total)
 
         // Crear venta con la sesión activa
         const response = await saleService.createSale({
@@ -91,7 +96,7 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
 
         // Success
         // La RPC puede retornar la data en diferentes formatos
-        const saleNumber = response.sale?.sale_number || response.sale_number || 'N/A'
+        const saleNumber = response.sale?.sale_number ?? 'N/A'
         
         setState({
           loading: false,

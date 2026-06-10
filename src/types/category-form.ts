@@ -12,8 +12,9 @@ export const categoryFormSchema = z.object({
     .optional(),
   is_active: z.boolean().default(true),
 })
+export type CategoryFormInput = z.input<typeof categoryFormSchema>
 
-export type CategoryFormData = z.infer<typeof categoryFormSchema>
+export type CategoryFormData = z.output<typeof categoryFormSchema>
 
 export interface CreateCategoryData extends CategoryFormData {
   tenant_id: string

@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, TrendingUp, TrendingDown } from 'lucide-react'
 import CurrencyInput from 'react-currency-input-field'
+import { money } from '@/lib/money'
 import { cashService } from '@/services/cash.service'
 import { useTenant } from '@/hooks/use-tenant'
 import { useAuthStore } from '@/stores/auth.store'
@@ -151,12 +152,7 @@ export function CashMovementDialog({
               autoFocus
               onValueChange={(value, name, values) => {
                 setAmountInput(value || '')
-                
-                if (value && values?.float !== undefined && !isNaN(values.float)) {
-                  setValue('amount', values.float)
-                } else if (!value) {
-                  setValue('amount', 0)
-                }
+                setValue('amount', money(values?.float))
               }}
             />
             {errors.amount && (

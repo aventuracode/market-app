@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Optimizaciones para móviles */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Android Chrome */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  body {
+    font-smoothing: antialiased;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
 @layer base {
   :root {
     /* Light Mode - Inspirado en Mercado Pago/Shopify POS */

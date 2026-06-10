@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import CurrencyInput from 'react-currency-input-field'
+import { money } from '@/lib/money'
 import { useProductForm } from '@/hooks/use-product-form'
 import { productService } from '@/services/product.service'
 import { useTenant } from '@/hooks/use-tenant'
@@ -278,13 +279,7 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
               onValueChange={(value, name, values) => {
                 // Actualizar estado local del input (permite escribir coma)
                 setCostPriceInput(value || '')
-                
-                // Solo actualizar formulario si el valor es válido
-                if (value && values?.float !== undefined && !isNaN(values.float)) {
-                  setValue('cost_price', values.float)
-                } else if (!value) {
-                  setValue('cost_price', 0)
-                }
+                setValue('cost_price', money(values?.float))
               }}
             />
             {errors.cost_price && (
@@ -374,13 +369,7 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
               onValueChange={(value, name, values) => {
                 // Actualizar estado local del input (permite escribir coma)
                 setSalePriceInput(value || '')
-                
-                // Solo actualizar formulario si el valor es válido
-                if (value && values?.float !== undefined && !isNaN(values.float)) {
-                  setValue('sale_price', values.float)
-                } else if (!value) {
-                  setValue('sale_price', 0)
-                }
+                setValue('sale_price', money(values?.float))
               }}
             />
             {errors.sale_price && (

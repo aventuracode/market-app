@@ -1,11 +1,10 @@
 'use client'
 
-import { useState } from 'react'
 import { Trash2, Loader2, AlertTriangle } from 'lucide-react'
-import { productService } from '@/services/product.service'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import type { ProductWithCategory } from '@/types/product'
+import { useDeleteProductMutation } from '@/hooks/queries/use-products-query'
 
 interface DeleteProductDialogProps {
   product: ProductWithCategory | null
@@ -20,35 +19,23 @@ export function DeleteProductDialog({
   onOpenChange,
   onSuccess,
 }: DeleteProductDialogProps) {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
+  const { mutateAsync: deleteProduct, isPending: loading, error, reset } = useDeleteProductMutation()
+ 
   const handleDelete = async () => {
     if (!product) return
 
     try {
-      setLoading(true)
-      setError(null)
-
-      await productService.deleteProduct(product.id)
-
+      reset() // limpia error previo
+      await deleteProduct(product.id)
+      
       // Vibración de éxito
-      if (navigator.vibrate) {
-        navigator.vibrate(200)
-      }
-
+      if (navigator.vibrate) navigator.vibrate(200)
+      
       onSuccess?.()
       onOpenChange(false)
     } catch (err) {
-      console.error('Error deleting product:', err)
-      setError(err instanceof Error ? err.message : 'Error al eliminar el producto')
-      
-      // Vibración de error
-      if (navigator.vibrate) {
-        navigator.vibrate([100, 50, 100])
-      }
-    } finally {
-      setLoading(false)
+         
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100])
     }
   }
 
@@ -84,7 +71,7 @@ export function DeleteProductDialog({
 
         {error && (
           <div className="p-3 bg-destructive/10 text-destructive rounded-lg text-sm">
-            {error}
+            {error.message}
           </div>
         )}
 

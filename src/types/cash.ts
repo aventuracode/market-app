@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { Money } from '@/lib/money'
 
 // Cash Register Types
 export interface CashRegister {
@@ -13,10 +14,10 @@ export interface CashSession {
   id: string
   cash_register_id: string
   user_id: string
-  opening_amount: number
-  closing_amount: number | null
-  expected_amount: number | null
-  difference: number | null
+  opening_amount: Money
+  closing_amount: Money
+  expected_amount: Money
+  difference: Money
   status: 'open' | 'closed'
   opened_at: string
   closed_at: string | null
@@ -33,7 +34,7 @@ export interface CashMovement {
   cash_session_id: string
   user_id: string | null
   type: CashMovementType
-  amount: number
+  amount: Money
   reference_id: string | null
   notes: string | null
   created_at: string
@@ -49,14 +50,14 @@ export interface CashMovementWithUser extends CashMovement {
 
 // Cash Summary
 export interface CashSummary {
-  opening_amount: number
-  total_sales: number
-  total_income: number
-  total_expenses: number
-  total_card_sales: number
-  total_transfer_sales: number
-  current_balance: number
-  expected_balance: number
+  opening_amount: Money
+  total_sales: Money
+  total_income: Money
+  total_expenses: Money
+  total_card_sales: Money
+  total_transfer_sales: Money
+  current_balance: Money
+  expected_balance: Money
 }
 
 // Form Schemas

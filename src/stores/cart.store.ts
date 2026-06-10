@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { money } from '@/lib/money'
 import type { ProductWithCategory } from '@/types/product'
 import { getProductStep } from '@/lib/product-helpers'
 import { roundWeight } from '@/lib/utils/weight'
@@ -115,10 +116,11 @@ export const useCartStore = create<CartStore>()(
       },
 
       getTotal: () => {
-        return get().items.reduce(
-          (total, item) => total + item.product.sale_price * item.quantity,
+        const total = get().items.reduce(
+          (sum, item) => sum + money(item.product.sale_price) * item.quantity,
           0
         )
+        return money(total)
       },
 
       getItemCount: () => {

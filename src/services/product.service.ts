@@ -1,13 +1,35 @@
 import { createClient } from '@/lib/supabase/client'
+import { money } from '@/lib/money'
 import type { 
   Product, 
   ProductWithCategory, 
   ProductSearchParams, 
-  ProductSearchResult 
+  ProductSearchResult,
+  CreateProductParams,
+  UpdateProductParams
 } from '@/types/product'
 
 export class ProductService {
   private supabase = createClient()
+
+  async getProducts(tenantId: string): Promise<ProductWithCategory[]> {
+    const { data, error } = await this.supabase
+      .from('products')
+      .select(`
+        *,
+        category:categories(*)
+      `)
+      .eq('tenant_id', tenantId)
+      .eq('is_active', true)
+      .order('name', { ascending: true })
+
+    if (error) {
+      console.error('Error fetching products:', error)
+      throw new Error('Error al obtener productos')
+    }
+
+    return (data as ProductWithCategory[]) || []
+  }
 
   async searchProducts(
     tenantId: string,
@@ -138,23 +160,18 @@ export class ProductService {
   /**
    * Crear producto
    */
-  async createProduct(productData: {
-    tenant_id: string
-    name: string
-    description?: string | null
-    barcode: string
-    sku?: string | null
-    category_id?: string | null
-    sale_price: number
-    cost_price?: number | null
-    stock: number
-    minimum_stock: number
-    is_active?: boolean
-  }): Promise<Product> {
+  async createProduct(
+    tenantId: string,
+    productData: Omit<CreateProductParams, 'tenant_id'>
+  ): Promise<Product> {
+    const fullData = {
+      ...productData,
+      tenant_id: tenantId,
+    }
     // Validar que el código de barras no exista
     const existing = await this.getProductByBarcode(
-      productData.tenant_id,
-      productData.barcode
+      tenantId,
+      fullData.barcode
     )
 
     if (existing) {
@@ -164,8 +181,10 @@ export class ProductService {
     const { data, error } = await this.supabase
       .from('products')
       .insert({
-        ...productData,
-        is_active: productData.is_active ?? true,
+        ...fullData,
+        sale_price: money(fullData.sale_price),
+        cost_price: fullData.cost_price !== undefined ? money(fullData.cost_price) : 0,
+        is_active: fullData.is_active ?? true,
       })
       .select()
       .single()
@@ -199,43 +218,33 @@ export class ProductService {
    */
   async updateProduct(
     productId: string,
-    updates: {
-      name?: string
-      description?: string | null
-      barcode?: string
-      sku?: string | null
-      category_id?: string | null
-      sale_price?: number
-      cost_price?: number | null
-      stock?: number
-      minimum_stock?: number
-      is_active?: boolean
-    }
+    tenantId: string,
+    updates: UpdateProductParams
   ): Promise<Product> {
-    // Si se actualiza el código de barras, validar que no exista
-    if (updates.barcode) {
-      const { data: currentProduct } = await this.supabase
-        .from('products')
-        .select('tenant_id')
-        .eq('id', productId)
-        .single()
+    // Sanitizar precios si están presentes
+    const sanitizedUpdates = {
+      ...updates,
+      ...(updates.sale_price !== undefined && { sale_price: money(updates.sale_price) }),
+      ...(updates.cost_price !== undefined && { cost_price: money(updates.cost_price) }),
+    }
 
-      if (currentProduct) {
+    // Si se actualiza el código de barras, validar que no exista
+    if (sanitizedUpdates.barcode) {     
         const existing = await this.getProductByBarcode(
-          currentProduct.tenant_id,
-          updates.barcode
+          tenantId,
+          sanitizedUpdates.barcode
         )
 
         if (existing && existing.id !== productId) {
           throw new Error('Ya existe un producto con este código de barras')
         }
-      }
     }
 
     const { data, error } = await this.supabase
       .from('products')
-      .update(updates)
+      .update(sanitizedUpdates)
       .eq('id', productId)
+      .eq('tenant_id', tenantId)
       .select()
       .single()
 
@@ -254,11 +263,12 @@ export class ProductService {
   /**
    * Eliminar producto (soft delete)
    */
-  async deleteProduct(productId: string): Promise<void> {
+  async deleteProduct(productId: string, tenantId: string): Promise<void> {
     const { error } = await this.supabase
       .from('products')
       .update({ is_active: false })
       .eq('id', productId)
+      .eq('tenant_id', tenantId)
 
     if (error) {
       console.error('Error deleting product:', error)
@@ -269,11 +279,12 @@ export class ProductService {
   /**
    * Restaurar producto
    */
-  async restoreProduct(productId: string): Promise<void> {
+  async restoreProduct(productId: string, tenantId: string): Promise<void> {
     const { error } = await this.supabase
       .from('products')
       .update({ is_active: true })
       .eq('id', productId)
+      .eq('tenant_id', tenantId)
 
     if (error) {
       console.error('Error restoring product:', error)

@@ -40,10 +40,14 @@ export function useAuth() {
           console.error('Error fetching user data:', userError)
         }
 
-        if (userData) {
+        if (userData && typeof userData === 'object') {
+          const userRecord = userData as Record<string, unknown>
+
           const mappedUser = {
-            ...userData,
-            role: ROLE_MAP[userData.role_id as keyof typeof ROLE_MAP]
+            ...userRecord,
+            role: ROLE_MAP[
+              Number(userRecord.role_id) as keyof typeof ROLE_MAP
+            ]
           }
 
           setUser(mappedUser as User)
@@ -85,10 +89,14 @@ export function useAuth() {
           console.error('Error fetching user on auth change:', error)
         }
 
-        if (userData) {
+        if (userData && typeof userData === 'object') {
+          const userRecord = userData as Record<string, unknown>
+
           const mappedUser = {
-            ...userData,
-            role: ROLE_MAP[userData.role_id as keyof typeof ROLE_MAP]
+            ...userRecord,
+            role: ROLE_MAP[
+              Number(userRecord.role_id) as keyof typeof ROLE_MAP
+            ]
           }
 
           setUser(mappedUser as User)

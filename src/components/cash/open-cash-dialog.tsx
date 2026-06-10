@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import CurrencyInput from 'react-currency-input-field'
 import { toast } from 'sonner'
+import { money } from '@/lib/money'
 import { cashService, CashConcurrencyError } from '@/services/cash.service'
 import { useTenant } from '@/hooks/use-tenant'
 import { useAuthStore } from '@/stores/auth.store'
@@ -178,12 +179,7 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
               autoFocus
               onValueChange={(value, name, values) => {
                 setOpeningAmountInput(value || '')
-                
-                if (value && values?.float !== undefined && !isNaN(values.float)) {
-                  setValue('opening_amount', values.float)
-                } else if (!value) {
-                  setValue('opening_amount', 0)
-                }
+                setValue('opening_amount', money(values?.float))
               }}
             />
             {errors.opening_amount && (

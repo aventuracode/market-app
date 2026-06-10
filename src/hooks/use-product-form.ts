@@ -5,7 +5,10 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { productService } from '@/services/product.service'
 import { useTenant } from '@/hooks/use-tenant'
-import { productFormSchema, type ProductFormData } from '@/types/product-form'
+import {
+  productFormSchema,
+  type ProductFormData,
+} from '@/types/product-form'
 import type { Product } from '@/types/product'
 
 interface UseProductFormOptions {
@@ -19,7 +22,7 @@ export function useProductForm(options: UseProductFormOptions = {}) {
   const { tenant } = useTenant()
   const [loading, setLoading] = useState(false)
 
-  const form = useForm<ProductFormData>({
+const form = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
     defaultValues: product
       ? {
@@ -72,12 +75,13 @@ export function useProductForm(options: UseProductFormOptions = {}) {
       const roundedData = {
         ...data,
         sale_price: roundPrice(data.sale_price),
-        cost_price: data.cost_price ? roundPrice(data.cost_price) : null,
+        cost_price: data.cost_price ? roundPrice(data.cost_price) : undefined,
+        
       }
 
       if (product) {
         // Actualizar producto existente
-        result = await productService.updateProduct(product.id, {
+        result = await productService.updateProduct( product.id,tenant.id, {
           ...roundedData,
           description: roundedData.description || null,
           sku: roundedData.sku || null,
@@ -85,8 +89,7 @@ export function useProductForm(options: UseProductFormOptions = {}) {
         })
       } else {
         // Crear nuevo producto
-        result = await productService.createProduct({
-          tenant_id: tenant.id,
+        result = await productService.createProduct(tenant.id, {
           ...roundedData,
           description: roundedData.description || null,
           sku: roundedData.sku || null,

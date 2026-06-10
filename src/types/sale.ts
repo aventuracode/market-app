@@ -1,3 +1,5 @@
+import type { Money } from '@/lib/money'
+
 export type PaymentMethod = 'CASH' | 'CARD' | 'TRANSFER'
 
 export type SaleStatus = 'COMPLETED' | 'PENDING' | 'CANCELLED'
@@ -5,8 +7,8 @@ export type SaleStatus = 'COMPLETED' | 'PENDING' | 'CANCELLED'
 export interface SaleItem {
   product_id: string
   quantity: number
-  unit_price: number
-  subtotal: number
+  unit_price: Money
+  subtotal: Money
 }
 
 export interface CreateSaleParams {
@@ -24,10 +26,10 @@ export interface Sale {
   user_id: string
   sale_number: string
   payment_method: PaymentMethod
-  subtotal: number
-  tax: number
-  discount: number
-  total: number
+  subtotal: Money
+  tax: Money
+  discount: Money
+  total: Money
   status: SaleStatus
   created_at: string
   updated_at: string
@@ -49,7 +51,7 @@ export interface StockMovement {
 
 export interface CashMovement {
   id: string
-  amount: number
+  amount: Money
   movement_type: 'INCOME' | 'EXPENSE'
   reference_id: string
   description: string
