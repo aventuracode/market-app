@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import type { Money } from '@/lib/money'
 import type { Database } from './supabase.generated'
+import { StockMovementType } from './stock'
 
 type Tables<T extends keyof Database['public']['Tables']> =
   Database['public']['Tables'][T]['Row']
@@ -24,8 +25,7 @@ export type CashSession = Omit<Tables<'cash_sessions'>, 'opening_amount' | 'clos
   opened_at: string
 }
 
-// Cash Movement Types - UPPERCASE para coincidir con la base de datos
-export type CashMovementType = 'SALE' | 'EXPENSE' | 'INCOME' | 'OPENING' | 'CLOSING' | 'ADJUSTMENT'
+
 
 export type CashMovement = Omit<Tables<'cash_movements'>, 'amount' | 'created_at' | 'cash_session_id'> & {
   amount: Money
@@ -94,22 +94,23 @@ export const cashMovementSchema = z.object({
 
 export type CashMovementFormData = z.infer<typeof cashMovementSchema>
 
-// Movement type labels
-export const MOVEMENT_TYPE_LABELS: Record<CashMovementType, string> = {
-  INCOME: 'Ingreso',
-  EXPENSE: 'Egreso',
-  SALE: 'Venta',
+export type CashMovementType =
+  Database['public']['Enums']['cash_movement_type']
+
+export const CASH_MOVEMENT_LABELS: Record<CashMovementType, string> = {
   OPENING: 'Apertura',
+  SALE: 'Venta',
+  INCOME: 'Ingreso',
+  EXPENSE: 'Gasto',
   CLOSING: 'Cierre',
   ADJUSTMENT: 'Ajuste',
 }
 
-// Movement type colors
-export const MOVEMENT_TYPE_COLORS: Record<CashMovementType, string> = {
-  INCOME: 'text-green-600 bg-green-50 dark:bg-green-950',
-  EXPENSE: 'text-red-600 bg-red-50 dark:bg-red-950',
-  SALE: 'text-blue-600 bg-blue-50 dark:bg-blue-950',
-  OPENING: 'text-purple-600 bg-purple-50 dark:bg-purple-950',
-  CLOSING: 'text-orange-600 bg-orange-50 dark:bg-orange-950',
-  ADJUSTMENT: 'text-yellow-600 bg-yellow-50 dark:bg-yellow-950',
+export const CASH_MOVEMENT_COLORS: Record<CashMovementType, string> = {
+  OPENING: 'text-purple-600 bg-purple-50',
+  SALE: 'text-blue-600 bg-blue-50',
+  INCOME: 'text-green-600 bg-green-50',
+  EXPENSE: 'text-red-600 bg-red-50',
+  CLOSING: 'text-orange-600 bg-orange-50',
+  ADJUSTMENT: 'text-yellow-600 bg-yellow-50',
 }

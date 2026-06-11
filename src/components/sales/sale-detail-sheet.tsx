@@ -18,7 +18,7 @@ import {
   Package
 } from 'lucide-react'
 import { formatCurrency, formatDateTime } from '@/lib/utils/format'
-import type { SaleWithRelations } from '@/types/sales-extended'
+import type { SaleWithDetails as SaleWithRelations, PaymentMethod } from '@/types/sales'
 
 interface SaleDetailSheetProps {
   sale: SaleWithRelations | null

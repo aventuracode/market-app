@@ -6,16 +6,16 @@ import { SaleDetailSheet } from './sale-detail-sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardContent } from '@/components/ui/card'
 import { ShoppingBag } from 'lucide-react'
-import type { SaleWithRelations } from '@/types/sales-extended'
+import type { SaleWithDetails } from '@/types/sales'
 
 interface SalesListProps {
-  sales: SaleWithRelations[] | undefined
+  sales: SaleWithDetails[] | undefined
   isLoading: boolean
   newSaleIds?: Set<string>
 }
 
 export function SalesList({ sales, isLoading, newSaleIds = new Set() }: SalesListProps) {
-  const [selectedSale, setSelectedSale] = useState<SaleWithRelations | null>(null)
+  const [selectedSale, setSelectedSale] = useState<SaleWithDetails | null>(null)
 
   if (isLoading) {
     return (

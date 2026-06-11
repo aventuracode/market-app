@@ -111,7 +111,7 @@ export function StockAdjustmentDialog({
               className="flex h-11 w-full rounded-lg border-2 border-input bg-background px-4 py-3 text-base font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="adjustment">Ajuste Manual</option>
-              <option value="damage">Daño/Pérdida</option>
+              <option value="damage">Daño / Pérdida</option>
               <option value="return">Devolución</option>
               <option value="transfer">Transferencia</option>
             </select>

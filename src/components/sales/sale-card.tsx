@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Clock, User, Package, CreditCard, Banknote, ArrowRightLeft } from 'lucide-react'
 import { formatCurrency, formatTime } from '@/lib/utils/format'
-import type { SaleWithRelations } from '@/types/sales-extended'
+import type { SaleWithDetails as SaleWithRelations, PaymentMethod } from '@/types/sales'
 import { cn } from '@/lib/utils'
 
 interface SaleCardProps {

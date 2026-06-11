@@ -1,13 +1,8 @@
 import { z } from 'zod'
+import type { Database } from '@/types/supabase.generated'
 
-// Stock Movement Types
-export type StockMovementType = 
-  | 'purchase'      // Compra
-  | 'sale'          // Venta
-  | 'adjustment'    // Ajuste manual
-  | 'return'        // Devolución
-  | 'damage'        // Daño/Pérdida
-  | 'transfer'      // Transferencia
+export type StockMovementType =
+  Database['public']['Enums']['stock_movement_type']
 
 export interface StockMovement {
   id: string
@@ -55,8 +50,14 @@ export interface StockMovementFull extends StockMovement {
 }
 
 // Stock Adjustment Form
+// Stock Adjustment Form
 export const stockAdjustmentSchema = z.object({
-  type: z.enum(['adjustment', 'damage', 'return', 'transfer']),
+  reason: z.enum([
+    'adjustment',
+    'damage',
+    'return',
+    'transfer',
+  ]),
   quantity: z
     .number()
     .min(1, 'La cantidad debe ser mayor a 0')
@@ -102,21 +103,13 @@ export interface StockSummary {
 }
 
 // Movement type labels
-export const MOVEMENT_TYPE_LABELS: Record<StockMovementType, string> = {
-  purchase: 'Compra',
-  sale: 'Venta',
-  adjustment: 'Ajuste',
-  return: 'Devolución',
-  damage: 'Daño/Pérdida',
-  transfer: 'Transferencia',
+export const STOCK_MOVEMENT_TYPE_LABELS: Record<StockMovementType, string> = {
+  IN: 'Entrada',
+  OUT: 'Salida',
+  ADJUSTMENT: 'Ajuste',
 }
-
-// Movement type colors
-export const MOVEMENT_TYPE_COLORS: Record<StockMovementType, string> = {
-  purchase: 'text-green-600 bg-green-50',
-  sale: 'text-blue-600 bg-blue-50',
-  adjustment: 'text-purple-600 bg-purple-50',
-  return: 'text-orange-600 bg-orange-50',
-  damage: 'text-red-600 bg-red-50',
-  transfer: 'text-gray-600 bg-gray-50',
+export const STOCK_MOVEMENT_TYPE_COLORS: Record<StockMovementType, string> = {
+  IN: 'text-green-600 bg-green-50',
+  OUT: 'text-red-600 bg-red-50',
+  ADJUSTMENT: 'text-purple-600 bg-purple-50',
 }

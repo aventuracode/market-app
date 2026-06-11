@@ -5,6 +5,7 @@ import type {
   CreateStockMovementData,
   StockMovementFilters,
   StockSummary,
+  StockMovementType,
 } from '@/types/stock'
 
 class StockMovementService {
@@ -103,18 +104,16 @@ class StockMovementService {
     movements.forEach((movement) => {
       const qty = Number(movement.quantity)
       switch (movement.type) {
-        case 'purchase':
+        case 'IN':
           summary.total_purchases += qty
           break
-        case 'sale':
+        case 'OUT':
           summary.total_sales += qty
           break
-        case 'adjustment':
+        case 'ADJUSTMENT':
           summary.total_adjustments += qty
           break
-        case 'damage':
-          summary.total_damages += qty
-          break
+        
       }
     })
 
@@ -159,6 +158,7 @@ class StockMovementService {
       .from('products')
       .update({ stock: movementData.new_stock })
       .eq('id', movementData.product_id)
+      .eq('tenant_id', movementData.tenant_id)
 
     if (updateError) {
       console.error('Error updating product stock:', updateError)
@@ -167,6 +167,7 @@ class StockMovementService {
         .from('stock_movements')
         .delete()
         .eq('id', movement.id)
+        
       
       throw new Error('Error al actualizar el stock del producto')
     }
@@ -183,7 +184,7 @@ class StockMovementService {
     userId: string,
     quantity: number,
     operation: 'increase' | 'decrease',
-    type: 'adjustment' | 'damage' | 'return' | 'transfer',
+    reason: 'adjustment' | 'damage' | 'return' | 'transfer',
     notes: string
   ): Promise<StockMovement> {
     // Obtener stock actual del producto
@@ -205,15 +206,21 @@ class StockMovementService {
     if (newStock < 0) {
       throw new Error('El stock no puede ser negativo')
     }
+    const movementType: StockMovementType =
+      reason === 'adjustment'
+        ? 'ADJUSTMENT'
+        : operation === 'increase'
+          ? 'IN'
+          : 'OUT'
 
     return this.createStockMovement({
       tenant_id: tenantId,
       product_id: productId,
-      type,
+      type: movementType,
       quantity: Math.abs(adjustmentQty),
       previous_stock: previousStock,
       new_stock: newStock,
-      notes,
+      notes: `[${reason.toUpperCase()}] ${notes}`,
       created_by: userId,
     })
   }
@@ -248,7 +255,7 @@ class StockMovementService {
     return this.createStockMovement({
       tenant_id: tenantId,
       product_id: productId,
-      type: 'sale',
+      type: 'OUT',
       quantity,
       previous_stock: previousStock,
       new_stock: newStock,
@@ -284,7 +291,7 @@ class StockMovementService {
     return this.createStockMovement({
       tenant_id: tenantId,
       product_id: productId,
-      type: 'purchase',
+      type: 'IN',
       quantity,
       previous_stock: previousStock,
       new_stock: newStock,

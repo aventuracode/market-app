@@ -19,7 +19,16 @@ class SaleService {
       this.validateSaleParams(params)
       
       // Sanitizar valores financieros antes de enviar
-      const sanitizedParams = this.sanitizeSaleParams(params)
+      // const sanitizedParams = this.sanitizeSaleParams(params)
+      const sanitizedParams = {
+        ...params,
+        items: params.items.map(item => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+          unit_price: Number(item.unit_price),
+          subtotal: Number(item.subtotal),
+        })),
+      }
 
       // Llamada a RPC con parámetros sanitizados
       const { data, error } = await this.supabase.rpc('create_sale', {

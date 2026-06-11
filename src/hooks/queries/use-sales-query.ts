@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import { salesHistoryService } from '@/services/sales-history.service'
 import { useTenant } from '@/hooks/use-tenant'
 import { useAuthStore } from '@/stores/auth.store'
-import type { SalesQueryFilters } from '@/types/sales-extended'
+import type { SalesQueryFilters } from '@/types/sales'
 import type { SalesPeriod } from '@/schemas'
 
 /**

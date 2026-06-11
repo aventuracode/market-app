@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/client'
-import type { Sale, SaleWithDetails } from '@/types/sales'
+import type { SaleWithDetails } from '@/types/sales'
 import type { Role } from '@/types'
-
+import { mapSale, mapSales } from '@/lib/mapper/sale.mapper'
 // TODO: Refactor Sale, SaleWithDetails, SaleWithRelations types to derive from Supabase generated types
 // Current types are missing fields like 'tax', 'updated_at' and have type mismatches with DB schema
 
@@ -123,7 +123,7 @@ class SalesService {
         throw new Error(error.message || 'Error al cargar ventas')
       }
 
-      return (data as SaleWithDetails[]) || []
+      return mapSales(data ?? [])
     } catch (err) {
       // Re-lanzar errores personalizados
       if (err instanceof SalesPermissionError) {
@@ -180,8 +180,7 @@ class SalesService {
 
         throw new Error(error.message || 'Error al cargar venta')
       }
-
-      return data as SaleWithDetails
+      return mapSale(data)
     } catch (err) {
       if (err instanceof SalesPermissionError) {
         throw err

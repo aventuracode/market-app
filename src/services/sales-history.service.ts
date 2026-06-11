@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
 import { money } from '@/lib/money'
-import type { SaleWithRelations, SalesStats, SalesQueryFilters } from '@/types/sales-extended'
+import type { SaleWithDetails, SalesStats, SalesQueryFilters } from '@/types/sales'
 import { startOfDay, startOfWeek, startOfMonth, endOfDay } from 'date-fns'
 
 /**
@@ -13,7 +13,7 @@ class SalesHistoryService {
   /**
    * Obtiene ventas con filtros y relaciones
    */
-  async getSales(filters: SalesQueryFilters): Promise<SaleWithRelations[]> {
+  async getSales(filters: SalesQueryFilters): Promise<SaleWithDetails[]> {
     try {
       let query = this.supabase
         .from('sales')
@@ -22,16 +22,19 @@ class SalesHistoryService {
           sale_items (
             *,
             products (
+              id,
               name,
               sku,
               barcode
             )
           ),
           users (
+            id,
             first_name,
             last_name
           ),
           cash_registers (
+            id,
             name
           )
         `)
@@ -72,7 +75,9 @@ class SalesHistoryService {
         throw error
       }
 
-      return (data as SaleWithRelations[]) || []
+      // Normalizar datos de DB a tipos de dominio
+      const normalized = (data || []).map(sale => this.normalizeSale(sale))
+      return normalized
     } catch (error) {
       console.error('[SalesHistoryService] getSales error:', error)
       throw error
@@ -82,7 +87,7 @@ class SalesHistoryService {
   /**
    * Obtiene una venta por ID con todas sus relaciones
    */
-  async getSaleById(saleId: string, tenantId: string): Promise<SaleWithRelations | null> {
+  async getSaleById(saleId: string, tenantId: string): Promise<SaleWithDetails | null> {
     try {
       const { data, error } = await this.supabase
         .from('sales')
@@ -91,16 +96,19 @@ class SalesHistoryService {
           sale_items (
             *,
             products (
+              id,
               name,
               sku,
               barcode
             )
           ),
           users (
+            id,
             first_name,
             last_name
           ),
           cash_registers (
+            id,
             name
           )
         `)
@@ -113,7 +121,7 @@ class SalesHistoryService {
         throw error
       }
 
-      return data as SaleWithRelations
+      return data ? this.normalizeSale(data) : null
     } catch (error) {
       console.error('[SalesHistoryService] getSaleById error:', error)
       return null
@@ -207,6 +215,27 @@ class SalesHistoryService {
       case 'all':
       default:
         return {}
+    }
+  }
+
+  /**
+   * Normaliza una venta de DB a tipo de dominio
+   * Convierte number → Money y sale_number a string
+   */
+  private normalizeSale(sale: any): SaleWithDetails {
+    return {
+      ...sale,
+      total: money(sale.total),
+      subtotal: money(sale.subtotal),
+      discount: money(sale.discount ?? 0),
+      sale_number: String(sale.sale_number),
+      created_at: sale.created_at ?? new Date().toISOString(),
+      sale_items: (sale.sale_items || []).map((item: any) => ({
+        ...item,
+        unit_price: money(item.unit_price),
+        subtotal: money(item.subtotal),
+        cost_price: money(item.cost_price),
+      })),
     }
   }
 

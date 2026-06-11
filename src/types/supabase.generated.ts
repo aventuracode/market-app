@@ -430,7 +430,7 @@ export type Database = {
       }
       stock_movements: {
         Row: {
-          created_at: string | null
+          created_at: string
           created_by: string | null
           id: string
           new_stock: number
@@ -440,10 +440,10 @@ export type Database = {
           quantity: number
           reference_id: string | null
           tenant_id: string
-          type: string
+          type: Database["public"]["Enums"]["stock_movement_type"]
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           created_by?: string | null
           id?: string
           new_stock: number
@@ -453,10 +453,10 @@ export type Database = {
           quantity: number
           reference_id?: string | null
           tenant_id: string
-          type: string
+          type: Database["public"]["Enums"]["stock_movement_type"]
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           created_by?: string | null
           id?: string
           new_stock?: number
@@ -466,7 +466,7 @@ export type Database = {
           quantity?: number
           reference_id?: string | null
           tenant_id?: string
-          type?: string
+          type?: Database["public"]["Enums"]["stock_movement_type"]
         }
         Relationships: [
           {
@@ -577,27 +577,6 @@ export type Database = {
         }
         Returns: string
       }
-      create_sale_1_ok: {
-        Args: {
-          p_cash_register_id: string
-          p_cash_session_id: string
-          p_items: Json
-          p_payment_method: string
-          p_tenant_id: string
-          p_user_id: string
-        }
-        Returns: string
-      }
-      create_sale_2_NA: {
-        Args: {
-          p_cash_register_id: string
-          p_items: Json
-          p_payment_method: string
-          p_tenant_id: string
-          p_user_id: string
-        }
-        Returns: string
-      }
       get_current_tenant_id: { Args: never; Returns: string }
       get_my_tenant_id: { Args: never; Returns: string }
       update_product_stock: {
@@ -614,6 +593,7 @@ export type Database = {
         | "CLOSING"
         | "ADJUSTMENT"
       payment_method: "CASH" | "CARD" | "TRANSFER"
+      stock_movement_type: "IN" | "OUT" | "ADJUSTMENT"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -750,6 +730,7 @@ export const Constants = {
         "ADJUSTMENT",
       ],
       payment_method: ["CASH", "CARD", "TRANSFER"],
+      stock_movement_type: ["IN", "OUT", "ADJUSTMENT"],
     },
   },
 } as const

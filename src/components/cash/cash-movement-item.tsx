@@ -3,7 +3,7 @@
 import { TrendingUp, TrendingDown, ShoppingCart, User } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { MOVEMENT_TYPE_LABELS } from '@/types/cash'
+import { CASH_MOVEMENT_LABELS } from '@/types/cash'
 import type { CashMovementWithUser } from '@/types/cash'
 import { formatCurrency } from '@/lib/utils/currency'
 
@@ -71,13 +71,13 @@ export function CashMovementItem({ movement }: CashMovementItemProps) {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-semibold text-sm">
-                  {MOVEMENT_TYPE_LABELS[movement.type]}
+                  {CASH_MOVEMENT_LABELS[movement.type]}
                 </span>
                 <Badge 
                   variant="outline" 
                   className={`text-[10px] px-1.5 py-0 h-5 ${getBadgeClass()}`}
                 >
-                  {movement.type === 'EXPENSE' ? 'Egreso' : movement.type === 'INCOME' ? 'Ingreso' : 'Venta'}
+                  {CASH_MOVEMENT_LABELS[movement.type]}
                 </Badge>
               </div>
               {movement.notes && (

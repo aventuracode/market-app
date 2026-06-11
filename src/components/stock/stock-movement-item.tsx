@@ -4,7 +4,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { TrendingUp, TrendingDown, User } from 'lucide-react'
 import { Card } from '@/components/ui/card'
-import { MOVEMENT_TYPE_LABELS } from '@/types/stock'
+import { STOCK_MOVEMENT_TYPE_LABELS } from '@/types/stock'
 import type { StockMovementFull } from '@/types/stock'
 
 interface StockMovementItemProps {
@@ -40,7 +40,7 @@ export function StockMovementItem({ movement }: StockMovementItemProps) {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-semibold text-sm">
-                  {MOVEMENT_TYPE_LABELS[movement.type]}
+                  {STOCK_MOVEMENT_TYPE_LABELS[movement.type]}
                 </span>
                 <span
                   className={`text-sm font-medium ${
