@@ -4,7 +4,7 @@ import { TrendingUp, ShoppingCart, CreditCard } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatCurrency } from '@/lib/utils/format'
-import type { SalesStats } from '@/types/sales'
+import type { SalesStats } from '@/features/sales/domain/sales.types'
 
 interface SalesStatsProps {
   stats: SalesStats | undefined

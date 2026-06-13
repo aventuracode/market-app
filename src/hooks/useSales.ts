@@ -6,7 +6,7 @@ import { salesService, SalesPermissionError } from '@/services/sales.service'
 import { useTenant } from '@/hooks/use-tenant'
 import { useAuthStore } from '@/stores/auth.store'
 import { useCashStore } from '@/stores/cash.store'
-import type { SalesPeriod } from '@/types/sales'
+import type { SalesPeriod } from '@/features/sales/domain/sales.types'
 import type { SalesFilters } from '@/services/sales.service'
 
 /**

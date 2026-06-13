@@ -2,7 +2,7 @@
 
 import { Calendar, CalendarDays, CalendarRange, Infinity } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { SalesPeriod } from '@/types/sales'
+import type { SalesPeriod } from '@/features/sales/domain/sales.types'
 
 interface SalesPeriodTabsProps {
   period: SalesPeriod

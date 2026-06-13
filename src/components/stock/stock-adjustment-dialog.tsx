@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Loader2, Plus, Minus, AlertCircle } from 'lucide-react'
-import { useStockAdjustment } from '@/hooks/use-stock-adjustment'
+import { useStockAdjustment } from '@/hooks/useStockAdjustment'
 import {
   Dialog,
   DialogContent,

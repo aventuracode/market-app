@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { stockMovementService } from '@/services/stock-movement.service'
 import { useTenant } from '@/hooks/use-tenant'
@@ -24,14 +24,14 @@ export function useStockAdjustment(options: UseStockAdjustmentOptions) {
   const form = useForm<StockAdjustmentFormData>({
     resolver: zodResolver(stockAdjustmentSchema),
     defaultValues: {
-      type: 'adjustment',
+      reason: 'adjustment',
       quantity: 1,
       operation: 'increase',
       notes: '',
     },
   })
 
-  const onSubmit = async (data: StockAdjustmentFormData) => {
+const onSubmit: SubmitHandler<StockAdjustmentFormData> = async (data) => {
     if (!tenant?.id || !user?.id) {
       onError?.(new Error('No hay sesión activa'))
       return
@@ -46,7 +46,7 @@ export function useStockAdjustment(options: UseStockAdjustmentOptions) {
         user.id,
         data.quantity,
         data.operation,
-        data.type,
+        data.reason,
         data.notes
       )
 
@@ -63,10 +63,10 @@ export function useStockAdjustment(options: UseStockAdjustmentOptions) {
       setLoading(false)
     }
   }
-
+const handleSubmit = form.handleSubmit(onSubmit)
   return {
     form,
     loading,
-    onSubmit: form.handleSubmit(onSubmit),
+    onSubmit:handleSubmit
   }
 }

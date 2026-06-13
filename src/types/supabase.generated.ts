@@ -353,8 +353,8 @@ export type Database = {
       }
       sales: {
         Row: {
-          cash_register_id: string | null
-          cash_session_id: string | null
+          cash_register_id: string
+          cash_session_id: string
           created_at: string | null
           discount: number | null
           id: string
@@ -368,8 +368,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          cash_register_id?: string | null
-          cash_session_id?: string | null
+          cash_register_id: string
+          cash_session_id: string
           created_at?: string | null
           discount?: number | null
           id?: string
@@ -383,8 +383,8 @@ export type Database = {
           user_id: string
         }
         Update: {
-          cash_register_id?: string | null
-          cash_session_id?: string | null
+          cash_register_id?: string
+          cash_session_id?: string
           created_at?: string | null
           discount?: number | null
           id?: string

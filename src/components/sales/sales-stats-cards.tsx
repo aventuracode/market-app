@@ -3,7 +3,7 @@
 import { ShoppingCart, TrendingUp, CreditCard, Banknote, ArrowRightLeft } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { SalesStats } from '@/types/sales'
+import type { SalesStats } from '@/features/sales/domain/sales.types'
 import { formatCurrency } from '@/lib/utils/currency'
 
 interface SalesStatsCardsProps {

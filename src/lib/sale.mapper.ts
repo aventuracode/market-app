@@ -1,6 +1,6 @@
 // src/lib/mappers/sale.mapper.ts
 import { money } from '@/lib/money'
-import type { SaleDB, SaleItemDB, SaleWithDetails, SaleItemWithProduct } from '@/types/sales'
+import type { SaleDB, SaleItemDB, SaleWithDetails, SaleItemWithProduct } from '@/features/sales/domain/sales.types'
 
 type RawSaleItem = SaleItemDB & {
   products: {
@@ -40,6 +40,8 @@ export function mapSale(raw: RawSaleWithDetails): SaleWithDetails {
     cash_registers: raw.cash_registers ?? undefined,
   }
 }
+
+
 
 export function mapSales(raws: RawSaleWithDetails[]): SaleWithDetails[] {
   return raws.map(mapSale)

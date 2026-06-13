@@ -6,7 +6,7 @@ import { SaleDetailSheet } from './sale-detail-sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardContent } from '@/components/ui/card'
 import { ShoppingBag } from 'lucide-react'
-import type { SaleWithDetails } from '@/types/sales'
+import type { SaleWithDetails } from '@/features/sales/domain/sales.types'
 
 interface SalesListProps {
   sales: SaleWithDetails[] | undefined

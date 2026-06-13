@@ -5,7 +5,7 @@ import { useSales, useSalesStats, useSalesPageTitle } from '@/hooks/useSales'
 import { SalesStatsCards } from '@/components/sales/sales-stats-cards'
 import { SalesPeriodTabs } from '@/components/sales/sales-period-tabs'
 import { SalesTable } from '@/components/sales/sales-table'
-import type { SalesPeriod } from '@/types/sales'
+import type { SalesPeriod } from '@/features/sales/domain/sales.types'
 
 /**
  * Página de ventas con filtrado automático por rol

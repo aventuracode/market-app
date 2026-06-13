@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
 import { money } from '@/lib/money'
-import type { SaleWithDetails, SalesStats, SalesQueryFilters } from '@/types/sales'
+import type { SaleWithDetails, SalesStats, SalesQueryFilters } from '@/features/sales/domain/sales.types'
 import { startOfDay, startOfWeek, startOfMonth, endOfDay } from 'date-fns'
 
 /**
