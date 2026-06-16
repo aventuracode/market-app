@@ -4,7 +4,7 @@
 import { useCallback } from 'react'
 import { money, validateCheckoutTotal } from '@/lib/money'
 import type { CartItem } from '@/stores/cart.store'
-import { SaleItemInput } from './saleItemInput.types'
+import { SaleItemInput } from '../domain/saleItemInput.types'
 
 const UNIT_LABELS: Record<string, string> = {
   UNIT: 'un',

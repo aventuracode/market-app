@@ -20,7 +20,7 @@ import {
   ProductListSearching,
 } from '@/components/pos/product-list-states'
 import { Button } from '@/components/ui/button'
-import { CartSheet } from '@/components/cart/cart-sheet'
+import { CartSheet } from '@/features/checkout/application/cart-sheet'
 import { BarcodeScanner } from '@/components/scanner/barcode-scanner'
 import { motion } from 'framer-motion'
 import type { ProductWithCategory } from '@/types/product'

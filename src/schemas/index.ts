@@ -9,7 +9,7 @@
 export * from './product.schema'
 
 // Sale schemas
-export * from './sale.schema'
+export * from '../features/checkout/domain/sale.schema'
 
 // Cash schemas
 export * from './cash.schema'

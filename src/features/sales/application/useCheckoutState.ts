@@ -3,6 +3,7 @@
 // SRP: único responsable del estado del checkout
  
 import { useState, useCallback } from 'react'
+import { CheckoutState } from '../domain/sale.types'
  
 const INITIAL_STATE: CheckoutState = {
   loading: false,
@@ -17,7 +18,7 @@ export function useCheckoutState() {
   const setLoading = useCallback(() =>
     setState({ loading: true, success: false, error: null, saleNumber: null }), [])
  
-  const setSuccess = useCallback((saleNumber: number | null) =>
+  const setSuccess = useCallback((saleNumber:string | number) =>
     setState({ loading: false, success: true, error: null, saleNumber }), [])
  
   const setError = useCallback((error: string) =>

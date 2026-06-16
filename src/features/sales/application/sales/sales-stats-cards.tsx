@@ -34,8 +34,6 @@ export function SalesStatsCards({ stats, isLoading }: SalesStatsCardsProps) {
     return null
   }
 
-  const totalTransfer = stats.totalSales - stats.totalCash - stats.totalCard
-
   return (
     <div className="grid grid-cols-2 gap-3 mb-6">
       {/* Total Ventas */}
@@ -47,9 +45,9 @@ export function SalesStatsCards({ stats, isLoading }: SalesStatsCardsProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="pb-4">
-          <div className="text-2xl font-bold tracking-tight">{formatCurrency(stats.totalSales)}</div>
+          <div className="text-2xl font-bold tracking-tight">{formatCurrency(stats.total_sales)}</div>
           <p className="text-[11px] text-muted-foreground/70 mt-1.5">
-            {stats.salesCount} {stats.salesCount === 1 ? 'venta' : 'ventas'}
+            {stats.sales_count} {stats.sales_count === 1 ? 'venta' : 'ventas'}
           </p>
         </CardContent>
       </Card>
@@ -63,16 +61,16 @@ export function SalesStatsCards({ stats, isLoading }: SalesStatsCardsProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="pb-4">
-          <div className="text-2xl font-bold tracking-tight">{formatCurrency(totalTransfer)}</div>
+          <div className="text-2xl font-bold tracking-tight">{formatCurrency(stats.sales_by_payment_method.TRANSFER)}</div>
           <div className="flex items-center gap-1.5 mt-1.5">
             <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
               <div 
                 className="h-full bg-purple-500/80 rounded-full transition-all duration-300"
-                style={{ width: `${Math.round((totalTransfer / stats.totalSales) * 100) || 0}%` }}
+                style={{ width: `${Math.round((stats.sales_by_payment_method.TRANSFER / stats.total_sales) * 100) || 0}%` }}
               />
             </div>
             <span className="text-[11px] text-muted-foreground/70 font-medium min-w-[32px] text-right">
-              {Math.round((totalTransfer / stats.totalSales) * 100) || 0}%
+              {Math.round((stats.sales_by_payment_method.TRANSFER / stats.total_sales) * 100) || 0}%
             </span>
           </div>
         </CardContent>
@@ -87,16 +85,16 @@ export function SalesStatsCards({ stats, isLoading }: SalesStatsCardsProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="pb-4">
-          <div className="text-2xl font-bold tracking-tight">{formatCurrency(stats.totalCash)}</div>
+          <div className="text-2xl font-bold tracking-tight">{formatCurrency(stats.sales_by_payment_method.CASH)}</div>
           <div className="flex items-center gap-1.5 mt-1.5">
             <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
               <div 
                 className="h-full bg-green-500/80 rounded-full transition-all duration-300"
-                style={{ width: `${Math.round((stats.totalCash / stats.totalSales) * 100) || 0}%` }}
+                style={{ width: `${Math.round((stats.sales_by_payment_method.CASH / stats.total_sales) * 100) || 0}%` }}
               />
             </div>
             <span className="text-[11px] text-muted-foreground/70 font-medium min-w-[32px] text-right">
-              {Math.round((stats.totalCash / stats.totalSales) * 100) || 0}%
+              {Math.round((stats.sales_by_payment_method.CASH / stats.total_sales) * 100) || 0}%
             </span>
           </div>
         </CardContent>
@@ -111,16 +109,16 @@ export function SalesStatsCards({ stats, isLoading }: SalesStatsCardsProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="pb-4">
-          <div className="text-2xl font-bold tracking-tight">{formatCurrency(stats.totalCard)}</div>
+          <div className="text-2xl font-bold tracking-tight">{formatCurrency(stats.sales_by_payment_method.CARD)}</div>
           <div className="flex items-center gap-1.5 mt-1.5">
             <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
               <div 
                 className="h-full bg-blue-500/80 rounded-full transition-all duration-300"
-                style={{ width: `${Math.round((stats.totalCard / stats.totalSales) * 100) || 0}%` }}
+                style={{ width: `${Math.round((stats.sales_by_payment_method.CARD / stats.total_sales) * 100) || 0}%` }}
               />
             </div>
             <span className="text-[11px] text-muted-foreground/70 font-medium min-w-[32px] text-right">
-              {Math.round((stats.totalCard / stats.totalSales) * 100) || 0}%
+              {Math.round((stats.sales_by_payment_method.CARD / stats.total_sales) * 100) || 0}%
             </span>
           </div>
         </CardContent>

@@ -71,9 +71,26 @@ export type CreateSaleResponse = {
   cash_movement: Tables<'cash_movements'> | null
 }
 
-// export interface CheckoutState {
-//   loading: boolean
-//   success: boolean
-//   error: string | null
-//   saleNumber: string | null
-// }
+export interface CheckoutState {
+  loading: boolean
+  success: boolean
+  error: string | null
+  saleNumber: string | number | null
+}
+export function emptySale(id: string): Sale {
+  return {
+    id,
+    tenant_id: '',
+    user_id: '',
+    cash_register_id: '',
+    cash_session_id: '',
+    payment_method: 'CASH',
+    subtotal: 0,
+    discount: null,
+    total: 0,
+    status: null,
+    sale_number: 0,
+    notes: null,
+    created_at: null,
+  }
+}

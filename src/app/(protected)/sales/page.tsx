@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { useSales, useSalesStats, useSalesPageTitle } from '@/hooks/useSales'
-import { SalesStatsCards } from '@/components/sales/sales-stats-cards'
-import { SalesPeriodTabs } from '@/components/sales/sales-period-tabs'
-import { SalesTable } from '@/components/sales/sales-table'
+import { SalesStatsCards } from '@/features/sales/application/sales/sales-stats-cards'
+import { SalesPeriodTabs } from '@/features/sales/application/sales/sales-period-tabs'
+import { SalesTable } from '@/features/sales/application/sales/sales-table'
 import type { SalesPeriod } from '@/features/sales/domain/sales.types'
 
 /**
@@ -20,7 +20,7 @@ export default function SalesPage() {
   // Cargar ventas y estadísticas
   const { data: sales, isLoading: salesLoading, error: salesError } = useSales(period)
   const { data: stats, isLoading: statsLoading } = useSalesStats(period)
-
+console.log('data:::',stats)
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}

@@ -4,7 +4,7 @@
 import type { CartItem } from '@/stores/cart.store'
 import { Tenant } from '@/types'
 import { CashSession } from '@/types/cash'
-import { User } from '@supabase/supabase-js'
+import type { User } from '@/types'
 import { useCallback } from 'react'
 
 interface GuardDeps {

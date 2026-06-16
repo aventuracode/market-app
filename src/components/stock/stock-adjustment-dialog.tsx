@@ -57,7 +57,6 @@ export function StockAdjustmentDialog({
   } = form
 
   const operation = watch('operation')
-  const type = watch('type')
   const quantity = watch('quantity')
 
   if (!product) return null
@@ -102,12 +101,12 @@ export function StockAdjustmentDialog({
             </Button>
           </div>
 
-          {/* Tipo de Movimiento */}
+          {/* Motivo del ajuste */}
           <div className="space-y-2">
-            <Label htmlFor="type">Tipo de Movimiento</Label>
+            <Label htmlFor="reason">Motivo del Ajuste</Label>
             <select
-              id="type"
-              {...register('type')}
+              id="reason"
+              {...register('reason')}
               className="flex h-11 w-full rounded-lg border-2 border-input bg-background px-4 py-3 text-base font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="adjustment">Ajuste Manual</option>
@@ -115,8 +114,8 @@ export function StockAdjustmentDialog({
               <option value="return">Devolución</option>
               <option value="transfer">Transferencia</option>
             </select>
-            {errors.type && (
-              <p className="text-sm text-destructive">{errors.type.message}</p>
+            {errors.reason && (
+              <p className="text-sm text-destructive">{errors.reason.message}</p>
             )}
           </div>
 

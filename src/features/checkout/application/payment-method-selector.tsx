@@ -2,8 +2,8 @@
 
 import { Banknote, CreditCard, ArrowRightLeft } from 'lucide-react'
 import { motion } from 'framer-motion'
-import type { PaymentMethod } from '@/features/sales/domain/sale.types'
 import { cn } from '@/lib/utils'
+import { PaymentMethod } from '@/schemas'
 
 interface PaymentMethodSelectorProps {
   selected: PaymentMethod | null

@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/client'
-import type { SaleWithDetails } from '@/features/sales/domain/sales.types'
+import type { SaleWithDetails, SalesStats, PaymentMethod } from '@/features/sales/domain/sales.types'
 import type { Role } from '@/types'
 import { mapSale, mapSales } from '@/lib/sale.mapper'
+import { money } from '@/lib/money'
 // TODO: Refactor Sale, SaleWithDetails, SaleWithRelations types to derive from Supabase generated types
 // Current types are missing fields like 'tax', 'updated_at' and have type mismatches with DB schema
 
@@ -194,43 +195,43 @@ class SalesService {
   /**
    * Calcula estadísticas de ventas
    */
-  async getSalesStats(filters: SalesFilters, userRole?: Role) {
+  async getSalesStats(filters: SalesFilters, userRole?: Role): Promise<SalesStats> {
     const sales = await this.getSales(filters, userRole)
 
     if (sales.length === 0) {
       return {
-        totalSales: 0,
-        salesCount: 0,
-        averageTicket: 0,
-        totalCash: 0,
-        totalCard: 0,
-        totalTransfer: 0,
+        total_sales: money(0),
+        sales_count: 0,
+        average_ticket: money(0),
+        most_used_payment_method: 'CASH',
+        sales_by_payment_method: {
+          CASH: money(0),
+          CARD: money(0),
+          TRANSFER: money(0),
+        },
       }
     }
 
-    const totalSales = sales.reduce((sum, sale) => sum + sale.total, 0)
-    const salesCount = sales.length
-    const averageTicket = totalSales / salesCount
+    const total_sales = money(sales.reduce((sum, sale) => sum + money(sale.total), 0))
+    const sales_count = sales.length
+    const average_ticket = money(total_sales / sales_count)
 
-    const totalCash = sales
-      .filter((s) => s.payment_method === 'CASH')
-      .reduce((sum, sale) => sum + sale.total, 0)
+    const sales_by_payment_method = {
+      CASH: money(sales.filter((s) => s.payment_method === 'CASH').reduce((sum, sale) => sum + money(sale.total), 0)),
+      CARD: money(sales.filter((s) => s.payment_method === 'CARD').reduce((sum, sale) => sum + money(sale.total), 0)),
+      TRANSFER: money(sales.filter((s) => s.payment_method === 'TRANSFER').reduce((sum, sale) => sum + money(sale.total), 0)),
+    }
 
-    const totalCard = sales
-      .filter((s) => s.payment_method === 'CARD')
-      .reduce((sum, sale) => sum + sale.total, 0)
-
-    const totalTransfer = sales
-      .filter((s) => s.payment_method === 'TRANSFER')
-      .reduce((sum, sale) => sum + sale.total, 0)
+    // Encontrar método de pago más usado (por monto acumulado)
+    const most_used_payment_method = (Object.entries(sales_by_payment_method)
+      .sort(([, a], [, b]) => b - a)[0]?.[0] || 'CASH') as PaymentMethod
 
     return {
-      totalSales,
-      salesCount,
-      averageTicket,
-      totalCash,
-      totalCard,
-      totalTransfer,
+      total_sales,
+      sales_count,
+      average_ticket,
+      most_used_payment_method,
+      sales_by_payment_method,
     }
   }
 }

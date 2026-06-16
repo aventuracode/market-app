@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button'
 import { CartItem } from './cart-item'
 import { CartSummary } from './cart-summary'
 import { EmptyCart } from './empty-cart'
-import { CheckoutModal } from '@/components/checkout/checkout-modal'
 import { useCartStore } from '@/stores/cart.store'
+import { CheckoutModal } from '@/features/checkout/application/checkout-modal'
 
 interface CartSheetProps {
   open: boolean

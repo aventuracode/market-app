@@ -1,10 +1,12 @@
 import { createClient } from '@/lib/supabase/client'
 import { money, validateCheckoutTotal, isValidMoney } from '@/lib/money'
-import { CreateSaleParams, Sale } from '@/features/sales/domain/sales.types'
+
 import { CreateSaleResponse } from '@/features/sales/domain/sale.types'
 import { CreateSaleInputParams, SaleItemInput } from '../domain/saleItemInput.types'
 import { Json, Tables } from '@/types/supabase.generated'
+import { emptySale } from '@/features/sales/domain/sale.types'
 type CreateSaleRPCResult = string // UUID de la venta creada
+
 class SaleService {
   private supabase = createClient()
 
@@ -63,7 +65,7 @@ private async fetchSaleById(
 
   if (error || !data) {
     return {
-      sale: { id: saleId } as Sale,
+      sale: emptySale(saleId),
       sale_items: [],
       stock_movements: [],
       cash_movement: null,
@@ -103,7 +105,7 @@ async createSale(params: CreateSaleInputParams): Promise<CreateSaleResponse> {
   /**
    * Valida los parámetros de la venta
    */
-  private validateSaleParams(params: CreateSaleParams): void {debugger
+  private validateSaleParams(params: CreateSaleInputParams): void {debugger
     if (!params.tenant_id) {
       throw new Error('tenant_id es requerido')
     }

@@ -8,9 +8,9 @@ import { Separator } from '@/components/ui/separator'
 import { PaymentMethodSelector } from './payment-method-selector'
 import { useCheckout } from '@/features/sales/application/useCheckout'
 import { useCartStore } from '@/stores/cart.store'
-import type { PaymentMethod } from '@/features/sales/domain/sale.types'
 import { formatWeight } from '@/lib/utils/weight'
 import { formatCurrency } from '@/lib/utils/currency'
+import { PaymentMethod } from '@/features/checkout/domain/sale.schema'
 
 interface CheckoutModalProps {
   open: boolean
