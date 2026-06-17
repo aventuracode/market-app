@@ -10,7 +10,7 @@ import { useCheckout } from '@/features/checkout/application/useCheckout'
 import { useCartStore } from '@/features/checkout/application/stores/cart.store'
 import { formatWeight } from '@/lib/utils/weight'
 import { formatCurrency } from '@/lib/utils/currency'
-import { PaymentMethod } from '@/features/checkout/domain/sale.schema'
+import { PaymentMethod } from '@/features/sales/domain/sales.types'
 
 interface CheckoutModalProps {
   open: boolean

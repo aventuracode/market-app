@@ -1,7 +1,7 @@
 
 // ─── use-checkout-guards.ts ─────────────────────────────────────────────────
 // SRP: único responsable de validar precondiciones del checkout
-import type { CartItem } from '@/features/checkout/application/stores/cart.store'
+import { CartItem } from '@/features/checkout/domain/cart.types'
 import { Tenant } from '@/types'
 import type { User } from '@/types'
 import { useCallback } from 'react'

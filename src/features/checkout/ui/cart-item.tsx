@@ -6,13 +6,12 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import type { CartItem as CartItemType, StockValidationResult } from '@/features/checkout/application/stores/cart.store'
-import { cn } from '@/lib/utils'
 import { formatQuantity, formatPrice, incrementWeight, decrementWeight, STEP_WEIGHT } from '@/lib/product-helpers'
 import { roundWeight, formatWeight } from '@/lib/utils/weight'
+import type { CartItem, StockValidationResult } from '@/features/checkout/domain/cart.types'
 
 interface CartItemProps {
-  item: CartItemType
+  item: CartItem
   onIncrease: (productId: string) => StockValidationResult
   onDecrease: (productId: string) => void
   onRemove: (productId: string) => void

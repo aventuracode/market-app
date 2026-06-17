@@ -4,8 +4,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { useTenant } from '@/features/auth/application/use-tenant'
 import { useAuthStore } from '@/features/auth/application/stores/auth.store'
-import type { SalesFilters } from '@/features/sales/domain/sales.types'
-import type { SalesPeriod } from '@/schemas'
+import type { SalesFilters, SalesPeriod } from '@/features/sales/domain/sales.types'
+
 import { salesHistoryService } from '../../infrastructure/sales.service'
 
 /**

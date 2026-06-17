@@ -8,9 +8,6 @@
 // Product schemas
 export * from '../features/products/domain/product.schema'
 
-// Sale schemas
-export * from '../features/checkout/domain/sale.schema'
-
 // Cash schemas
 export * from '../features/cash/domain/cash.schema'
 

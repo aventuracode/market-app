@@ -1,7 +1,7 @@
 'use client'
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import type { SalesPeriod } from '@/schemas'
+import { SalesPeriod } from '../domain/sales.types'
 
 interface SalesFiltersProps {
   period: SalesPeriod

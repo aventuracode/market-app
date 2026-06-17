@@ -4,19 +4,7 @@ import { money } from '@/lib/money'
 import { getProductStep } from '@/lib/product-helpers'
 import { roundWeight } from '@/lib/utils/weight'
 import { ProductWithCategory } from '@/features/products/domain/product'
-
-export interface CartItem {
-  product: ProductWithCategory
-  quantity: number
-}
-
-export interface StockValidationResult {
-  success: boolean
-  error?: 'INSUFFICIENT_STOCK' | 'ITEM_NOT_FOUND'
-  available?: number
-  current?: number
-  requested?: number
-}
+import { CartItem, StockValidationResult } from '@/features/checkout/domain/cart.types'
 
 interface CartStore {
   items: CartItem[]

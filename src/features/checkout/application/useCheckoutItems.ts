@@ -3,8 +3,8 @@
 
 import { useCallback } from 'react'
 import { money, validateCheckoutTotal } from '@/lib/money'
-import type { CartItem } from '@/features/checkout/application/stores/cart.store'
 import { SaleItemInput } from '@/features/sales/domain/saleItemInput.types'
+import { CartItem } from '@/features/checkout/domain/cart.types'
 
 const UNIT_LABELS: Record<string, string> = {
   UNIT: 'un',
