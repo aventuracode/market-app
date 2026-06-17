@@ -9,8 +9,8 @@ import {
   categoryFormSchema,
   type CategoryFormInput,
   type CategoryFormData,
-} from '@/types/category-form'
-import { Category } from '@/types'
+} from '@/features/products/domain/category-form'
+import { Category } from '../domain/product'
 
 interface UseCategoryFormOptions {
   category?: Category
@@ -51,18 +51,24 @@ export function useCategoryForm(options: UseCategoryFormOptions = {}) {
       let result: Category
 
       if (category) {
-        result = await categoryService.updateCategory(category.id, {
-          ...parsedData,
-          description: parsedData.description || null,
-          is_active: parsedData.is_active ?? true,
-        })
+        result = await categoryService.updateCategory(
+          category.id,
+          {
+            ...parsedData,
+            description: parsedData.description || null,
+            is_active: parsedData.is_active ?? true,
+          },
+          tenant.id
+        )
       } else {
-        result = await categoryService.createCategory({
-          tenant_id: tenant.id,
-          ...parsedData,
-          description: parsedData.description || null,
-          is_active: parsedData.is_active ?? true,
-        })
+        result = await categoryService.createCategory(
+          {
+            ...parsedData,
+            description: parsedData.description || null,
+            is_active: parsedData.is_active ?? true,
+          },
+          tenant.id
+        )
       }
 
       onSuccess?.(result)

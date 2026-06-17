@@ -8,7 +8,7 @@ import { useTenant } from '@/features/auth/application/use-tenant'
 import {
   productFormSchema,
   type ProductFormData,
-} from '@/types/product-form'
+} from '@/features/products/domain/product-form'
 import type { Product, UnitType } from '@/features/products/domain/product'
 
 interface UseProductFormOptions {

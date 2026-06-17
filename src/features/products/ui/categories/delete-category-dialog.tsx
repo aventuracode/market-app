@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import type { CategoryWithProductCount } from '@/services/categories.service'
+import type { CategoryWithProductCount } from '@/features/products/domain/category.schema'
 
 interface DeleteCategoryDialogProps {
   open: boolean

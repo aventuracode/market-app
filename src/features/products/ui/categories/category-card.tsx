@@ -3,13 +3,7 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Pencil, Trash2, Package } from 'lucide-react'
-import type { CategoryWithProductCount } from '@/services/categories.service'
-
-interface CategoryCardProps {
-  category: CategoryWithProductCount
-  onEdit: (category: CategoryWithProductCount) => void
-  onDelete: (category: CategoryWithProductCount) => void
-}
+import type { CategoryCardProps } from '@/features/products/domain/category.schema'
 
 export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) {
   return (

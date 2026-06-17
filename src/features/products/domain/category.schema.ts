@@ -24,3 +24,26 @@ export const updateCategorySchema = createCategorySchema.partial()
  */
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>
+
+/**
+ * Tipo para categoría con conteo de productos
+ */
+export interface CategoryWithProductCount {
+  id: string
+  name: string
+  description: string | null
+  is_active: boolean | null
+  tenant_id: string
+  created_at: string | null
+  updated_at: string | null
+  product_count: number
+}
+
+/**
+ * Props para el componente CategoryCard
+ */
+export interface CategoryCardProps {
+  category: CategoryWithProductCount
+  onEdit: (category: CategoryWithProductCount) => void
+  onDelete: (category: CategoryWithProductCount) => void
+}

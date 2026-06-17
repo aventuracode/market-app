@@ -9,12 +9,12 @@ import { DeleteCategoryDialog } from '@/features/products/ui/categories/delete-c
 import { PageHeader } from '@/components/shared/page-header'
 import { SearchBar } from '@/components/shared/search-bar'
 import { Button } from '@/components/ui/button'
-import { Category } from '@/types'
+import type { CategoryWithProductCount } from '@/features/products/domain/category.schema'
 
 export function CategoriesClient() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null)
+  const [categoryToDelete, setCategoryToDelete] = useState<CategoryWithProductCount | null>(null)
   const { categories, loading, error, total, search, refresh } = useCategories()
 
   const handleSearch = (query: string) => {
@@ -22,11 +22,11 @@ export function CategoriesClient() {
     search(query)
   }
 
-  const handleEdit = (category: Category) => {
+  const handleEdit = (category: CategoryWithProductCount) => {
     router.push(`/categories/${category.id}/edit`)
   }
 
-  const handleDelete = (category: Category) => {
+  const handleDelete = (category: CategoryWithProductCount) => {
     setCategoryToDelete(category)
   }
 

@@ -2,17 +2,17 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import { salesHistoryService } from '@/features/sales/infrastructure/sales-history.service'
 import { useTenant } from '@/features/auth/application/use-tenant'
 import { useAuthStore } from '@/features/auth/application/stores/auth.store'
-import type { SalesQueryFilters } from '@/features/sales/domain/sales.types'
+import type { SalesFilters } from '@/features/sales/domain/sales.types'
 import type { SalesPeriod } from '@/schemas'
+import { salesHistoryService } from '../../infrastructure/sales.service'
 
 /**
  * Hook para obtener ventas con filtros
  * Incluye caching automático y refetch inteligente
  */
-export function useSalesQuery(filters: Omit<SalesQueryFilters, 'tenant_id'>) {
+export function useSalesQuery(filters: Omit<SalesFilters, 'tenantId'>) {
   const { tenant } = useTenant()
 
   return useQuery({
@@ -21,7 +21,7 @@ export function useSalesQuery(filters: Omit<SalesQueryFilters, 'tenant_id'>) {
       if (!tenant?.id) throw new Error('No tenant active')
       
       return salesHistoryService.getSales({
-        tenant_id: tenant.id,
+        tenantId: tenant.id,
         ...filters,
       })
     },
@@ -35,7 +35,7 @@ export function useSalesQuery(filters: Omit<SalesQueryFilters, 'tenant_id'>) {
  * Hook para obtener ventas por período (tabs)
  * Filtra automáticamente por user_id si el usuario es CAJERO
  */
-export function useSalesByPeriod(period: SalesPeriod, additionalFilters?: Partial<SalesQueryFilters>) {
+export function useSalesByPeriod(period: SalesPeriod, additionalFilters?: Partial<SalesFilters>) {
   const { tenant } = useTenant()
   const { user } = useAuthStore()
   const dateRange = salesHistoryService.getDateRangeForPeriod(period)
@@ -46,15 +46,16 @@ export function useSalesByPeriod(period: SalesPeriod, additionalFilters?: Partia
       if (!tenant?.id) throw new Error('No tenant active')
       
       // Aplicar filtro por usuario si es CAJERO
-      const filters: SalesQueryFilters = {
-        tenant_id: tenant.id,
-        ...dateRange,
+      const filters: SalesFilters = {
+        tenantId: tenant.id,
+        startDate: dateRange.start_date,
+        endDate: dateRange.end_date,
         ...additionalFilters,
       }
 
       // CAJERO solo puede ver sus propias ventas
       if (user?.role === 'CAJERO' && user?.id) {
-        filters.user_id = user.id
+        filters.userId = user.id
       }
       
       return salesHistoryService.getSales(filters)
@@ -87,7 +88,7 @@ export function useSaleQuery(saleId: string | null) {
 /**
  * Hook para obtener estadísticas de ventas
  */
-export function useSalesStatsQuery(filters: Omit<SalesQueryFilters, 'tenant_id'>) {
+export function useSalesStatsQuery(filters: Omit<SalesFilters, 'tenantId'>) {
   const { tenant } = useTenant()
 
   return useQuery({
@@ -96,7 +97,7 @@ export function useSalesStatsQuery(filters: Omit<SalesQueryFilters, 'tenant_id'>
       if (!tenant?.id) throw new Error('No tenant active')
       
       return salesHistoryService.getSalesStats({
-        tenant_id: tenant.id,
+        tenantId: tenant.id,
         ...filters,
       })
     },
@@ -121,14 +122,15 @@ export function useSalesStatsByPeriod(period: SalesPeriod) {
       if (!tenant?.id) throw new Error('No tenant active')
       
       // Aplicar filtro por usuario si es CAJERO
-      const filters: SalesQueryFilters = {
-        tenant_id: tenant.id,
-        ...dateRange,
+      const filters: SalesFilters = {
+        tenantId: tenant.id,
+        startDate: dateRange.start_date,
+        endDate: dateRange.end_date,
       }
 
       // CAJERO solo puede ver estadísticas de sus propias ventas
       if (user?.role === 'CAJERO' && user?.id) {
-        filters.user_id = user.id
+        filters.userId = user.id
       }
       
       return salesHistoryService.getSalesStats(filters)

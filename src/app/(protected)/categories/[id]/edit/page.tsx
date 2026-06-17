@@ -7,7 +7,7 @@ import { CategoryForm } from '@/features/products/ui/categories/category-form'
 import { categoryService } from '@/features/products/infrastructure/category.service'
 import { useTenant } from '@/features/auth/application/use-tenant'
 import { Button } from '@/components/ui/button'
-import { Category } from '@/types'
+import { Category } from '@/features/products/domain/product'
 
 export default function EditCategoryPage() {
   const router = useRouter()

@@ -3,11 +3,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { categoryService } from '@/features/products/infrastructure/category.service'
 import { useTenant } from '@/features/auth/application/use-tenant'
-import type { Category } from '@/features/products/domain/product'
+import type { CategoryWithProductCount } from '@/features/products/domain/category.schema'
 
 export function useCategories() {
   const { tenant } = useTenant()
-  const [categories, setCategories] = useState<Category[]>([])
+  const [categories, setCategories] = useState<CategoryWithProductCount[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')

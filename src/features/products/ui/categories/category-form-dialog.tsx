@@ -22,8 +22,11 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { createCategorySchema, type CreateCategoryInput } from '@/features/products/domain/category.schema'
-import type { CategoryWithProductCount } from '@/services/categories.service'
+import { 
+  createCategorySchema, 
+  type CreateCategoryInput,
+  type CategoryWithProductCount 
+} from '@/features/products/domain/category.schema'
 
 interface CategoryFormDialogProps {
   open: boolean

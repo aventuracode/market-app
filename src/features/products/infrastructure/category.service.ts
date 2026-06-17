@@ -1,14 +1,18 @@
 import { createClient } from '@/lib/supabase/client'
-import type { CreateCategoryData, UpdateCategoryData } from '@/types/category-form'
+import type { CategoryFormData, UpdateCategoryData } from '@/features/products/domain/category-form'
 import type { Category } from '@/features/products/domain/product'
+import type { CategoryWithProductCount } from '@/features/products/domain/category.schema'
 
 class CategoryService {
   private supabase = createClient()
 
-  async getCategories(tenantId: string, searchQuery?: string): Promise<Category[]> {
+  async getCategories(tenantId: string, searchQuery?: string): Promise<CategoryWithProductCount[]> {
     let query = this.supabase
       .from('categories')
-      .select('*')
+      .select(`
+        *,
+        products (count)
+      `)
       .eq('tenant_id', tenantId)
       .eq('is_active', true)
       .order('name', { ascending: true })
@@ -24,11 +28,13 @@ class CategoryService {
       throw new Error(error.message || 'Error al obtener las categorías')
     }
 
-    return (data || []).map(cat => ({
+    return (data || []).map((cat: any) => ({
       ...cat,
       is_active: cat.is_active ?? true,
       created_at: cat.created_at ?? new Date().toISOString(),
       updated_at: cat.updated_at ?? new Date().toISOString(),
+      product_count: cat.products?.[0]?.count || 0,
+      products: undefined,
     }))
   }
 
@@ -60,12 +66,13 @@ class CategoryService {
     }
   }
 
-  async createCategory(categoryData: CreateCategoryData): Promise<Category> {
-    const { data, error } = await this.supabase
+  async createCategory(categoryData: CategoryFormData, tenantId: string): Promise<Category> {
+    const { data, error } = await this.supabase 
       .from('categories')
       .insert({
         ...categoryData,
         is_active: categoryData.is_active ?? true,
+        tenant_id: tenantId,
       })
       .select()
       .single()
@@ -97,12 +104,14 @@ class CategoryService {
 
   async updateCategory(
     categoryId: string,
-    categoryData: UpdateCategoryData
+    categoryData: Partial<CategoryFormData>,
+    tenantId: string
   ): Promise<Category> {
     const { data, error } = await this.supabase
       .from('categories')
       .update(categoryData)
       .eq('id', categoryId)
+      .eq('tenant_id', tenantId)
       .select()
       .single()
 
@@ -128,11 +137,12 @@ class CategoryService {
     }
   }
 
-  async deleteCategory(categoryId: string): Promise<void> {
+  async deleteCategory(categoryId: string, tenantId: string): Promise<void> {
     const { error } = await this.supabase
       .from('categories')
       .update({ is_active: false })
       .eq('id', categoryId)
+      .eq('tenant_id', tenantId)
 
     if (error) {
       console.error('Error deleting category:', error)

@@ -63,7 +63,7 @@ export function useAuth() {
             is_active: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
-          } as any)
+          } satisfies User)
         }
       } catch (error) {
         console.error('Error fetching user:', error)

@@ -2,12 +2,12 @@
 
 import { Folder, Edit, Trash2 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
-import { Category } from '@/types'
+import type { CategoryWithProductCount } from '../../domain/category.schema'
 
 interface CategoryListItemProps {
-  category: Category
-  onEdit?: (category: Category) => void
-  onDelete?: (category: Category) => void
+  category: CategoryWithProductCount
+  onEdit?: (category: CategoryWithProductCount) => void
+  onDelete?: (category: CategoryWithProductCount) => void
 }
 
 export function CategoryListItem({ category, onEdit, onDelete }: CategoryListItemProps) {

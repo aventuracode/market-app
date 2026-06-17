@@ -2,12 +2,11 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { startOfDay, startOfWeek, startOfMonth, endOfDay } from 'date-fns'
-import { salesService, SalesPermissionError } from '@/services/sales.service'
+import { salesService, SalesPermissionError, type SalesFilters } from '../infrastructure/sales.service'
 import { useTenant } from '@/features/auth/application/use-tenant'
 import { useAuthStore } from '@/features/auth/application/stores/auth.store'
 import { useCashStore } from '@/features/cash/application/stores/cash.store'
 import type { SalesPeriod } from '@/features/sales/domain/sales.types'
-import type { SalesFilters } from '@/services/sales.service'
 
 /**
  * Obtiene el rango de fechas según el período

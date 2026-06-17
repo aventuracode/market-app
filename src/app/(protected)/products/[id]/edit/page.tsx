@@ -7,7 +7,7 @@ import { ProductForm } from '@/features/products/ui/products/product-form'
 import { productService } from '@/features/products/infrastructure/product.service'
 import { useTenant } from '@/features/auth/application/use-tenant'
 import { Button } from '@/components/ui/button'
-import type { Product } from '@/types/product'
+import type { Product } from '@/features/products/domain/product'
 
 export default function EditProductPage() {
   const router = useRouter()

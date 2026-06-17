@@ -1,7 +1,7 @@
-import { CashRegister } from '@/types'
+
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { CashSession } from '../../domain/cash'
+import { CashRegister, CashSession } from '../../domain/cash'
 
 interface CashState {
   activeCashRegister: CashRegister | null

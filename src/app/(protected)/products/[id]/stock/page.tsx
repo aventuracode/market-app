@@ -10,7 +10,7 @@ import { StockMovementItem } from '@/features/products/ui/stock/stock-movement-i
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useTenant } from '@/features/auth/application/use-tenant'
-import { Product } from '@/types'
+import { Product } from '@/features/products/domain/product'
 
 
 export default function ProductStockPage() {

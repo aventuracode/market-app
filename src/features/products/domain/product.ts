@@ -22,7 +22,6 @@ export type Product = Omit<Tables<'products'>, 'sale_price' | 'cost_price' | 'ba
 }
 
 
-
 // Category with non-null fields
 export type Category = Omit<Tables<'categories'>, 'created_at' | 'updated_at' | 'is_active'> & {
   created_at: string

@@ -1,6 +1,6 @@
 // src/lib/mappers/sale.mapper.ts
 import { money } from '@/lib/money'
-import type { SaleDB, SaleItemDB, SaleWithDetails, SaleItemWithProduct } from '@/features/sales/domain/sales.types'
+import type { Sale, SaleDB, SaleItemDB, SaleWithDetails, SaleItemWithProduct } from '@/features/sales/domain/sales.types'
 
 type RawSaleItem = SaleItemDB & {
   products: {
@@ -27,6 +27,24 @@ function mapSaleItem(item: RawSaleItem): SaleItemWithProduct {
   }
 }
 
+/**
+ * Normaliza una venta simple (sin relaciones) de DB a tipo de dominio
+ * Convierte number → Money y sale_number a string
+ */
+export function mapSaleSimple(raw: SaleDB): Sale {
+  return {
+    ...raw,
+    total: money(raw.total),
+    subtotal: money(raw.subtotal),
+    discount: money(raw.discount ?? 0),
+    sale_number: String(raw.sale_number),
+    created_at: raw.created_at ?? new Date().toISOString(),
+  }
+}
+
+/**
+ * Normaliza una venta con todas sus relaciones de DB a tipo de dominio
+ */
 export function mapSale(raw: RawSaleWithDetails): SaleWithDetails {
   return {
     ...raw,

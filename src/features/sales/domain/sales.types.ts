@@ -175,17 +175,9 @@ export interface SalesStats {
   }
 }
 
-/**
- * Filtros para consultas de ventas
- */
-export interface SalesQueryFilters {
-  tenant_id: string
-  start_date?: string
-  end_date?: string
-  payment_method?: PaymentMethod
-  user_id?: string
-  search?: string
-}
+// SalesFilters ahora está definido en sales.service.ts
+// Se mantiene aquí solo para re-export
+export type { SalesFilters } from '../infrastructure/sales.service'
 
 /**
  * Períodos de tiempo para filtrar ventas
@@ -222,3 +214,43 @@ export interface SaleProduct {
   sku: string | null
   barcode: string | null
 }
+
+export interface SaleItemResponse extends SaleItem {
+  id: string
+  sale_id: string
+  product_name?: string
+}
+
+export type CreateSaleResponse = {
+  sale: Sale
+  sale_items: Tables<'sale_items'>[]
+  stock_movements: Tables<'stock_movements'>[]
+  cash_movement: Tables<'cash_movements'> | null
+}
+
+export interface CheckoutState {
+  loading: boolean
+  success: boolean
+  error: string | null
+  saleNumber: string | number | null
+}
+export function emptySale(id: string): Sale {
+  return {
+    id,
+    tenant_id: '',
+    user_id: '',
+    cash_register_id: '',
+    cash_session_id: '',
+    payment_method: 'CASH',
+    subtotal: 0,
+    discount: 0,
+    total: 0,
+    status: null,
+    sale_number: '0',
+    notes: null,
+    created_at: '',
+  }
+}
+
+
+export type Role = 'ADMIN' | 'CAJERO' | 'SUPERVISOR'

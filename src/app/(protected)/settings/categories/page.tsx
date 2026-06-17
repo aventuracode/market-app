@@ -15,8 +15,7 @@ import {
   useUpdateCategory,
   useDeleteCategory,
 } from '@/features/products/application/queries/use-categories-query'
-import type { CategoryWithProductCount } from '@/services/categories.service'
-import type { CreateCategoryInput } from '@/features/products/domain/category.schema'
+import type { CategoryWithProductCount, CreateCategoryInput } from '@/features/products/domain/category.schema'
 
 export default function CategoriesPage() {
   const [search, setSearch] = useState('')

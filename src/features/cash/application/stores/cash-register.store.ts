@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { CashRegister } from '@/types'
+import type { CashRegister } from '../../domain/cash'
 
 interface CashRegisterStore {
   activeCashRegister: CashRegister | null

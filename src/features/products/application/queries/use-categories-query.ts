@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { categoriesService } from '@/services/categories.service'
 import type { CreateCategoryInput, UpdateCategoryInput } from '@/features/products/domain/category.schema'
 import { useAuth } from '@/features/auth/application/use-auth'
 import { toast } from 'sonner'
+import { categoryService } from '../../infrastructure/category.service'
 
 const CATEGORIES_QUERY_KEY = 'categories'
 
@@ -14,7 +14,7 @@ export function useCategories() {
     queryKey: [CATEGORIES_QUERY_KEY, tenantId],
     queryFn: () => {
       if (!tenantId) throw new Error('No tenant ID')
-      return categoriesService.getCategories(tenantId)
+      return categoryService.getCategories(tenantId)
     },
     enabled: !!tenantId,
   })
@@ -28,7 +28,7 @@ export function useCategory(id: string) {
     queryKey: [CATEGORIES_QUERY_KEY, id, tenantId],
     queryFn: () => {
       if (!tenantId) throw new Error('No tenant ID')
-      return categoriesService.getCategoryById(id, tenantId)
+      return categoryService.getCategoryById(id, tenantId)
     },
     enabled: !!tenantId && !!id,
   })
@@ -42,7 +42,7 @@ export function useCreateCategory() {
   return useMutation({
     mutationFn: (input: CreateCategoryInput) => {
       if (!tenantId) throw new Error('No tenant ID')
-      return categoriesService.createCategory(input, tenantId)
+      return categoryService.createCategory(input, tenantId)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [CATEGORIES_QUERY_KEY] })
@@ -63,7 +63,7 @@ export function useUpdateCategory() {
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateCategoryInput }) => {
       if (!tenantId) throw new Error('No tenant ID')
-      return categoriesService.updateCategory(id, input, tenantId)
+      return categoryService.updateCategory(id, input, tenantId)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [CATEGORIES_QUERY_KEY] })
@@ -84,7 +84,7 @@ export function useDeleteCategory() {
   return useMutation({
     mutationFn: (id: string) => {
       if (!tenantId) throw new Error('No tenant ID')
-      return categoriesService.deleteCategory(id, tenantId)
+      return categoryService.deleteCategory(id, tenantId)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [CATEGORIES_QUERY_KEY] })

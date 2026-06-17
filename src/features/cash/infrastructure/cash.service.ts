@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
 import { money } from '@/lib/money'
-import {  CashRegister } from '@/types'
-import { CashMovementType, CashSession, CashSummary ,CashMovementWithUser, CashMovement} from '../domain/cash'
+import { CashMovementType, CashSession, CashSummary ,CashMovementWithUser, CashMovement, CashRegister} from '../domain/cash'
 
 
 /**

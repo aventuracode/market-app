@@ -2,7 +2,7 @@
 // ─── use-checkout-state.ts ──────────────────────────────────────────────────
 // SRP: único responsable del estado del checkout
  
-import { CheckoutState } from '@/features/sales/domain/sale.types'
+import { CheckoutState } from '@/features/sales/domain/sales.types'
 import { useState, useCallback } from 'react'
  
 const INITIAL_STATE: CheckoutState = {
