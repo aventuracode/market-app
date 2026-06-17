@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/client'
 import { money } from '@/lib/money'
 import { CashMovementType, CashSession, CashSummary ,CashMovementWithUser, CashMovement, CashRegister} from '../domain/cash'
-import { mapCashMovement, mapCashMovementsWithUser } from './cash.mapper'
+import { mapCashMovement, mapCashMovementsWithUser, mapCashSession, mapCashRegister, mapCashRegisters } from '../domain/cash.mapper'
 
 
 /**
@@ -46,25 +46,8 @@ class CashService {
     if (!register) return null
 
     return {
-      register: {
-        ...register,
-        is_active: register.is_active ?? true,
-        created_at: register.created_at ?? new Date().toISOString(),
-      },
-      session: {
-        id: session.id,
-        tenant_id: session.tenant_id,
-        cash_register_id: session.cash_register_id,
-        user_id: session.user_id,
-        opening_amount: money(session.opening_amount),
-        closing_amount: money(session.closing_amount ?? 0),
-        expected_amount: money(session.expected_amount ?? 0),
-        difference: money(session.difference ?? 0),
-        status: (session.status as 'open' | 'closed'),
-        opened_at: session.opened_at ?? new Date().toISOString(),
-        closed_at: session.closed_at,
-        notes: session.notes,
-      },
+      register: mapCashRegister(register),
+      session: mapCashSession(session),
     }
   }
 
@@ -110,20 +93,7 @@ class CashService {
         throw new Error(error.message || 'Error al abrir la caja')
       }
 
-      return {
-        id: data.id,
-        tenant_id: data.tenant_id,
-        cash_register_id: data.cash_register_id,
-        user_id: data.user_id,
-        opening_amount: money(data.opening_amount),
-        closing_amount: 0,
-        expected_amount: 0,
-        difference: 0,
-        status: (data.status as 'open' | 'closed'),
-        opened_at: data.opened_at ?? new Date().toISOString(),
-        closed_at: null,
-        notes: data.notes,
-      }
+      return mapCashSession(data)
     } catch (err) {
       // Re-lanzar errores personalizados
       if (err instanceof CashConcurrencyError) {
@@ -164,20 +134,7 @@ class CashService {
       throw new Error(error.message || 'Error al cerrar la caja')
     }
 
-    return {
-      id: data.id,
-      tenant_id: data.tenant_id,
-      cash_register_id: data.cash_register_id,
-      user_id: data.user_id,
-      opening_amount: money(data.opening_amount),
-      closing_amount: money(data.closing_amount ?? 0),
-      expected_amount: money(data.expected_amount ?? 0),
-      difference: money(data.difference ?? 0),
-      status: (data.status as 'open' | 'closed'),
-      opened_at: data.opened_at ?? new Date().toISOString(),
-      closed_at: data.closed_at,
-      notes: data.notes,
-    }
+    return mapCashSession(data)
   }
 
   async getCashSummary(sessionId: string): Promise<CashSummary> {
@@ -358,11 +315,7 @@ class CashService {
       return null
     }
 
-    return {
-      ...data,
-      is_active: data.is_active ?? true,
-      created_at: data.created_at ?? new Date().toISOString(),
-    }
+    return mapCashRegister(data)
   }
 
   async getAvailableCashRegisters(tenantId: string): Promise<CashRegister[]> {
@@ -378,11 +331,7 @@ class CashService {
       throw new Error(error.message || 'Error al obtener las cajas')
     }
 
-    return (data || []).map(reg => ({
-      ...reg,
-      is_active: reg.is_active ?? true,
-      created_at: reg.created_at ?? new Date().toISOString(),
-    }))
+    return mapCashRegisters(data ?? [])
   }
 }
 

@@ -8,7 +8,7 @@ import type {
   CreateProductParams,
   UpdateProductParams
 } from '@/features/products/domain/product'
-import { mapProducts, mapProductWithCategory } from './product.mapper'
+import { mapProducts, mapProductWithCategory } from '../domain/product.mapper'
 
 export class ProductService {
   private supabase = createClient()

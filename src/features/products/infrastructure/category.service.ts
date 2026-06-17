@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/client'
 import type { CategoryFormData, UpdateCategoryData } from '@/features/products/domain/category-form'
 import type { Category } from '@/features/products/domain/product'
 import type { CategoryWithProductCount } from '@/features/products/domain/category.schema'
+import { mapCategory, mapCategoriesWithProductCount } from '../domain/category.mapper'
 
 class CategoryService {
   private supabase = createClient()
@@ -28,14 +29,7 @@ class CategoryService {
       throw new Error(error.message || 'Error al obtener las categorías')
     }
 
-    return (data || []).map((cat: any) => ({
-      ...cat,
-      is_active: cat.is_active ?? true,
-      created_at: cat.created_at ?? new Date().toISOString(),
-      updated_at: cat.updated_at ?? new Date().toISOString(),
-      product_count: cat.products?.[0]?.count || 0,
-      products: undefined,
-    }))
+    return mapCategoriesWithProductCount(data ?? [])
   }
 
   async getCategoryById(tenantId: string, categoryId: string): Promise<Category | null> {
@@ -58,12 +52,7 @@ class CategoryService {
 
     if (!data) return null
 
-    return {
-      ...data,
-      is_active: data.is_active ?? true,
-      created_at: data.created_at ?? new Date().toISOString(),
-      updated_at: data.updated_at ?? new Date().toISOString(),
-    }
+    return mapCategory(data)
   }
 
   async createCategory(categoryData: CategoryFormData, tenantId: string): Promise<Category> {
@@ -94,12 +83,7 @@ class CategoryService {
       throw new Error('No se recibió respuesta del servidor')
     }
 
-    return {
-      ...data,
-      is_active: data.is_active ?? true,
-      created_at: data.created_at ?? new Date().toISOString(),
-      updated_at: data.updated_at ?? new Date().toISOString(),
-    }
+    return mapCategory(data)
   }
 
   async updateCategory(
@@ -129,12 +113,7 @@ class CategoryService {
       throw new Error('No se recibió respuesta del servidor')
     }
 
-    return {
-      ...data,
-      is_active: data.is_active ?? true,
-      created_at: data.created_at ?? new Date().toISOString(),
-      updated_at: data.updated_at ?? new Date().toISOString(),
-    }
+    return mapCategory(data)
   }
 
   async deleteCategory(categoryId: string, tenantId: string): Promise<void> {
