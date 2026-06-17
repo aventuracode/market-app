@@ -1,19 +1,14 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library'
-
-interface UseBarccodeScannerOptions {
-  onScan: (barcode: string) => void
-  onError?: (error: Error) => void
-  enabled?: boolean
-}
+import { BrowserMultiFormatReader } from '@zxing/library'
+import type { BarcodeScannerOptions } from '../domain/pos.types'
 
 export function useBarcodeScanner({ 
   onScan, 
   onError,
   enabled = false 
-}: UseBarccodeScannerOptions) {
+}: BarcodeScannerOptions) {
   const [isScanning, setIsScanning] = useState(false)
   const [hasPermission, setHasPermission] = useState<boolean | null>(null)
   const [error, setError] = useState<string | null>(null)

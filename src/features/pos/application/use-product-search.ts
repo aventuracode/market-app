@@ -2,15 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { productService } from '@/features/products/infrastructure/product.service'
-import { useTenant } from '@/hooks'
-import { ProductSearchParams, ProductWithCategory } from '../domain/product'
+import { useTenant } from '@/features/auth/application/use-tenant'
+import type { ProductSearchParams, ProductWithCategory } from '@/features/products/domain/product'
+import type { ProductSearchOptions } from '../domain/pos.types'
 
-interface UseProductSearchOptions {
-  debounceMs?: number
-  autoSearch?: boolean
-}
-
-export function useProductSearch(options: UseProductSearchOptions = {}) {
+export function useProductSearch(options: ProductSearchOptions = {}) {
   const { debounceMs = 300, autoSearch = true } = options
   const { tenant } = useTenant()
 
@@ -47,7 +43,6 @@ export function useProductSearch(options: UseProductSearchOptions = {}) {
     [tenant?.id]
   )
 
-  // Debounced search effect
   useEffect(() => {
     if (!autoSearch) return
 

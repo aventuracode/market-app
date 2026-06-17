@@ -8,6 +8,7 @@ import type {
   CreateProductParams,
   UpdateProductParams
 } from '@/features/products/domain/product'
+import { mapProducts, mapProductWithCategory } from './product.mapper'
 
 export class ProductService {
   private supabase = createClient()
@@ -28,7 +29,7 @@ export class ProductService {
       throw new Error('Error al obtener productos')
     }
 
-    return (data as ProductWithCategory[]) || []
+    return mapProducts(data ?? [])
   }
 
   async searchProducts(
@@ -73,7 +74,7 @@ export class ProductService {
       throw new Error('Error al buscar productos')
     }
 
-    const products = (data || []) as ProductWithCategory[]
+    const products = mapProducts(data ?? [])
     const total = count || 0
     const hasMore = offset + limit < total
 
@@ -110,7 +111,7 @@ export class ProductService {
       throw new Error(error.message || 'Error al obtener el producto')
     }
 
-    return data as ProductWithCategory
+    return mapProductWithCategory(data)
   }
 
   async getProductByBarcode(
@@ -138,7 +139,7 @@ export class ProductService {
       return null
     }
 
-    return data as ProductWithCategory
+    return mapProductWithCategory(data)
   }
 
   async getCategories(tenantId: string) {

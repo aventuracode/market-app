@@ -5,7 +5,7 @@ import { ShoppingCart, ScanBarcode } from 'lucide-react'
 import { toast } from 'sonner'
 import { useCartStore } from '@/features/checkout/application/stores/cart.store'
 import { useTenant } from '@/features/auth/application/use-tenant'
-import { productService } from '@/features/products/infrastructure/product.service'
+import { posService } from '@/features/pos/infrastructure/pos.service'
 import { formatQuantity, getInitialQuantity } from '@/lib/product-helpers'
 import { formatWeight } from '@/lib/utils/weight'
 import { formatCurrency } from '@/lib/utils/currency'
@@ -22,8 +22,8 @@ import { Button } from '@/components/ui/button'
 import { BarcodeScanner } from '@/features/pos/ui/barcode-scanner'
 import { CartSheet } from '@/features/checkout/ui/cart-sheet'
 import { motion } from 'framer-motion'
-import { useProductSearch } from '@/features/products/application/use-product-search'
-import { ProductWithCategory } from '@/features/products/domain/product'
+import { useProductSearch } from '@/features/pos/application/use-product-search'
+import type { ProductWithCategory } from '@/features/products/domain/product'
 
 export function POSClient() {
   const [mounted, setMounted] = useState(false)
@@ -73,21 +73,17 @@ export function POSClient() {
       throw new Error('No hay tenant activo')
     }
 
-    const product = await productService.getProductByBarcode(tenant.id, barcode)
+    const product = await posService.getProductByBarcode(tenant.id, barcode)
     
     if (!product) {
       throw new Error('Producto no encontrado')
     }
 
-    if (!product.is_active) {
-      throw new Error('Producto inactivo')
+    const validation = await posService.validateProductForSale(product)
+    if (!validation.valid) {
+      throw new Error(validation.error)
     }
 
-    if (product.stock <= 0) {
-      throw new Error('Producto sin stock')
-    }
-
-    // Add to cart
     addItem(product, 1)
   }
 

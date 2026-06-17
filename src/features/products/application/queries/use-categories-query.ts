@@ -6,15 +6,15 @@ import { categoryService } from '../../infrastructure/category.service'
 
 const CATEGORIES_QUERY_KEY = 'categories'
 
-export function useCategories() {
+export function useCategories(searchQuery?: string) {
   const { user } = useAuth()
   const tenantId = user?.tenant_id
 
   return useQuery({
-    queryKey: [CATEGORIES_QUERY_KEY, tenantId],
+    queryKey: [CATEGORIES_QUERY_KEY, tenantId, searchQuery],
     queryFn: () => {
       if (!tenantId) throw new Error('No tenant ID')
-      return categoryService.getCategories(tenantId)
+      return categoryService.getCategories(tenantId, searchQuery)
     },
     enabled: !!tenantId,
   })

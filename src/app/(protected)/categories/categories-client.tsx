@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus, Loader2, FolderX } from 'lucide-react'
-import { useCategories } from '@/features/products/application/use-categories'
+import { useCategories, useDeleteCategory } from '@/features/products/application/queries/use-categories-query'
 import { CategoryListItem } from '@/features/products/ui/categories/category-list-item'
 import { DeleteCategoryDialog } from '@/features/products/ui/categories/delete-category-dialog'
 import { PageHeader } from '@/components/shared/page-header'
@@ -15,11 +15,12 @@ export function CategoriesClient() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryToDelete, setCategoryToDelete] = useState<CategoryWithProductCount | null>(null)
-  const { categories, loading, error, total, search, refresh } = useCategories()
+  
+  const { data: categories = [], isLoading, error } = useCategories(searchQuery)
+  const deleteMutation = useDeleteCategory()
 
   const handleSearch = (query: string) => {
     setSearchQuery(query)
-    search(query)
   }
 
   const handleEdit = (category: CategoryWithProductCount) => {
@@ -30,17 +31,13 @@ export function CategoriesClient() {
     setCategoryToDelete(category)
   }
 
-  const handleDeleteSuccess = () => {
-    refresh()
-  }
-
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="p-4 space-y-4">
         <PageHeader
           title="Categorías"
-          subtitle={loading ? 'Cargando...' : `${total} categoría${total !== 1 ? 's' : ''}`}
+          subtitle={isLoading ? 'Cargando...' : `${categories.length} categoría${categories.length !== 1 ? 's' : ''}`}
           action={
             <Button
               onClick={() => router.push('/categories/new')}
@@ -57,7 +54,7 @@ export function CategoriesClient() {
           value={searchQuery}
           onChange={handleSearch}
           placeholder="Buscar categorías..."
-          loading={loading && categories.length > 0}
+          loading={isLoading && categories.length > 0}
         />
       </div>
 
@@ -67,12 +64,12 @@ export function CategoriesClient() {
           {/* Error State */}
           {error && (
             <div className="p-4 bg-destructive/10 text-destructive rounded-lg text-sm">
-              {error}
+              {error instanceof Error ? error.message : 'Error al cargar categorías'}
             </div>
           )}
 
           {/* Loading Initial */}
-          {loading && categories.length === 0 && (
+          {isLoading && categories.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 gap-3">
               <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
               <p className="text-sm text-muted-foreground">Cargando categorías...</p>
@@ -80,7 +77,7 @@ export function CategoriesClient() {
           )}
 
           {/* Empty State */}
-          {!loading && categories.length === 0 && !error && (
+          {!isLoading && categories.length === 0 && !error && (
             <div className="flex flex-col items-center justify-center py-12 gap-4">
               <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
                 <FolderX className="w-8 h-8 text-muted-foreground" />
@@ -124,11 +121,16 @@ export function CategoriesClient() {
           setCategoryToDelete(null)
         }
       }}
-      onConfirm={async () => {
-        // aquí va tu lógica de borrado
-        handleDeleteSuccess()
-        setCategoryToDelete(null)
+      onConfirm={() => {
+        if (categoryToDelete) {
+          deleteMutation.mutate(categoryToDelete.id, {
+            onSuccess: () => {
+              setCategoryToDelete(null)
+            },
+          })
+        }
       }}
+      isLoading={deleteMutation.isPending}
     />
     </div>
   )
