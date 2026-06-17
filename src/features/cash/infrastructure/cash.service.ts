@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/client'
 import { money } from '@/lib/money'
 import { CashMovementType, CashSession, CashSummary ,CashMovementWithUser, CashMovement, CashRegister} from '../domain/cash'
+import { mapCashMovement, mapCashMovementsWithUser } from './cash.mapper'
 
 
 /**
@@ -295,18 +296,7 @@ class CashService {
       throw new Error(error.message || 'Error al registrar el movimiento')
     }
 
-    return {
-      id: data.id,
-      tenant_id: data.tenant_id,
-      cash_register_id: data.cash_register_id,
-      cash_session_id: data.cash_session_id ?? '',
-      user_id: data.user_id,
-      type: data.type,
-      amount: money(data.amount),
-      reference_id: data.reference_id,
-      notes: data.notes,
-      created_at: data.created_at ?? new Date().toISOString(),
-    }
+    return mapCashMovement(data)
   }
 
   async getCashMovements(
@@ -332,26 +322,7 @@ class CashService {
       throw new Error(error.message || 'Error al obtener los movimientos')
     }
 
-    // Mapear datos con user info
-    const movements = (data || []).map((movement: any) => ({
-      id: movement.id,
-      tenant_id: movement.tenant_id,
-      cash_register_id: movement.cash_register_id,
-      cash_session_id: movement.cash_session_id,
-      user_id: movement.user_id,
-      type: movement.type,
-      amount: money(movement.amount),
-      reference_id: movement.reference_id,
-      notes: movement.notes,
-      created_at: movement.created_at,
-      user: movement.users ? {
-        id: movement.users.id,
-        first_name: movement.users.first_name,
-        last_name: movement.users.last_name,
-      } : null
-    }))
-
-    return movements as CashMovementWithUser[]
+    return mapCashMovementsWithUser(data ?? [])
   }
 
   async registerSale(

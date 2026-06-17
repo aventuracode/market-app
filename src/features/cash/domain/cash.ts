@@ -17,8 +17,14 @@ export type CashSession = Omit<Tables<'cash_sessions'>, 'opening_amount' | 'clos
   opened_at: string
 }
 
-export type CashMovement = Tables<'cash_movements'>
+// CashMovement DB type (raw from Supabase)
+export type CashMovementDB = Tables<'cash_movements'>
 
+// CashMovement domain type (normalized)
+export type CashMovement = Omit<CashMovementDB, 'amount' | 'created_at'> & {
+  amount: Money
+  created_at: string
+}
 
 export interface CashMovementWithUser extends CashMovement {
   user: {

@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
 import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js'
-import type { CashMovement } from '../domain/cash'
+import type { CashMovementDB } from '../domain/cash'
 
 /**
  * Cash Realtime Service
@@ -22,9 +22,9 @@ class CashRealtimeService {
     sessionId: string,
     tenantId: string,
     callbacks: {
-      onInsert?: (payload: RealtimePostgresChangesPayload<CashMovement>) => void
-      onUpdate?: (payload: RealtimePostgresChangesPayload<CashMovement>) => void
-      onDelete?: (payload: RealtimePostgresChangesPayload<CashMovement>) => void
+      onInsert?: (payload: RealtimePostgresChangesPayload<CashMovementDB>) => void
+      onUpdate?: (payload: RealtimePostgresChangesPayload<CashMovementDB>) => void
+      onDelete?: (payload: RealtimePostgresChangesPayload<CashMovementDB>) => void
       onError?: (error: Error) => void
     }
   ): () => void {
@@ -49,10 +49,10 @@ class CashRealtimeService {
           filter: `cash_session_id=eq.${sessionId}`,
         },
         (payload) => {
-          const record = payload.new as CashMovement
+          const record = payload.new as CashMovementDB
           
           if (record.tenant_id === tenantId) {
-            callbacks.onInsert?.(payload as RealtimePostgresChangesPayload<CashMovement>)
+            callbacks.onInsert?.(payload as RealtimePostgresChangesPayload<CashMovementDB>)
           }
         }
       )
@@ -65,9 +65,9 @@ class CashRealtimeService {
           filter: `cash_session_id=eq.${sessionId}`,
         },
         (payload) => {
-          const record = payload.new as CashMovement
+          const record = payload.new as CashMovementDB
           if (record.tenant_id === tenantId) {
-            callbacks.onUpdate?.(payload as RealtimePostgresChangesPayload<CashMovement>)
+            callbacks.onUpdate?.(payload as RealtimePostgresChangesPayload<CashMovementDB>)
           }
         }
       )
@@ -80,7 +80,7 @@ class CashRealtimeService {
           filter: `cash_session_id=eq.${sessionId}`,
         },
         (payload) => {
-          callbacks.onDelete?.(payload as RealtimePostgresChangesPayload<CashMovement>)
+          callbacks.onDelete?.(payload as RealtimePostgresChangesPayload<CashMovementDB>)
         }
       )
       .subscribe((status, err) => {

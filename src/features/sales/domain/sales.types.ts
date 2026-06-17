@@ -3,26 +3,13 @@
  * Fuente única de verdad basada en Supabase + normalizaciones de dominio
  */
 import type { Money } from '@/lib/money'
-import type { Database } from '../../../types/supabase.generated'
-
-// ============================================================================
-// HELPERS DE SUPABASE
-// ============================================================================
-
-type Tables<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Row']
-
-type Inserts<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Insert']
-
-type Updates<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Update']
+import type { Tables, Inserts, Updates, Enums } from '@/lib/supabase/types'
 
 // ============================================================================
 // ENUMS
 // ============================================================================
 
-export type PaymentMethod = Database['public']['Enums']['payment_method']
+export type PaymentMethod = Enums<'payment_method'>
 
 export type SaleStatus = 'COMPLETED' | 'CANCELLED' | 'PENDING'
 
