@@ -1,12 +1,5 @@
 import type { Money } from '@/lib/money'
-import { Database } from '@/types/supabase.generated'
-
-type Tables<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Row']
-type Inserts<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Insert']
-type Updates<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Update']
+import type { Tables, Inserts, Updates } from '@/lib/supabase/types'
 
 export type UnitType = 'UNIT' | 'GRAM' | 'KILOGRAM' | 'LITER' | 'MILLILITER'
 

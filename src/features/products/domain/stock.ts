@@ -1,8 +1,7 @@
 import { z } from 'zod'
-import type { Database } from '@/types/supabase.generated'
+import type { Enums } from '@/lib/supabase/types'
 
-export type StockMovementType =
-  Database['public']['Enums']['stock_movement_type']
+export type StockMovementType = Enums<'stock_movement_type'>
 
 export interface StockMovement {
   id: string

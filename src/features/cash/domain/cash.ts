@@ -1,13 +1,6 @@
 import { z } from 'zod'
 import type { Money } from '@/lib/money'
-import { Database } from '@/types/supabase.generated'
-
-type Tables<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Row']
-type Inserts<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Insert']
-type Updates<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Update']
+import type { Tables, Enums } from '@/lib/supabase/types'
 
 // Cash Register Types
 export type CashRegister = Omit<Tables<'cash_registers'>, 'is_active' | 'created_at'> & {
@@ -24,9 +17,7 @@ export type CashSession = Omit<Tables<'cash_sessions'>, 'opening_amount' | 'clos
   opened_at: string
 }
 
-
-export type CashMovement =
-  Database['public']['Tables']['cash_movements']['Row']
+export type CashMovement = Tables<'cash_movements'>
 
 
 export interface CashMovementWithUser extends CashMovement {
@@ -90,8 +81,7 @@ export const cashMovementSchema = z.object({
 
 export type CashMovementFormData = z.infer<typeof cashMovementSchema>
 
-export type CashMovementType =
-  Database['public']['Enums']['cash_movement_type']
+export type CashMovementType = Enums<'cash_movement_type'>
 
 export const CASH_MOVEMENT_LABELS: Record<CashMovementType, string> = {
   OPENING: 'Apertura',

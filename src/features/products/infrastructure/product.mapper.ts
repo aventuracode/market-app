@@ -1,9 +1,9 @@
 import { money } from '@/lib/money'
 import type { Product, Category, ProductWithCategory } from '@/features/products/domain/product'
-import type { Database } from '@/types/supabase.generated'
+import type { Tables } from '@/lib/supabase/types'
 
-type CategoryDB = Database['public']['Tables']['categories']['Row']
-type ProductDB = Database['public']['Tables']['products']['Row']
+type CategoryDB = Tables<'categories'>
+type ProductDB = Tables<'products'>
 
 type RawProductWithCategory = ProductDB & {
   category: CategoryDB | null
