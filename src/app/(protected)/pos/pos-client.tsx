@@ -3,27 +3,27 @@
 import { useState, useEffect } from 'react'
 import { ShoppingCart, ScanBarcode } from 'lucide-react'
 import { toast } from 'sonner'
-import { useProductSearch } from '@/hooks/use-product-search'
-import { useCartStore } from '@/stores/cart.store'
-import { useTenant } from '@/hooks/use-tenant'
-import { productService } from '@/services/product.service'
+import { useCartStore } from '@/features/checkout/application/stores/cart.store'
+import { useTenant } from '@/features/auth/application/use-tenant'
+import { productService } from '@/features/products/infrastructure/product.service'
 import { formatQuantity, getInitialQuantity } from '@/lib/product-helpers'
 import { formatWeight } from '@/lib/utils/weight'
 import { formatCurrency } from '@/lib/utils/currency'
 import { PageHeader } from '@/components/shared/page-header'
 import { SearchBar } from '@/components/shared/search-bar'
-import { ProductCard } from '@/components/pos/product-card'
+import { ProductCard } from '@/features/pos/ui/product-card'
 import {
   ProductListLoading,
   ProductListEmpty,
   ProductListError,
   ProductListSearching,
-} from '@/components/pos/product-list-states'
+} from '@/features/pos/ui/product-list-states'
 import { Button } from '@/components/ui/button'
-import { CartSheet } from '@/features/checkout/application/cart-sheet'
-import { BarcodeScanner } from '@/components/scanner/barcode-scanner'
+import { BarcodeScanner } from '@/features/pos/ui/barcode-scanner'
+import { CartSheet } from '@/features/checkout/ui/cart-sheet'
 import { motion } from 'framer-motion'
-import type { ProductWithCategory } from '@/types/product'
+import { useProductSearch } from '@/features/products/application/use-product-search'
+import { ProductWithCategory } from '@/features/products/domain/product'
 
 export function POSClient() {
   const [mounted, setMounted] = useState(false)

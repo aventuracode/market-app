@@ -3,14 +3,15 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Loader2, Package, TrendingUp, TrendingDown, AlertCircle, Settings } from 'lucide-react'
-import { productService } from '@/services/product.service'
-import { useStockMovements } from '@/hooks/use-stock-movements'
-import { StockAdjustmentDialog } from '@/components/stock/stock-adjustment-dialog'
-import { StockMovementItem } from '@/components/stock/stock-movement-item'
+import { productService } from '@/features/products/infrastructure/product.service'
+import { useStockMovements } from '@/features/products/application/use-stock-movements'
+import { StockAdjustmentDialog } from '@/features/products/ui/stock/stock-adjustment-dialog'
+import { StockMovementItem } from '@/features/products/ui/stock/stock-movement-item'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { useTenant } from '@/hooks/use-tenant'
-import type { Product } from '@/types/product'
+import { useTenant } from '@/features/auth/application/use-tenant'
+import { Product } from '@/types'
+
 
 export default function ProductStockPage() {
   const router = useRouter()

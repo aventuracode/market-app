@@ -1,4 +1,4 @@
-import type { Product, ProductWithCategory, UnitType } from '@/types/product'
+import type { Product, ProductWithCategory, UnitType } from '@/features/products/domain/product'
 import { roundWeight, formatWeight } from '@/lib/utils/weight'
 import { formatCurrency } from '@/lib/utils/currency'
 

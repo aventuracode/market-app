@@ -6,13 +6,13 @@
  */
 
 // Product schemas
-export * from './product.schema'
+export * from '../features/products/domain/product.schema'
 
 // Sale schemas
 export * from '../features/checkout/domain/sale.schema'
 
 // Cash schemas
-export * from './cash.schema'
+export * from '../features/cash/domain/cash.schema'
 
 // Category schemas
-export * from './category.schema'
+export * from '../features/products/domain/category.schema'

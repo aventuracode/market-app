@@ -24,23 +24,19 @@ export type Tenant = Omit<Tables<'tenants'>, 'created_at'> & {
 
 // TODO: These types are duplicates - use types from product.ts and cash.ts instead
 // Keeping for backwards compatibility during migration
-export interface Product {
-  id: string
-  tenant_id: string
-  name: string
-  barcode: string | null
-  price: number
-  stock: number
-  category_id: string | null
-  created_at: string
-}
+// export interface Product {
+//   id: string
+//   tenant_id: string
+//   name: string
+//   barcode: string | null
+//   price: number
+//   stock: number
+//   category_id: string | null
+//   created_at: string
+// }
+export type Product = Database['public']['Tables']['products']['Row']
 
-export interface Category {
-  id: string
-  tenant_id: string
-  name: string
-  created_at: string
-}
+export type Category = Database['public']['Tables']['categories']['Row']
 
 export interface Sale {
   id: string
@@ -68,16 +64,17 @@ export interface CashRegister {
   is_active: boolean
   created_at: string
 }
-
-export interface CashMovement {
-  id: string
-  cash_register_id: string
-  user_id: string
-  type: 'APERTURA' | 'CIERRE' | 'VENTA' | 'RETIRO' | 'INGRESO'
-  amount: number
-  description: string | null
-  created_at: string
-}
+type CashMovementType =
+  Database['public']['Enums']['cash_movement_type']
+// export interface CashMovement {
+//   id: string
+//   cash_register_id: string
+//   user_id: string | null
+//   type: CashMovementType
+//   amount: number
+//   description: string | null
+//   created_at: string
+// }
 
 export interface CartItem {
   product: Product

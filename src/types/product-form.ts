@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import type { UnitType } from './product'
 
 /**
  * Schema de validación para crear/editar productos

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/client'
 import type { SaleWithDetails, SalesStats, PaymentMethod } from '@/features/sales/domain/sales.types'
 import type { Role } from '@/types'
-import { mapSale, mapSales } from '@/lib/sale.mapper'
+import { mapSale, mapSales } from '@/features/sales/infrastructure/sale.mapper'
 import { money } from '@/lib/money'
 // TODO: Refactor Sale, SaleWithDetails, SaleWithRelations types to derive from Supabase generated types
 // Current types are missing fields like 'tax', 'updated_at' and have type mismatches with DB schema

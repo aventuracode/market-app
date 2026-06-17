@@ -10,9 +10,9 @@ export const categoryFormSchema = z.object({
     .max(500, 'La descripción no puede tener más de 500 caracteres')
     .nullable()
     .optional(),
-  is_active: z.boolean().default(true),
+  is_active: z.boolean().optional(),
 })
-export type CategoryFormInput = z.input<typeof categoryFormSchema>
+export type CategoryFormInput = z.infer<typeof categoryFormSchema>
 
 export type CategoryFormData = z.output<typeof categoryFormSchema>
 

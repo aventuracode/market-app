@@ -3,13 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus, Loader2, FolderX } from 'lucide-react'
-import { useCategories } from '@/hooks/use-categories'
-import { CategoryListItem } from '@/components/categories/category-list-item'
-import { DeleteCategoryDialog } from '@/components/categories/delete-category-dialog'
+import { useCategories } from '@/features/products/application/use-categories'
+import { CategoryListItem } from '@/features/products/ui/categories/category-list-item'
+import { DeleteCategoryDialog } from '@/features/products/ui/categories/delete-category-dialog'
 import { PageHeader } from '@/components/shared/page-header'
 import { SearchBar } from '@/components/shared/search-bar'
 import { Button } from '@/components/ui/button'
-import type { Category } from '@/types/product'
+import { Category } from '@/types'
 
 export function CategoriesClient() {
   const router = useRouter()
@@ -116,13 +116,20 @@ export function CategoriesClient() {
         </div>
       </div>
 
-      {/* Delete Dialog */}
-      <DeleteCategoryDialog
-        category={categoryToDelete}
-        open={!!categoryToDelete}
-        onClose={() => setCategoryToDelete(null)}
-        onSuccess={handleDeleteSuccess}
-      />
+     <DeleteCategoryDialog
+      open={!!categoryToDelete}
+      category={categoryToDelete}
+      onOpenChange={(open) => {
+        if (!open) {
+          setCategoryToDelete(null)
+        }
+      }}
+      onConfirm={async () => {
+        // aquí va tu lógica de borrado
+        handleDeleteSuccess()
+        setCategoryToDelete(null)
+      }}
+    />
     </div>
   )
 }

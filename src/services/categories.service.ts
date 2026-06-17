@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
-import type { CreateCategoryInput, UpdateCategoryInput } from '@/schemas/category.schema'
+import type { CreateCategoryInput, UpdateCategoryInput } from '@/features/products/domain/category.schema'
 import type { Tables } from '@/lib/supabase/client'
 
 export type Category = Tables<'categories'>

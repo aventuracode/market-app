@@ -5,18 +5,18 @@ import { Search, Plus } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { CategoryCard } from '@/components/settings/categories/category-card'
-import { CategoryFormDialog } from '@/components/settings/categories/category-form-dialog'
-import { DeleteCategoryDialog } from '@/components/settings/categories/delete-category-dialog'
-import { CategoriesEmptyState } from '@/components/settings/categories/categories-empty-state'
+import { CategoryCard } from '@/features/products/ui/categories/category-card'
+import { CategoryFormDialog } from '@/features/products/ui/categories/category-form-dialog'
+import { DeleteCategoryDialog } from '@/features/products/ui/categories/delete-category-dialog'
+import { CategoriesEmptyState } from '@/features/products/ui/categories/categories-empty-state'
 import {
   useCategories,
   useCreateCategory,
   useUpdateCategory,
   useDeleteCategory,
-} from '@/hooks/queries/use-categories-query'
+} from '@/features/products/application/queries/use-categories-query'
 import type { CategoryWithProductCount } from '@/services/categories.service'
-import type { CreateCategoryInput } from '@/schemas/category.schema'
+import type { CreateCategoryInput } from '@/features/products/domain/category.schema'
 
 export default function CategoriesPage() {
   const [search, setSearch] = useState('')

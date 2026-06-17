@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Loader2 } from 'lucide-react'
-import { ProductForm } from '@/components/products/product-form'
-import { productService } from '@/services/product.service'
-import { useTenant } from '@/hooks/use-tenant'
+import { ProductForm } from '@/features/products/ui/products/product-form'
+import { productService } from '@/features/products/infrastructure/product.service'
+import { useTenant } from '@/features/auth/application/use-tenant'
 import { Button } from '@/components/ui/button'
 import type { Product } from '@/types/product'
 

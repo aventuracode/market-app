@@ -3,13 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus, Loader2, PackageX } from 'lucide-react'
-import { useProducts } from '@/hooks/use-products'
-import { ProductListItem } from '@/components/products/product-list-item'
-import { DeleteProductDialog } from '@/components/products/delete-product-dialog'
+import { useProducts } from '@/features/products/application/use-products'
+import { ProductListItem } from '@/features/products/ui/products/product-list-item'
+import { DeleteProductDialog } from '@/features/products/ui/products/delete-product-dialog'
 import { PageHeader } from '@/components/shared/page-header'
 import { SearchBar } from '@/components/shared/search-bar'
 import { Button } from '@/components/ui/button'
-import type { ProductWithCategory } from '@/types/product'
+import { ProductWithCategory } from '@/features/products/domain/product'
 
 export function ProductosClient() {
   const router = useRouter()

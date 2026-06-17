@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { useSales, useSalesStats, useSalesPageTitle } from '@/hooks/useSales'
-import { SalesStatsCards } from '@/features/sales/application/sales/sales-stats-cards'
-import { SalesPeriodTabs } from '@/features/sales/application/sales/sales-period-tabs'
-import { SalesTable } from '@/features/sales/application/sales/sales-table'
+import { useSales, useSalesStats, useSalesPageTitle } from '@/features/sales/application/useSales'
+import { SalesStatsCards } from '@/features/sales/ui/sales-stats-cards'
+import { SalesPeriodTabs } from '@/features/sales/ui/sales-period-tabs'
+import { SalesTable } from '@/features/sales/ui/sales-table'
 import type { SalesPeriod } from '@/features/sales/domain/sales.types'
 
 /**

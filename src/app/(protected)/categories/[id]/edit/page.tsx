@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Loader2 } from 'lucide-react'
-import { CategoryForm } from '@/components/categories/category-form'
-import { categoryService } from '@/services/category.service'
-import { useTenant } from '@/hooks/use-tenant'
+import { CategoryForm } from '@/features/products/ui/categories/category-form'
+import { categoryService } from '@/features/products/infrastructure/category.service'
+import { useTenant } from '@/features/auth/application/use-tenant'
 import { Button } from '@/components/ui/button'
-import type { Category } from '@/types/product'
+import { Category } from '@/types'
 
 export default function EditCategoryPage() {
   const router = useRouter()

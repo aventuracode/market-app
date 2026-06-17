@@ -1,8 +1,7 @@
 // import type { Money } from '@/lib/money'
 
 import { Money } from "@/lib/money"
-// import { CashMovement, Sale } from "../../../types"
-import { StockMovement } from "../../../types/stock"
+import { StockMovement } from "../../products/domain/stock"
 import { Tables } from "@/types/supabase.generated"
 
 // import type { Database } from './supabase.generated'
@@ -55,13 +54,7 @@ export interface SaleItemResponse extends SaleItem {
 //   reference_id: string
 // }
 
-// export interface CashMovement {
-//   id: string
-//   amount: Money
-//   movement_type: 'INCOME' | 'EXPENSE'
-//   reference_id: string
-//   description: string
-// }
+
 export type Sale = Tables<'sales'>
 
 export type CreateSaleResponse = {
