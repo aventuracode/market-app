@@ -1,5 +1,5 @@
-import { POSClient } from './pos-client'
+import { POSPage } from '@/features/pos/ui/pages'
 
-export default function POSPage() {
-  return <POSClient />
+export default function Page() {
+  return <POSPage />
 }

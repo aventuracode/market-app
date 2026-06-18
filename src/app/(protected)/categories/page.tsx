@@ -1,10 +1,5 @@
-import { PageContainer } from '@/shared/ui/layout/page-container'
-import { CategoriesClient } from './categories-client'
+import { CategoriesPage } from '@/features/products/ui/pages'
 
-export default function CategoriesPage() {
-  return (
-    <PageContainer title="Categorías">
-      <CategoriesClient />
-    </PageContainer>
-  )
+export default function Page() {
+  return <CategoriesPage />
 }

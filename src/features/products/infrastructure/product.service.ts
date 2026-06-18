@@ -301,22 +301,6 @@ export class ProductService {
       throw new Error('Error al eliminar el producto')
     }
   }
-
-  /**
-   * Restaurar producto
-   */
-  async restoreProduct(productId: string, tenantId: string): Promise<void> {
-    const { error } = await this.supabase
-      .from('products')
-      .update({ is_active: true })
-      .eq('id', productId)
-      .eq('tenant_id', tenantId)
-
-    if (error) {
-      console.error('Error restoring product:', error)
-      throw new Error('Error al restaurar el producto')
-    }
-  }
 }
 
 export const productService = new ProductService()

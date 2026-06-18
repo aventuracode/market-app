@@ -2,12 +2,12 @@
 
 import { useState } from 'react'
 import { Wallet, TrendingUp, TrendingDown, Clock, User, Plus, X, Loader2 } from 'lucide-react'
-import { useCashRegister } from '@/features/cash/application/use-cash-register'
-import { useCashMovements } from '@/features/cash/application/use-cash-movements'
-import { OpenCashDialog } from '@/features/cash/ui/open-cash-dialog'
-import { CloseCashDialog } from '@/features/cash/ui/close-cash-dialog'
-import { CashMovementDialog } from '@/features/cash/ui/cash-movement-dialog'
-import { CashMovementItem } from '@/features/cash/ui/cash-movement-item'
+import { useCashRegister } from '../../application/use-cash-register'
+import { useCashMovements } from '../../application/use-cash-movements'
+import { OpenCashDialog } from '../open-cash-dialog'
+import { CloseCashDialog } from '../close-cash-dialog'
+import { CashMovementDialog } from '../cash-movement-dialog'
+import { CashMovementItem } from '../cash-movement-item'
 import { Button } from '@/shared/ui/components/button'
 import { Card } from '@/shared/ui/components/card'
 import { useAuthStore } from '@/features/auth'
@@ -15,7 +15,7 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { formatCurrency } from '@/shared/utils'
 
-export function CashClient() {
+export function CashPage() {
   const { user } = useAuthStore()
   const {
     activeSession,

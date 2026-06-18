@@ -108,6 +108,7 @@ class CashService {
 
   async closeCash(
     sessionId: string,
+    tenantId: string,
     closingAmount: number,
     notes?: string
   ): Promise<CashSession> {
@@ -126,6 +127,7 @@ class CashService {
         notes: notes || null,
       })
       .eq('id', sessionId)
+      .eq('tenant_id', tenantId)
       .select()
       .single()
 

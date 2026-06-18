@@ -1,5 +1,5 @@
-import { CashClient } from './cash-client'
+import { CashPage } from '@/features/cash/ui/pages'
 
-export default function CashPage() {
-  return <CashClient />
+export default function Page() {
+  return <CashPage />
 }

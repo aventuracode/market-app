@@ -128,18 +128,6 @@ class CategoryService {
       throw new Error(error.message || 'Error al eliminar la categoría')
     }
   }
-
-  async restoreCategory(categoryId: string): Promise<void> {
-    const { error } = await this.supabase
-      .from('categories')
-      .update({ is_active: true })
-      .eq('id', categoryId)
-
-    if (error) {
-      console.error('Error restoring category:', error)
-      throw new Error(error.message || 'Error al restaurar la categoría')
-    }
-  }
 }
 
 export const categoryService = new CategoryService()

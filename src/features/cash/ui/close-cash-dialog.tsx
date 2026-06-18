@@ -22,6 +22,7 @@ import { Textarea } from '@/shared/ui/components/textarea'
 import { Card } from '@/shared/ui/components/card'
 import type { CashSession, CashSummary } from '../domain/cash'
 import { formatCurrency } from '@/shared/utils'
+import { useTenant } from '@/features/auth'
 
 interface CloseCashDialogProps {
   open: boolean
@@ -41,6 +42,7 @@ export function CloseCashDialog({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [closingAmountInput, setClosingAmountInput] = useState<string>('')
+  const { tenant } = useTenant() 
 
   const {
     register,
@@ -73,12 +75,16 @@ export function CloseCashDialog({
       setError('No hay sesión activa')
       return
     }
+    if (!tenant?.id) {  
+      setError('No hay tenant activo')
+      return
+    }
 
     try {
       setLoading(true)
       setError(null)
 
-      await cashService.closeCash(session.id, data.closing_amount, data.notes)
+      await cashService.closeCash(session.id, tenant.id, data.closing_amount, data.notes)
 
       if (navigator.vibrate) {
         navigator.vibrate(200)

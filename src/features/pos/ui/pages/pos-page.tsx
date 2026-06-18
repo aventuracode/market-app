@@ -5,27 +5,27 @@ import { ShoppingCart, ScanBarcode } from 'lucide-react'
 import { toast } from 'sonner'
 import { useCartStore } from '@/features/checkout/application/stores/cart.store'
 import { useTenant } from '@/features/auth'
-import { posService } from '@/features/pos/infrastructure/pos.service'
+import { posService } from '../../infrastructure/pos.service'
 import { formatQuantity, getInitialQuantity } from '@/features/products/domain/product-helpers'
 import { formatWeight } from '@/shared/utils'
 import { formatCurrency } from '@/shared/utils'
 import { PageHeader } from '@/shared/ui/components/page-header'
 import { SearchBar } from '@/shared/ui/components/search-bar'
-import { ProductCard } from '@/features/pos/ui/product-card'
+import { ProductCard } from '../product-card'
 import {
   ProductListLoading,
   ProductListEmpty,
   ProductListError,
   ProductListSearching,
-} from '@/features/pos/ui/product-list-states'
+} from '../product-list-states'
 import { Button } from '@/shared/ui/components/button'
-import { BarcodeScanner } from '@/features/pos/ui/barcode-scanner'
+import { BarcodeScanner } from '../barcode-scanner'
 import { CartSheet } from '@/features/checkout/ui/cart-sheet'
 import { motion } from 'framer-motion'
-import { useProductSearch } from '@/features/pos/application/use-product-search'
+import { useProductSearch } from '../../application/use-product-search'
 import type { ProductWithCategory } from '@/features/products/domain/product'
 
-export function POSClient() {
+export function POSPage() {
   const [mounted, setMounted] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
   const [scannerOpen, setScannerOpen] = useState(false)

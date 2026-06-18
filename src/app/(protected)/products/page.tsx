@@ -1,10 +1,5 @@
-import { PageContainer } from '@/shared/ui/layout/page-container'
-import { ProductosClient } from './products-client'
+import { ProductsPage } from '@/features/products/ui/pages'
 
-export default function ProductsPage() {
-  return (
-    <PageContainer title="Productos">
-      <ProductosClient />
-    </PageContainer>
-  )
+export default function Page() {
+  return <ProductsPage />
 }
