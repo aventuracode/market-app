@@ -1,6 +1,7 @@
 import { createClient as createServerClient } from './server'
 import { getCurrentTenantId } from './auth-helpers'
-import type { Tenant } from '@/types'
+import type { Tenant } from '@/features/auth'
+import { mapTenant } from '@/features/auth'
 
 export async function getCurrentTenant(): Promise<Tenant | null> {
   const tenantId = await getCurrentTenantId()
@@ -19,10 +20,7 @@ export async function getCurrentTenant(): Promise<Tenant | null> {
 
   if (!tenant) return null
 
-  return {
-    ...tenant,
-    created_at: tenant.created_at ?? new Date().toISOString(),
-  }
+  return mapTenant(tenant)
 }
 
 export async function requireTenant(): Promise<Tenant> {
@@ -46,10 +44,7 @@ export async function getTenantById(tenantId: string): Promise<Tenant | null> {
 
   if (!tenant) return null
 
-  return {
-    ...tenant,
-    created_at: tenant.created_at ?? new Date().toISOString(),
-  }
+  return mapTenant(tenant)
 }
 
 export function withTenantIsolation<T extends { tenant_id: string }>(

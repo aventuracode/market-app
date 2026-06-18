@@ -2,7 +2,10 @@
  * Supabase Type Helpers
  * Única fuente de verdad para helpers de tipos de Supabase
  */
-import type { Database } from '@/types/supabase.generated'
+import type { Database } from './types.generated'
+
+// Re-export Database type
+export type { Database }
 
 /**
  * Helper para obtener el tipo Row de una tabla
