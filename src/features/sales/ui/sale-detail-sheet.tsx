@@ -17,7 +17,7 @@ import {
   MapPin,
   Package
 } from 'lucide-react'
-import { formatCurrency, formatDateTime } from '@/lib/utils/format'
+import { formatCurrency, formatDateTime } from '@/shared/utils'
 import type { SaleWithDetails as SaleWithRelations, PaymentMethod } from '@/features/sales/domain/sales.types'
 
 interface SaleDetailSheetProps {

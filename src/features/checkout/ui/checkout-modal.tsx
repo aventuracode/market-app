@@ -8,8 +8,8 @@ import { Separator } from '@/components/ui/separator'
 import { PaymentMethodSelector } from './payment-method-selector'
 import { useCheckout } from '@/features/checkout/application/useCheckout'
 import { useCartStore } from '@/features/checkout/application/stores/cart.store'
-import { formatWeight } from '@/lib/utils/weight'
-import { formatCurrency } from '@/lib/utils/currency'
+import { formatWeight } from '@/shared/utils'
+import { formatCurrency } from '@/shared/utils'
 import { PaymentMethod } from '@/features/sales/domain/sales.types'
 
 interface CheckoutModalProps {

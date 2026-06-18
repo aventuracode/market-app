@@ -1,4 +1,4 @@
-import { requireAuth } from '@/lib/supabase/auth-helpers'
+import { requireAuth } from '@/shared/supabase'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'

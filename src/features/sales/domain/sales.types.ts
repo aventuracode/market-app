@@ -2,8 +2,8 @@
  * Tipos consolidados para el sistema de ventas
  * Fuente única de verdad basada en Supabase + normalizaciones de dominio
  */
-import type { Money } from '@/lib/money'
-import type { Tables, Inserts, Updates, Enums } from '@/lib/supabase/types'
+import type { Money } from '@/shared/utils'
+import type { Tables, Inserts, Updates, Enums } from '@/shared/supabase/types'
 
 // ============================================================================
 // ENUMS

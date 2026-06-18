@@ -2,7 +2,7 @@
 // SRP: único responsable de preparar y validar los items de la venta
 
 import { useCallback } from 'react'
-import { money, validateCheckoutTotal } from '@/lib/money'
+import { money, validateCheckoutTotal } from '@/shared/utils'
 import { SaleItemInput } from '@/features/sales/domain/saleItemInput.types'
 import { CartItem } from '@/features/checkout/domain/cart.types'
 

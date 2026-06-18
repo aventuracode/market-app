@@ -1,4 +1,4 @@
-import type { Tables } from '@/lib/supabase/types'
+import type { Tables } from '@/shared/supabase/types'
 import type { Category } from './product'
 import type { CategoryWithProductCount } from './category.schema'
 

@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { formatPrice } from '@/lib/product-helpers'
+import { formatPrice } from '@/features/products/domain/product-helpers'
 
 interface CartSummaryProps {
   subtotal: number

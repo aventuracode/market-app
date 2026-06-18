@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { CASH_MOVEMENT_LABELS } from '../domain/cash'
 import type { CashMovementWithUser } from '../domain/cash'
-import { formatCurrency } from '@/lib/utils/currency'
+import { formatCurrency } from '@/shared/utils'
 
 interface CashMovementItemProps {
   movement: CashMovementWithUser

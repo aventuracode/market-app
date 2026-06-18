@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import CurrencyInput from 'react-currency-input-field'
 import { toast } from 'sonner'
-import { money } from '@/lib/money'
+import { money } from '@/shared/utils'
 import { cashService, CashConcurrencyError } from '@/features/cash/infrastructure/cash.service'
 import { useTenant } from '@/features/auth/application/use-tenant'
 import { useAuthStore } from '@/features/auth/application/stores/auth.store'
@@ -57,7 +57,7 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
   const openingAmount = watch('opening_amount') || 0
 
   // Importar formatCurrency solo para el toast
-  const { formatCurrency } = require('@/lib/utils/currency')
+  const { formatCurrency } = require('@/shared/utils/currency')
   
   // Resetear input cuando se abre el modal
   useEffect(() => {

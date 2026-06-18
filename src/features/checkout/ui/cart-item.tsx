@@ -6,8 +6,8 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { formatQuantity, formatPrice, incrementWeight, decrementWeight, STEP_WEIGHT } from '@/lib/product-helpers'
-import { roundWeight, formatWeight } from '@/lib/utils/weight'
+import { formatQuantity, formatPrice, incrementWeight, decrementWeight, STEP_WEIGHT } from '@/features/products/domain/product-helpers'
+import { roundWeight, formatWeight } from '@/shared/utils'
 import type { CartItem, StockValidationResult } from '@/features/checkout/domain/cart.types'
 
 interface CartItemProps {

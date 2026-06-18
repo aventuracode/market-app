@@ -1,5 +1,4 @@
-import { Inserts } from "@/lib/supabase/client"
-import { string } from "zod"
+import { Inserts } from "@/shared/supabase/types"
 
 export type SaleItemInput = {
   product_id: string

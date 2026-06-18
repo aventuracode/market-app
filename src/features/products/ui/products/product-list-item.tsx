@@ -3,10 +3,10 @@
 import { Package, Edit, Trash2, AlertCircle } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { formatStock } from '@/lib/format-stock'
-import { formatUnit, getUnitBadgeVariant, formatPriceByUnit } from '@/lib/product-helpers'
+import { formatStock } from '@/features/products/domain/format-stock'
+import { formatUnit, getUnitBadgeVariant, formatPriceByUnit } from '@/features/products/domain/product-helpers'
 import { ProductWithCategory, UnitType } from '@/features/products/domain/product'
-import { formatCurrency } from '@/lib/utils/currency'
+import { formatCurrency } from '@/shared/utils'
 
 interface ProductListItemProps {
   product: ProductWithCategory

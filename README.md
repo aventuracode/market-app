@@ -14,13 +14,10 @@
 
 - [Características](#-características)
 - [Stack Tecnológico](#-stack-tecnológico)
-- [Instalación](#-instalación)
-- [Configuración](#-configuración)
-- [Desarrollo](#-desarrollo)
+- [Instalación Rápida](#-instalación-rápida)
 - [Arquitectura](#-arquitectura)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Documentación Técnica](#-documentación-técnica)
-- [Licencia](#-licencia)
+- [Desarrollo](#-desarrollo)
 
 ---
 
@@ -122,105 +119,58 @@
 
 ---
 
-## 📦 Instalación
+## 📦 Instalación Rápida
 
-### **Prerrequisitos**
-- **Node.js 20+** (recomendado 20.12+)
-- **pnpm 10.33.3** (requerido - el proyecto usa `only-allow pnpm`)
-- Cuenta de **Supabase** (gratuita disponible)
-
-### **Clonar el repositorio**
 ```bash
+# Clonar repositorio
 git clone https://github.com/tu-usuario/market-app.git
 cd market-app
-```
 
-### **Instalar dependencias**
-```bash
+# Instalar dependencias (requiere pnpm 10.33.3+)
 pnpm install
-```
 
----
-
-## ⚙️ Configuración
-
-### **1. Variables de Entorno**
-
-Copia el archivo de ejemplo:
-```bash
+# Configurar variables de entorno
 cp .env.local.example .env.local
-```
+# Editar .env.local con tus credenciales de Supabase
 
-Configura las variables en `.env.local`:
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-anon-key
-```
-
-### **2. Obtener Credenciales de Supabase**
-
-1. Ve a [Supabase Dashboard](https://app.supabase.com)
-2. Selecciona tu proyecto
-3. Ve a **Settings → API**
-4. Copia:
-   - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
-   - `anon/public key` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-
-### **3. Base de Datos**
-
-El esquema de base de datos incluye:
-- `tenants` - Multi-tenancy
-- `users` - Usuarios del sistema
-- `roles` - Roles y permisos
-- `products` - Catálogo de productos
-- `categories` - Categorías de productos
-- `sales` - Ventas realizadas
-- `sale_items` - Detalle de ventas
-- `stock_movements` - Movimientos de inventario
-- `cash_registers` - Cajas registradoras
-- `cash_sessions` - Sesiones de caja
-- `cash_movements` - Movimientos de caja
-
-**RPC Functions:**
-- `create_sale()` - Crea venta, actualiza stock y registra movimientos
-
----
-
-## 🚀 Desarrollo
-
-### **Iniciar servidor de desarrollo**
-```bash
+# Iniciar desarrollo
 pnpm dev
 ```
 
-Abre [http://localhost:3000](http://localhost:3000)
-
-### **Comandos disponibles**
-```bash
-pnpm dev      # Servidor de desarrollo
-pnpm build    # Build para producción
-pnpm start    # Servidor de producción
-pnpm lint     # Ejecutar linter
-pnpm format   # Formatear código con Prettier
-```
+**Prerrequisitos:** Node.js 20+, pnpm 10.33.3+, cuenta de Supabase
 
 ---
 
 ## 🏗️ Arquitectura
 
-### **Principios de Diseño**
-- ✅ **Mobile-First:** Diseñado primero para smartphones
-- ✅ **Type-Safe:** TypeScript en todo el código
-- ✅ **Feature-Based:** Organización modular por features
-- ✅ **Server Components:** Aprovecha Next.js 14 App Router
-- ✅ **Real-time:** Supabase Realtime para actualizaciones instantáneas
+### **Feature First Architecture**
 
-### **Patrones Implementados**
-- **Service Layer:** Lógica de negocio en servicios reutilizables
-- **Custom Hooks:** Encapsulación de lógica compleja
-- **Zustand Stores:** State management con persist
-- **Server Actions:** Mutaciones server-side seguras
-- **RLS Policies:** Seguridad a nivel de base de datos
+El proyecto sigue una arquitectura modular basada en features, donde cada feature es autónoma y contiene:
+
+```
+features/
+  ├── auth/           # Autenticación y autorización
+  ├── cash/           # Gestión de caja
+  ├── checkout/       # Proceso de checkout
+  ├── products/       # Catálogo de productos
+  ├── sales/          # Historial de ventas
+  └── pos/            # Punto de venta
+```
+
+Cada feature se organiza en capas:
+
+- **`domain/`** - Tipos, schemas, validaciones, mappers
+- **`application/`** - Hooks, stores, lógica de negocio
+- **`infrastructure/`** - Servicios, API calls, integraciones
+- **`ui/`** - Componentes React específicos del feature
+
+### **Principios Clave**
+
+- ✅ **Separation of Concerns:** Cada capa tiene responsabilidades claras
+- ✅ **Type Safety:** Tipos derivados de Supabase + normalizaciones de dominio
+- ✅ **Domain Mappers:** Conversión centralizada de DB types → Domain types
+- ✅ **Money Type:** Tipo seguro para valores financieros (previene NaN)
+- ✅ **Single Source of Truth:** Helpers de Supabase centralizados en `/lib/supabase/types.ts`
 
 ---
 
@@ -229,340 +179,148 @@ pnpm format   # Formatear código con Prettier
 ```
 market-app/
 ├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── (auth)/            # Rutas públicas (login)
-│   │   ├── (protected)/       # Rutas protegidas
-│   │   │   ├── pos/          # Punto de venta
-│   │   │   ├── cash/         # Gestión de caja
-│   │   │   ├── products/     # Gestión de productos
-│   │   │   ├── sales/        # Historial de ventas
-│   │   │   └── config/       # Configuración
-│   │   ├── layout.tsx        # Layout raíz
-│   │   └── page.tsx          # Página principal
+│   ├── app/                         # Next.js App Router
+│   │   ├── (auth)/                 # Rutas públicas
+│   │   ├── (protected)/            # Rutas protegidas
+│   │   └── login/
 │   │
-│   ├── components/            # Componentes reutilizables
-│   │   ├── ui/               # Componentes base (shadcn/ui)
-│   │   ├── shared/           # Componentes compartidos
-│   │   ├── pos/              # Componentes del POS
-│   │   ├── cash/             # Componentes de caja
-│   │   ├── cart/             # Componentes del carrito
-│   │   ├── checkout/         # Componentes de checkout
-│   │   ├── products/         # Componentes de productos
-│   │   ├── scanner/          # Barcode scanner
-│   │   └── auth/             # Componentes de auth
+│   ├── features/                    # 🎯 Feature First Architecture
+│   │   ├── auth/
+│   │   │   ├── domain/             # Tipos, validaciones
+│   │   │   ├── application/        # Hooks, stores (auth.store, use-auth, use-tenant)
+│   │   │   ├── infrastructure/     # auth.service.ts
+│   │   │   └── ui/                 # Componentes de login
+│   │   │
+│   │   ├── products/
+│   │   │   ├── domain/             # product.ts, category.ts, *.mapper.ts, schemas
+│   │   │   ├── application/        # use-products, use-categories, queries/
+│   │   │   ├── infrastructure/     # product.service, category.service
+│   │   │   └── ui/                 # Componentes de productos
+│   │   │
+│   │   ├── sales/
+│   │   │   ├── domain/             # sales.types.ts, sale.mapper.ts
+│   │   │   ├── application/        # useSales, queries/
+│   │   │   ├── infrastructure/     # sales.service.ts
+│   │   │   └── ui/                 # Componentes de ventas
+│   │   │
+│   │   ├── cash/
+│   │   │   ├── domain/             # cash.ts, cash.mapper.ts, schemas
+│   │   │   ├── application/        # use-cash-register, stores/
+│   │   │   ├── infrastructure/     # cash.service, cash-realtime.service
+│   │   │   └── ui/                 # Componentes de caja
+│   │   │
+│   │   ├── checkout/
+│   │   │   ├── domain/             # cart.types.ts
+│   │   │   ├── application/        # useCheckout, cart.store
+│   │   │   └── ui/                 # Componentes de checkout
+│   │   │
+│   │   └── pos/
+│   │       ├── application/        # use-barcode-scanner
+│   │       └── ui/                 # Componentes POS
 │   │
-│   ├── services/              # Servicios de API
-│   │   ├── auth.service.ts
-│   │   ├── cash.service.ts
-│   │   ├── cash-realtime.service.ts
-│   │   ├── product.service.ts
-│   │   ├── sale.service.ts
-│   │   ├── category.service.ts
-│   │   └── stock-movement.service.ts
+│   ├── components/                  # Componentes compartidos
+│   │   ├── ui/                     # shadcn/ui base components
+│   │   ├── shared/                 # Componentes reutilizables
+│   │   ├── layout/                 # Layout components
+│   │   └── navigation/             # Navegación
 │   │
-│   ├── stores/                # Zustand stores
-│   │   ├── auth.store.ts     # Autenticación
-│   │   ├── cart.store.ts     # Carrito de compras
-│   │   └── cash.store.ts     # Caja activa
+│   ├── lib/                         # Utilidades globales
+│   │   ├── supabase/
+│   │   │   ├── client.ts           # Cliente de Supabase
+│   │   │   ├── server.ts           # Server client
+│   │   │   └── types.ts            # 🔑 Helpers centralizados (Tables, Inserts, Updates, Enums)
+│   │   ├── money.ts                # 💰 Money type y utilidades
+│   │   └── utils/                  # Helpers generales
 │   │
-│   ├── hooks/                 # Custom hooks
-│   │   ├── use-auth.ts
-│   │   ├── use-tenant.ts
-│   │   ├── use-cash-register.ts
-│   │   ├── use-cash-movements.ts
-│   │   ├── use-checkout.ts
-│   │   ├── use-products.ts
-│   │   └── use-barcode-scanner.ts
-│   │
-│   ├── lib/                   # Utilidades y helpers
-│   │   ├── supabase/         # Clientes de Supabase
-│   │   ├── utils/            # Funciones utilitarias
-│   │   └── constants/        # Constantes
-│   │
-│   ├── types/                 # TypeScript types
-│   │   ├── auth.ts
-│   │   ├── cash.ts
-│   │   ├── product.ts
-│   │   ├── sale.ts
+│   ├── types/                       # Tipos globales
+│   │   ├── index.ts
+│   │   ├── supabase.generated.ts   # Generado por Supabase CLI
 │   │   └── supabase.ts
 │   │
-│   ├── constants/             # Constantes de la aplicación
-│   │   └── cash-movement-types.ts
-│   │
-│   ├── providers/             # Context providers
-│   │   └── theme-provider.tsx
-│   │
-│   ├── middleware.ts          # Middleware de Next.js
-│   └── styles/               # Estilos globales
-│       └── globals.css
+│   ├── schemas/                     # Schemas de validación
+│   ├── providers/                   # React Context providers
+│   ├── middleware.ts
+│   └── styles/
 │
-├── public/                    # Assets estáticos
-├── .env.local.example        # Ejemplo de variables de entorno
-├── next.config.mjs           # Configuración de Next.js
-├── tailwind.config.ts        # Configuración de Tailwind
-├── tsconfig.json             # Configuración de TypeScript
-├── package.json              # Dependencias
-└── README.md                 # Este archivo
+├── supabase/                        # Configuración de Supabase
+│   └── migrations/
+│
+├── public/
+├── .env.local.example
+├── next.config.mjs
+├── tailwind.config.ts
+├── tsconfig.json
+└── package.json
 ```
 
 ---
 
-## 📚 Documentación Técnica
+## 🚀 Desarrollo
 
-### **Flujo de Venta Completo**
+### **Comandos**
 
-```
-1. Usuario busca/escanea producto
-   ↓
-2. Producto se agrega al carrito (Zustand)
-   ↓
-3. Usuario ajusta cantidades
-   ↓
-4. Click "Ver Carrito" → CartSheet
-   ↓
-5. Click "Cobrar" → CheckoutModal
-   ↓
-6. Selecciona método de pago
-   ↓
-7. Confirma venta
-   ↓
-8. useCheckout valida:
-   - Usuario autenticado ✓
-   - Tenant activo ✓
-   - Sesión de caja abierta ✓
-   - Carrito no vacío ✓
-   ↓
-9. Llama a saleService.createSale()
-   ↓
-10. RPC create_sale() en Supabase:
-    - Crea registro en sales
-    - Crea sale_items
-    - Descuenta stock (stock_movements)
-    - Registra cash_movement (si es CASH)
-    - Todo en transacción atómica
-   ↓
-11. Retorna sale_id y sale_number
-   ↓
-12. UI muestra éxito
-   ↓
-13. Limpia carrito
-   ↓
-14. Realtime actualiza /cash automáticamente
+```bash
+pnpm dev      # Servidor de desarrollo (http://localhost:3000)
+pnpm build    # Build para producción
+pnpm start    # Servidor de producción
+pnpm lint     # Ejecutar linter
+pnpm format   # Formatear código
 ```
 
-### **Gestión de Caja**
+### **Patrones de Código**
 
-**Apertura de Sesión:**
-```typescript
-1. Usuario va a /cash
-2. Click "Abrir Caja"
-3. Ingresa monto inicial (ej: $10,000)
-4. cashService.openCashSession()
-5. Crea cash_session con status='open'
-6. Guarda en useCashStore
-7. Persiste en localStorage
-```
-
-**Durante la Sesión:**
-```typescript
-- Cada venta crea un cash_movement tipo 'SALE'
-- Ingresos/Egresos manuales crean movimientos
-- getCashSummary() calcula balance en tiempo real:
-  Balance = Opening + Sales + Income - Expenses
-- Realtime actualiza UI automáticamente
-```
-
-**Cierre de Sesión:**
-```typescript
-1. Click "Cerrar Caja"
-2. Muestra resumen de movimientos
-3. Usuario confirma monto de cierre
-4. cashService.closeCashSession()
-5. Actualiza status='closed'
-6. Limpia useCashStore
-```
-
-### **Type Safety**
-
-Todos los tipos de movimientos de caja están centralizados:
+#### **Domain Mappers**
+Cada feature tiene mappers que convierten tipos de DB a tipos de dominio:
 
 ```typescript
-// src/constants/cash-movement-types.ts
-export const CASH_MOVEMENT_TYPES = {
-  SALE: 'SALE',
-  EXPENSE: 'EXPENSE',
-  INCOME: 'INCOME',
-  OPENING: 'OPENING',
-  CLOSING: 'CLOSING',
-  ADJUSTMENT: 'ADJUSTMENT',
-} as const
-
-export type CashMovementType =
-  (typeof CASH_MOVEMENT_TYPES)[keyof typeof CASH_MOVEMENT_TYPES]
-```
-
-### **Realtime Updates**
-
-```typescript
-// src/services/cash-realtime.service.ts
-class CashRealtimeService {
-  subscribe(cashRegisterId: string, callbacks: {
-    onInsert: (movement: CashMovement) => void
-    onUpdate: (movement: CashMovement) => void
-  }) {
-    return supabase
-      .channel(`cash_movements:${cashRegisterId}`)
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'cash_movements',
-        filter: `cash_register_id=eq.${cashRegisterId}`
-      }, callbacks.onInsert)
-      .subscribe()
+// features/products/domain/product.mapper.ts
+export function mapProduct(raw: ProductDB): Product {
+  return {
+    ...raw,
+    sale_price: money(raw.sale_price),      // number → Money
+    cost_price: money(raw.cost_price),      // number → Money
+    created_at: raw.created_at ?? new Date().toISOString(),
+    is_active: raw.is_active ?? true,
   }
 }
 ```
 
----
+#### **Type Helpers Centralizados**
+```typescript
+// lib/supabase/types.ts
+export type Tables<T extends keyof Database['public']['Tables']> = ...
+export type Inserts<T extends keyof Database['public']['Tables']> = ...
+export type Updates<T extends keyof Database['public']['Tables']> = ...
+export type Enums<T extends keyof Database['public']['Enums']> = ...
+```
 
-## 🔒 Seguridad
-
-### **Row Level Security (RLS)**
-
-Todas las tablas tienen políticas RLS que garantizan:
-- Los usuarios solo ven datos de su tenant
-- Las operaciones están limitadas por rol
-- Las sesiones son validadas en cada request
-
-### **Autenticación SSR**
-
-- Cookies HTTP-only seguras
-- Validación server-side en middleware
-- Refresh automático de tokens
-- Logout seguro con Server Actions
-
----
-
-## 🎨 Theming
-
-El sistema soporta:
-- **Light Mode:** Diseño minimalista y limpio
-- **Dark Mode:** Colores suaves para uso nocturno
-- **System Preference:** Detecta preferencia del sistema
-- **Persistencia:** Guarda preferencia del usuario
-
-Paleta de colores inspirada en Mercado Pago y Shopify.
-
----
-
-## 📱 Mobile-First
-
-### **Optimizaciones**
-- Touch targets mínimo 44px
-- Bottom navigation para acceso rápido
-- Safe areas para iOS/Android
-- 100dvh viewport
-- Gestos táctiles intuitivos
-- Animaciones suaves
-- PWA ready
-
----
-
-## 🐛 Debugging
-
-### **Herramientas de Desarrollo**
-
-El proyecto está optimizado para debugging con:
-
-- **React DevTools** - Inspección de componentes y props
-- **TanStack Query DevTools** - Monitoreo de queries y cache
-- **Zustand DevTools** - Inspección de state global
-- **Supabase Dashboard** - Logs de base de datos y queries
-- **Network Tab** - Análisis de llamadas API
-- **Console Errors** - Solo errores críticos en producción
-
-### **Manejo de Errores**
-
-El código mantiene `console.error` para errores críticos:
-- Errores de autenticación
-- Fallos de base de datos
-- Errores de permisos (RLS)
-- Excepciones de checkout
-- Errores de scanner
-
-**Nota:** Todos los `console.log` de desarrollo han sido removidos para producción.
+#### **Money Type**
+```typescript
+// lib/money.ts
+export type Money = number  // Siempre validado, nunca NaN
+export const money = (value: number | null | undefined): Money => ...
+export const validateCheckoutTotal = (total: Money): void => ...
+```
 
 ---
 
 ## 🚧 Roadmap
 
-### **Completado ✅**
-- [x] Setup inicial con Next.js 15 + React 19
-- [x] Autenticación SSR con Supabase
-- [x] Sistema de theming (dark/light)
-- [x] Layout mobile-first responsive
-- [x] POS con carrito y checkout optimizado
-- [x] Barcode scanner (ZXing)
+- [x] Next.js 15 + React 19
+- [x] Feature First Architecture
+- [x] Type Safety con Supabase generated types
+- [x] Domain Mappers para todas las features
+- [x] POS con checkout
 - [x] Gestión de caja (apertura/cierre/movimientos)
-- [x] Realtime updates (Supabase Realtime)
-- [x] CRUD de productos con categorías
-- [x] Historial de ventas con filtros
-- [x] Control de stock automático
-- [x] Sistema multi-tenant con RLS
-- [x] Roles de usuario (Admin/Cajero)
 - [x] Productos pesables (kg, g, L, ml)
-- [x] Input de moneda con formato
-- [x] Optimización para producción (sin console.log)
-
-### **En Progreso 🚧**
+- [x] Multi-tenant con RLS
+- [x] Roles (Admin/Cajero)
 - [ ] Tests unitarios y E2E
 - [ ] Reportes y analytics
-- [ ] Exportación de datos
-- [ ] Notificaciones push
-
-### **Futuro 🔮**
-- [ ] Multi-caja (varios dispositivos)
-- [ ] Integración con impresoras térmicas
 - [ ] Modo offline (PWA)
-- [ ] Dashboard de administración
-- [ ] API pública
-
----
-
-## 🤝 Contribuir
-
-Las contribuciones son bienvenidas. Por favor:
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
-
----
-
-## 👨‍💻 Autor
-
-**Tu Nombre**
-- GitHub: [@tu-usuario](https://github.com/tu-usuario)
-- Email: tu-email@example.com
-
----
-
-## 🙏 Agradecimientos
-
-- [Next.js](https://nextjs.org/)
-- [Supabase](https://supabase.com/)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Zustand](https://zustand-demo.pmnd.rs/)
-
----
-
-**¿Preguntas o problemas?** Abre un [issue](https://github.com/tu-usuario/market-app/issues) en GitHub.
+MIT © [Tu Nombre](https://github.com/tu-usuario)

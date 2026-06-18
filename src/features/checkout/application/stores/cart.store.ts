@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { money } from '@/lib/money'
-import { getProductStep } from '@/lib/product-helpers'
-import { roundWeight } from '@/lib/utils/weight'
+import { money } from '@/shared/utils'
+import { getProductStep } from '@/features/products/domain/product-helpers'
+import { roundWeight } from '@/shared/utils'
 import { ProductWithCategory } from '@/features/products/domain/product'
 import { CartItem, StockValidationResult } from '@/features/checkout/domain/cart.types'
 

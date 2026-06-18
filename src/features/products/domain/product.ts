@@ -1,5 +1,5 @@
-import type { Money } from '@/lib/money'
-import type { Tables, Inserts, Updates } from '@/lib/supabase/types'
+import type { Money } from '@/shared/utils'
+import type { Tables, Inserts, Updates } from '@/shared/supabase/types'
 
 export type UnitType = 'UNIT' | 'GRAM' | 'KILOGRAM' | 'LITER' | 'MILLILITER'
 

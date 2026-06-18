@@ -1,5 +1,5 @@
-import { money } from '@/lib/money'
-import type { Tables } from '@/lib/supabase/types'
+import { money } from '@/shared/utils'
+import type { Tables } from '@/shared/supabase/types'
 import type { CashMovement, CashMovementDB, CashMovementWithUser, CashSession, CashRegister } from '../domain/cash'
 
 /**

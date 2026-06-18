@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/shared/supabase/client'
 import type { CategoryFormData, UpdateCategoryData } from '@/features/products/domain/category-form'
 import type { Category } from '@/features/products/domain/product'
 import type { CategoryWithProductCount } from '@/features/products/domain/category.schema'

@@ -2,7 +2,7 @@
 
 import { Banknote, CreditCard, ArrowRightLeft } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/ui'
 import { PaymentMethod } from '@/features/sales/domain/sales.types'
 
 interface PaymentMethodSelectorProps {

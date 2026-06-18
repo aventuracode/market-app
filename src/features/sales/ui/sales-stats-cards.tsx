@@ -4,7 +4,7 @@ import { ShoppingCart, TrendingUp, CreditCard, Banknote, ArrowRightLeft } from '
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { SalesStats } from '@/features/sales/domain/sales.types'
-import { formatCurrency } from '@/lib/utils/currency'
+import { formatCurrency } from '@/shared/utils'
 
 interface SalesStatsCardsProps {
   stats: SalesStats | undefined

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, AlertCircle } from 'lucide-react'
 import CurrencyInput from 'react-currency-input-field'
-import { money } from '@/lib/money'
+import { money } from '@/shared/utils'
 import { cashService } from '@/features/cash/infrastructure/cash.service'
 import { closeCashSchema, type CloseCashFormData } from '../domain/cash'
 import {
@@ -21,7 +21,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
 import type { CashSession, CashSummary } from '../domain/cash'
-import { formatCurrency } from '@/lib/utils/currency'
+import { formatCurrency } from '@/shared/utils'
 
 interface CloseCashDialogProps {
   open: boolean

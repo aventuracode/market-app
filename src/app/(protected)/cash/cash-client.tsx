@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card'
 import { useAuthStore } from '@/features/auth/application/stores/auth.store'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { formatCurrency } from '@/lib/utils/currency'
+import { formatCurrency } from '@/shared/utils'
 
 export function CashClient() {
   const { user } = useAuthStore()

@@ -1,5 +1,5 @@
 // src/lib/mappers/sale.mapper.ts
-import { money } from '@/lib/money'
+import { money } from '@/shared/utils'
 import type { Sale, SaleDB, SaleItemDB, SaleWithDetails, SaleItemWithProduct } from '@/features/sales/domain/sales.types'
 
 type RawSaleItem = SaleItemDB & {

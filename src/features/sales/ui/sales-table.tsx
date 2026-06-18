@@ -8,8 +8,8 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import type { SaleWithDetails } from '@/features/sales/domain/sales.types'
-import { formatCurrency } from '@/lib/utils/currency'
-import { formatDateTime } from '@/lib/utils/format'
+import { formatCurrency } from '@/shared/utils'
+import { formatDateTime } from '@/shared/utils'
 
 interface SalesTableProps {
   sales: SaleWithDetails[] | undefined

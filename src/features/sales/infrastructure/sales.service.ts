@@ -1,5 +1,5 @@
-import { createClient } from '@/lib/supabase/client'
-import { money, validateCheckoutTotal, isValidMoney } from '@/lib/money'
+import { createClient } from '@/shared/supabase/client'
+import { money, validateCheckoutTotal, isValidMoney } from '@/shared/utils'
 import { CreateSaleInputParams, SaleItemInput } from '../domain/saleItemInput.types'
 import { Json, Tables } from '@/types/supabase.generated'
 import { CreateSaleResponse, emptySale, PaymentMethod, Role, SalesStats, SaleWithDetails } from '../domain/sales.types'
@@ -135,7 +135,7 @@ class SalesService {
   /**
    * Valida los parámetros de la venta
    */
-  private validateSaleParams(params: CreateSaleInputParams): void {debugger
+  private validateSaleParams(params: CreateSaleInputParams): void {
     if (!params.tenant_id) {
       throw new Error('tenant_id es requerido')
     }

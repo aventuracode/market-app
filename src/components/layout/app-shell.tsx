@@ -2,7 +2,7 @@
 
 import { UserMenu } from '@/features/auth/ui/user-menu'
 import { BottomNav } from '@/components/navigation/bottom-nav'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/ui'
 
 interface AppShellProps {
   children: React.ReactNode

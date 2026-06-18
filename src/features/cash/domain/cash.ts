@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import type { Money } from '@/lib/money'
-import type { Tables, Enums } from '@/lib/supabase/types'
+import type { Money } from '@/shared/utils'
+import type { Tables, Enums } from '@/shared/supabase/types'
 
 // Cash Register Types
 export type CashRegister = Omit<Tables<'cash_registers'>, 'is_active' | 'created_at'> & {

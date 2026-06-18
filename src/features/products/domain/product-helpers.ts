@@ -1,6 +1,5 @@
-import type { Product, ProductWithCategory, UnitType } from '@/features/products/domain/product'
-import { roundWeight, formatWeight } from '@/lib/utils/weight'
-import { formatCurrency } from '@/lib/utils/currency'
+import type { Product, ProductWithCategory, UnitType } from './product'
+import { roundWeight, formatWeight, formatCurrency } from '@/shared/utils'
 
 /**
  * Constante para incremento/decremento de peso
@@ -16,7 +15,7 @@ export const DEFAULT_WEIGHT_QUANTITY = 0.100
  * Formatea un precio en formato argentino
  * @param price - Precio a formatear
  * @returns Precio formateado
- * @deprecated Usar formatCurrency de @/lib/utils/currency
+ * @deprecated Usar formatCurrency de @/shared/utils
  */
 export function formatPrice(price: number): string {
   return formatCurrency(price)
@@ -105,7 +104,7 @@ export function formatQuantity(
   }
   
   // Con unidad, usar el helper de measurement
-  const { formatQuantity: formatQty } = require('@/lib/utils/measurement')
+  const { formatQuantity: formatQty } = require('@/shared/utils/measurement')
   return formatQty(roundedQuantity, unitType)
 }
 

@@ -1,4 +1,4 @@
-import type { Money } from '@/lib/money'
+import type { Money } from '@/shared/utils'
 import type { ProductWithCategory, UnitType } from '@/features/products/domain/product'
 
 export interface CartItem {

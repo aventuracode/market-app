@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
-import { Providers } from '@/providers'
+import { Providers } from '@/shared/providers'
 import '@/styles/globals.css'
 
 const inter = Inter({ 

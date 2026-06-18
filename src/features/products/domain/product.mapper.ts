@@ -1,6 +1,6 @@
-import { money } from '@/lib/money'
+import { money } from '@/shared/utils'
 import type { Product, Category, ProductWithCategory } from '@/features/products/domain/product'
-import type { Tables } from '@/lib/supabase/types'
+import type { Tables } from '@/shared/supabase/types'
 
 type CategoryDB = Tables<'categories'>
 type ProductDB = Tables<'products'>

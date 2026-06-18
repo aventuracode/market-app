@@ -1,6 +1,6 @@
 /**
  * Formatea un número como moneda ARS
- * @deprecated Importar desde @/lib/utils/currency
+ * @deprecated Importar desde @/shared/utils/currency
  */
 export { formatCurrency } from './currency'
 

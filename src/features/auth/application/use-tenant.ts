@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/shared/supabase/client'
 import { useAuthStore } from '@/features/auth/application/stores/auth.store'
 import type { Tenant } from '@/types'
 

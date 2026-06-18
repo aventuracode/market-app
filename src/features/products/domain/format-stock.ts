@@ -1,5 +1,5 @@
-import { UnitType, UNIT_TYPE_OPTIONS } from '@/features/products/domain/product'
-import { formatStock as formatStockMeasurement } from '@/lib/utils/measurement'
+import { UnitType, UNIT_TYPE_OPTIONS } from './product'
+import { formatStock as formatStockMeasurement } from '@/shared/utils/measurement'
 
 /**
  * Formatea el stock con su unidad de medida

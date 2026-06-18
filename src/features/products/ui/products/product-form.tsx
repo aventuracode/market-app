@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import CurrencyInput from 'react-currency-input-field'
-import { money } from '@/lib/money'
+import { money } from '@/shared/utils'
 import { useProductForm } from '@/features/products/application/use-product-form'
 import { productService } from '@/features/products/infrastructure/product.service'
 import { useTenant } from '@/features/auth/application/use-tenant'
@@ -77,7 +77,7 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
   const profit = salePrice - costPrice
 
   // Importar formatCurrency solo para ganancia
-  const { formatCurrency } = require('@/lib/utils/currency')
+  const { formatCurrency } = require('@/shared/utils/currency')
 
   // Calcular margen cuando cambian los precios
   useEffect(() => {

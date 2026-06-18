@@ -1,5 +1,5 @@
-import { createClient } from '@/lib/supabase/client'
-import { money } from '@/lib/money'
+import { createClient } from '@/shared/supabase/client'
+import { money } from '@/shared/utils'
 import { CashMovementType, CashSession, CashSummary ,CashMovementWithUser, CashMovement, CashRegister} from '../domain/cash'
 import { mapCashMovement, mapCashMovementsWithUser, mapCashSession, mapCashRegister, mapCashRegisters } from '../domain/cash.mapper'
 

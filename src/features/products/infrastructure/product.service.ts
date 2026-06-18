@@ -1,5 +1,5 @@
-import { createClient } from '@/lib/supabase/client'
-import { money } from '@/lib/money'
+import { createClient } from '@/shared/supabase/client'
+import { money } from '@/shared/utils'
 import type { 
   Product, 
   ProductWithCategory, 

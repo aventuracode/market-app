@@ -7,7 +7,7 @@ import { cashRealtimeService } from '@/features/cash/infrastructure/cash-realtim
 import { useTenant } from '@/features/auth/application/use-tenant'
 import { useAuthStore } from '@/features/auth/application/stores/auth.store'
 import { useCashStore } from '@/features/cash/application/stores/cash.store'
-import { debounce } from '@/lib/utils/debounce'
+import { debounce } from '@/shared/utils'
 import { CashSummary } from '../domain/cash'
 
 const DEBOUNCE_DELAY = 500 // ms

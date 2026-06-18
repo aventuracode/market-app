@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { Enums } from '@/lib/supabase/types'
+import type { Enums } from '@/shared/supabase/types'
 
 export type StockMovementType = Enums<'stock_movement_type'>
 
