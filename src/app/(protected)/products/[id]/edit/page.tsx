@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import { ProductForm } from '@/features/products/ui/products/product-form'
 import { productService } from '@/features/products/infrastructure/product.service'
-import { useTenant } from '@/features/auth/application/use-tenant'
+import { useTenant } from '@/features/auth'
 import { Button } from '@/components/ui/button'
 import type { Product } from '@/features/products/domain/product'
 

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { cashService } from '@/features/cash/infrastructure/cash.service'
 import { cashRealtimeService } from '@/features/cash/infrastructure/cash-realtime.service'
-import { useTenant } from '@/features/auth/application/use-tenant'
+import { useTenant } from '@/features/auth'
 import { debounce } from '@/shared/utils'
 import { CashMovementWithUser } from '../domain/cash'
 

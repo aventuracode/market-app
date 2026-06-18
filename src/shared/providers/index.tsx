@@ -1,7 +1,7 @@
 'use client'
 
 import { ThemeProvider } from './theme-provider'
-import { AuthProvider } from '../../features/auth/ui/auth-provider'
+import { AuthProvider } from '@/features/auth'
 import { QueryProvider } from './query-provider'
 
 export function Providers({ children }: { children: React.ReactNode }) {

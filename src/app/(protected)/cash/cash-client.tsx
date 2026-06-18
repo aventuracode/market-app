@@ -10,7 +10,7 @@ import { CashMovementDialog } from '@/features/cash/ui/cash-movement-dialog'
 import { CashMovementItem } from '@/features/cash/ui/cash-movement-item'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { useAuthStore } from '@/features/auth/application/stores/auth.store'
+import { useAuthStore } from '@/features/auth'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { formatCurrency } from '@/shared/utils'
@@ -103,7 +103,7 @@ export function CashClient() {
             <h1 className="text-xl font-bold tracking-tight">Caja</h1>
             <div className="flex items-center gap-2 text-xs text-muted-foreground/80 mt-1">
               <User className="w-3 h-3" />
-              <span>{user?.first_name} {user?.last_name}</span>
+              <span>{user?.firstName} {user?.lastName}</span>
               {activeSession && (
                 <>
                   <span className="text-muted-foreground/40">•</span>

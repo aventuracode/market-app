@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { categoryService } from '@/features/products/infrastructure/category.service'
-import { useTenant } from '@/features/auth/application/use-tenant'
+import { useTenant } from '@/features/auth'
 import {
   categoryFormSchema,
   type CategoryFormInput,

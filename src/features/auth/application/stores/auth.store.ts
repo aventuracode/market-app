@@ -1,10 +1,10 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { User } from '@/types'
+import type { UserProfile } from '../../domain/auth.types'
 
 interface AuthStore {
-  user: User | null
-  setUser: (user: User | null) => void
+  user: UserProfile | null
+  setUser: (user: UserProfile | null) => void
   clearUser: () => void
   isAuthenticated: () => boolean
 }

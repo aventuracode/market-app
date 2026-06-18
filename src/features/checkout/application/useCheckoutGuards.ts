@@ -2,13 +2,12 @@
 // ─── use-checkout-guards.ts ─────────────────────────────────────────────────
 // SRP: único responsable de validar precondiciones del checkout
 import { CartItem } from '@/features/checkout/domain/cart.types'
-import { Tenant } from '@/types'
-import type { User } from '@/types'
+import type { UserProfile, Tenant } from '@/features/auth'
 import { useCallback } from 'react'
 import type { CashSession } from '@/features/cash/domain/cash'
 
 interface GuardDeps {
-  user: User | null
+  user: UserProfile | null
   tenant: Tenant | null
   activeSession: CashSession | null
   items: CartItem[]

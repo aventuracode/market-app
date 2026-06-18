@@ -7,8 +7,8 @@ import { Palette, Shield, Store, Users, Tags } from 'lucide-react'
 export default async function SettingsPage() {
   const user = await requireAuth()
   
-  // Verificar si el usuario tiene permisos (role_id 1 = ADMIN, 2 = SUPERVISOR)
-  const hasPermission = user.role_id && [1, 2].includes(user.role_id)
+  // Verificar si el usuario tiene permisos (roleId 1 = ADMIN, 2 = SUPERVISOR)
+  const hasPermission = user.roleId && [1, 2].includes(user.roleId)
   
   if (!hasPermission) {
     // Redirigir a POS si no tiene permisos
@@ -62,7 +62,7 @@ export default async function SettingsPage() {
         </p>
         <p className="text-xs text-muted-foreground mt-1">
           Rol actual: <span className="font-medium text-primary">
-            {user.role_id === 1 ? 'Administrador' : user.role_id === 2 ? 'Supervisor' : 'Empleado'}
+            {user.roleId === 1 ? 'Administrador' : user.roleId === 2 ? 'Supervisor' : 'Empleado'}
           </span>
         </p>
       </div>

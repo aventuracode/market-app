@@ -7,8 +7,8 @@ import { Loader2, TrendingUp, TrendingDown } from 'lucide-react'
 import CurrencyInput from 'react-currency-input-field'
 import { money } from '@/shared/utils'
 import { cashService } from '@/features/cash/infrastructure/cash.service'
-import { useTenant } from '@/features/auth/application/use-tenant'
-import { useAuthStore } from '@/features/auth/application/stores/auth.store'
+import { useTenant } from '@/features/auth'
+import { useAuthStore } from '@/features/auth'
 import {
   Dialog,
   DialogContent,

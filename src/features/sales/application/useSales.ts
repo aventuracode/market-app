@@ -3,8 +3,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { startOfDay, startOfWeek, startOfMonth, endOfDay } from 'date-fns'
 import { salesService, SalesPermissionError, type SalesFilters } from '../infrastructure/sales.service'
-import { useTenant } from '@/features/auth/application/use-tenant'
-import { useAuthStore } from '@/features/auth/application/stores/auth.store'
+import { useTenant } from '@/features/auth'
+import { useAuthStore } from '@/features/auth'
 import { useCashStore } from '@/features/cash/application/stores/cash.store'
 import type { SalesPeriod } from '@/features/sales/domain/sales.types'
 
@@ -78,7 +78,7 @@ export function useSales(period: SalesPeriod = 'today') {
       }
 
       try {
-        const sales = await salesService.getSales(filters, user.role)
+        const sales = await salesService.getSales(filters, user.role || undefined)
 
         return sales
       } catch (error) {
@@ -141,7 +141,7 @@ export function useSalesStats(period: SalesPeriod = 'today') {
         }
       }
 
-      return salesService.getSalesStats(filters, user.role)
+      return salesService.getSalesStats(filters, user.role || undefined)
     },
     enabled: !!tenant?.id && !!user?.id,
     staleTime: period === 'today' ? 10 * 1000 : 30 * 1000,

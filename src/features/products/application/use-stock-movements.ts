@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { stockMovementService } from '@/features/products/infrastructure/stock-movement.service'
-import { useTenant } from '@/features/auth/application/use-tenant'
+import { useTenant } from '@/features/auth'
 import type { StockMovementFull, StockMovementFilters, StockSummary } from '@/features/products/domain/stock'
 
 interface UseStockMovementsOptions {

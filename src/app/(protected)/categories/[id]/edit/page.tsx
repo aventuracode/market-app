@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import { CategoryForm } from '@/features/products/ui/categories/category-form'
 import { categoryService } from '@/features/products/infrastructure/category.service'
-import { useTenant } from '@/features/auth/application/use-tenant'
+import { useTenant } from '@/features/auth'
 import { Button } from '@/components/ui/button'
 import { Category } from '@/features/products/domain/product'
 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Check, Store, AlertCircle, Loader2 } from 'lucide-react'
 import { cashService } from '@/features/cash/infrastructure/cash.service'
-import { useTenant } from '@/features/auth/application/use-tenant'
+import { useTenant } from '@/features/auth'
 import type { CashRegister } from '../domain/cash'
 import {
   Select,

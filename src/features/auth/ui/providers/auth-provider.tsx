@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from '@/features/auth/application/use-auth'
+import { useAuth } from '../hooks/use-auth'
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Inicializar el hook para mantener el estado sincronizado

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { CreateCategoryInput, UpdateCategoryInput } from '@/features/products/domain/category.schema'
-import { useAuth } from '@/features/auth/application/use-auth'
+import { useAuth } from '@/features/auth'
 import { toast } from 'sonner'
 import { categoryService } from '../../infrastructure/category.service'
 
@@ -8,7 +8,7 @@ const CATEGORIES_QUERY_KEY = 'categories'
 
 export function useCategories(searchQuery?: string) {
   const { user } = useAuth()
-  const tenantId = user?.tenant_id
+  const tenantId = user?.tenantId
 
   return useQuery({
     queryKey: [CATEGORIES_QUERY_KEY, tenantId, searchQuery],
@@ -22,7 +22,7 @@ export function useCategories(searchQuery?: string) {
 
 export function useCategory(id: string) {
   const { user } = useAuth()
-  const tenantId = user?.tenant_id
+  const tenantId = user?.tenantId
 
   return useQuery({
     queryKey: [CATEGORIES_QUERY_KEY, id, tenantId],
@@ -37,7 +37,7 @@ export function useCategory(id: string) {
 export function useCreateCategory() {
   const { user } = useAuth()
   const queryClient = useQueryClient()
-  const tenantId = user?.tenant_id
+  const tenantId = user?.tenantId
 
   return useMutation({
     mutationFn: (input: CreateCategoryInput) => {
@@ -58,7 +58,7 @@ export function useCreateCategory() {
 export function useUpdateCategory() {
   const { user } = useAuth()
   const queryClient = useQueryClient()
-  const tenantId = user?.tenant_id
+  const tenantId = user?.tenantId
 
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateCategoryInput }) => {
@@ -79,7 +79,7 @@ export function useUpdateCategory() {
 export function useDeleteCategory() {
   const { user } = useAuth()
   const queryClient = useQueryClient()
-  const tenantId = user?.tenant_id
+  const tenantId = user?.tenantId
 
   return useMutation({
     mutationFn: (id: string) => {

@@ -9,7 +9,7 @@ import { StockAdjustmentDialog } from '@/features/products/ui/stock/stock-adjust
 import { StockMovementItem } from '@/features/products/ui/stock/stock-movement-item'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { useTenant } from '@/features/auth/application/use-tenant'
+import { useTenant } from '@/features/auth'
 import { Product } from '@/features/products/domain/product'
 
 

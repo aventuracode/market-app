@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { productService } from '@/features/products/infrastructure/product.service'
-import { useTenant } from '@/features/auth/application/use-tenant'
+import { useTenant } from '@/features/auth'
 import { CreateProductParams, UpdateProductParams } from '../../domain/product'
 
 /**

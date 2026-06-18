@@ -1,7 +1,8 @@
 import { createClient as createServerClient } from './server'
-import type { User } from '@/types'
+import type { UserProfile } from '@/features/auth'
+import { mapUserProfile } from '@/features/auth'
 
-export async function getCurrentUser(): Promise<User | null> {
+export async function getCurrentUser(): Promise<UserProfile | null> {
   const supabase = await createServerClient()
 
   const {
@@ -20,22 +21,15 @@ export async function getCurrentUser(): Promise<User | null> {
 
   if (!user) return null
 
-  return {
-    ...user,
-    email: authUser.email,
-    role_id: user.role_id,
-    is_active: user.is_active ?? true,
-    created_at: user.created_at ?? new Date().toISOString(),
-    updated_at: user.updated_at ?? new Date().toISOString(),
-  }
+  return mapUserProfile(user, authUser.email || '')
 }
 
 export async function getCurrentTenantId(): Promise<string | null> {
   const user = await getCurrentUser()
-  return user?.tenant_id ?? null
+  return user?.tenantId ?? null
 }
 
-export async function requireAuth(): Promise<User> {
+export async function requireAuth(): Promise<UserProfile> {
   const user = await getCurrentUser()
 
   if (!user) {
@@ -47,10 +41,10 @@ export async function requireAuth(): Promise<User> {
 
 export async function requireRole(
   allowedRoleIds: number[]
-): Promise<User> {
+): Promise<UserProfile> {
   const user = await requireAuth()
 
-  if (!user.role_id || !allowedRoleIds.includes(user.role_id)) {
+  if (!user.roleId || !allowedRoleIds.includes(user.roleId)) {
     throw new Error('Forbidden: Insufficient permissions')
   }
 

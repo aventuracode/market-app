@@ -1,6 +1,6 @@
 'use client'
 
-import { UserMenu } from '@/features/auth/ui/user-menu'
+import { UserMenu } from '@/features/auth'
 import { BottomNav } from '@/components/navigation/bottom-nav'
 import { cn } from '@/shared/ui'
 

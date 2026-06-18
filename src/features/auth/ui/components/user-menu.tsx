@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@/features/auth/application/use-auth'
-import { useTenant } from '@/features/auth/application/use-tenant'
+import { useAuth } from '@/features/auth'
+import { useTenant } from '@/features/auth'
 import { logout } from '@/app/login/actions'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme/theme-toggle'
@@ -56,8 +56,8 @@ export function UserMenu() {
           </div>
           <div className="flex flex-col min-w-0">
             <span className="text-sm font-medium truncate">
-              {user.first_name && user.last_name 
-                ? `${user.first_name} ${user.last_name}` 
+              {user.firstName && user.lastName 
+                ? `${user.firstName} ${user.lastName}` 
                 : user.email || 'Usuario'}
             </span>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">

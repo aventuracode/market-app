@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { productService } from '@/features/products/infrastructure/product.service'
-import { useTenant } from '@/features/auth/application/use-tenant'
+import { useTenant } from '@/features/auth'
 import type { ProductSearchParams, ProductWithCategory } from '@/features/products/domain/product'
 import type { ProductSearchOptions } from '../domain/pos.types'
 
