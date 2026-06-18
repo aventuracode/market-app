@@ -1,8 +1,8 @@
 'use client'
 
 import { TrendingUp, ShoppingCart, CreditCard } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Card, CardContent } from '@/shared/ui/components/card'
+import { Skeleton } from '@/shared/ui/components/skeleton'
 import { formatCurrency } from '@/shared/utils'
 import type { SalesStats } from '@/features/sales/domain/sales.types'
 

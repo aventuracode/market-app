@@ -1,7 +1,7 @@
 import { requireAuth } from '@/shared/supabase'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardDescription, CardHeader, CardTitle } from '@/shared/ui/components/card'
 import { Palette, Shield, Store, Users, Tags } from 'lucide-react'
 
 export default async function SettingsPage() {

@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { ProductForm } from '@/features/products/ui/products/product-form'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/ui/components/button'
 
 export default function NewProductPage() {
   const router = useRouter()

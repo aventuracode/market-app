@@ -1,7 +1,7 @@
 'use client'
 
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/shared/ui/components/card'
+import { Badge } from '@/shared/ui/components/badge'
 import { Clock, User, Package, CreditCard, Banknote, ArrowRightLeft } from 'lucide-react'
 import { formatCurrency, formatTime } from '@/shared/utils'
 import type { SaleWithDetails as SaleWithRelations, PaymentMethod } from '@/features/sales/domain/sales.types'

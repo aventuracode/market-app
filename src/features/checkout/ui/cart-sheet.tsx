@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/ui/components/button'
 import { CartItem } from '../ui/cart-item'
 import { CartSummary } from '../ui/cart-summary'
 import { EmptyCart } from '../ui/empty-cart'

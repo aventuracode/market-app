@@ -1,7 +1,7 @@
 'use client'
 
 import { Package } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/ui/components/button'
 
 interface CategoriesEmptyStateProps {
   onCreateClick: () => void

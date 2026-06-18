@@ -1,6 +1,6 @@
 'use client'
 
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/components/tabs'
 import { SalesPeriod } from '../domain/sales.types'
 
 interface SalesFiltersProps {

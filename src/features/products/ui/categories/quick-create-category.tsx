@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/ui/components/button'
 import { useCreateCategory } from '@/features/products/application/queries/use-categories-query'
 import type { CreateCategoryInput } from '@/features/products/domain/category.schema'
 import { CategoryFormDialog } from './category-form-dialog'

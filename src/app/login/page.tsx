@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { login } from './actions'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { loginAction } from '@/features/auth'
+import { Button } from '@/shared/ui/components/button'
+import { Input } from '@/shared/ui/components/input'
+import { Label } from '@/shared/ui/components/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/components/card'
 import { LogIn, Loader2, ShoppingBag, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -19,7 +19,7 @@ export default function LoginPage() {
     setError(null)
 
     const formData = new FormData(e.currentTarget)
-    const result = await login(formData)
+    const result = await loginAction(formData)
 
     if (result?.error) {
       setError(result.error)

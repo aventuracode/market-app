@@ -1,7 +1,7 @@
 'use client'
 
 import { UserMenu } from '@/features/auth'
-import { BottomNav } from '@/components/navigation/bottom-nav'
+import { BottomNav } from '@/shared/ui/navigation/bottom-nav'
 import { cn } from '@/shared/ui'
 
 interface AppShellProps {

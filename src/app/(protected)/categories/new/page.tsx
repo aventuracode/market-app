@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { CategoryForm } from '@/features/products/ui/categories/category-form'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/ui/components/button'
 
 export default function NewCategoryPage() {
   const router = useRouter()

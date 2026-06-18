@@ -6,9 +6,9 @@ import { Plus, Loader2, PackageX } from 'lucide-react'
 import { useProducts } from '@/features/products/application/use-products'
 import { ProductListItem } from '@/features/products/ui/products/product-list-item'
 import { DeleteProductDialog } from '@/features/products/ui/products/delete-product-dialog'
-import { PageHeader } from '@/components/shared/page-header'
-import { SearchBar } from '@/components/shared/search-bar'
-import { Button } from '@/components/ui/button'
+import { PageHeader } from '@/shared/ui/components/page-header'
+import { SearchBar } from '@/shared/ui/components/search-bar'
+import { Button } from '@/shared/ui/components/button'
 import { ProductWithCategory } from '@/features/products/domain/product'
 
 export function ProductosClient() {

@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { useAuth } from '@/features/auth'
 import { useTenant } from '@/features/auth'
-import { logout } from '@/app/login/actions'
-import { Button } from '@/components/ui/button'
-import { ThemeToggle } from '@/components/theme/theme-toggle'
+import { logoutAction } from '@/features/auth'
+import { Button } from '@/shared/ui/components/button'
+import { ThemeToggle } from '@/shared/ui/theme/theme-toggle'
 import { LogOut, User, Store, Loader2 } from 'lucide-react'
 
 export function UserMenu() {
@@ -16,7 +16,7 @@ export function UserMenu() {
   const handleLogout = async () => {
     setIsLoggingOut(true)
     try {
-      await logout()
+      await logoutAction()
     } catch (error) {
       console.error('Error al cerrar sesión:', error)
       setIsLoggingOut(false)

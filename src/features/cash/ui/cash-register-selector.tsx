@@ -11,9 +11,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+} from '@/shared/ui/components/select'
+import { Card } from '@/shared/ui/components/card'
+import { Badge } from '@/shared/ui/components/badge'
 
 interface CashRegisterSelectorProps {
   value: string

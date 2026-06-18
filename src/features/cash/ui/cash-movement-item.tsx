@@ -1,8 +1,8 @@
 'use client'
 
 import { TrendingUp, TrendingDown, ShoppingCart, User } from 'lucide-react'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/shared/ui/components/card'
+import { Badge } from '@/shared/ui/components/badge'
 import { CASH_MOVEMENT_LABELS } from '../domain/cash'
 import type { CashMovementWithUser } from '../domain/cash'
 import { formatCurrency } from '@/shared/utils'

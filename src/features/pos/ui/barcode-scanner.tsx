@@ -2,7 +2,7 @@
 
 import { X, Camera, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/ui/components/button'
 import { useBarcodeScanner } from '@/features/pos/application/use-barcode-scanner'
 import { useState, useEffect } from 'react'
 import { cn } from '@/shared/ui'

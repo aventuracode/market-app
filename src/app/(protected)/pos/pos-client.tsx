@@ -9,8 +9,8 @@ import { posService } from '@/features/pos/infrastructure/pos.service'
 import { formatQuantity, getInitialQuantity } from '@/features/products/domain/product-helpers'
 import { formatWeight } from '@/shared/utils'
 import { formatCurrency } from '@/shared/utils'
-import { PageHeader } from '@/components/shared/page-header'
-import { SearchBar } from '@/components/shared/search-bar'
+import { PageHeader } from '@/shared/ui/components/page-header'
+import { SearchBar } from '@/shared/ui/components/search-bar'
 import { ProductCard } from '@/features/pos/ui/product-card'
 import {
   ProductListLoading,
@@ -18,7 +18,7 @@ import {
   ProductListError,
   ProductListSearching,
 } from '@/features/pos/ui/product-list-states'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/ui/components/button'
 import { BarcodeScanner } from '@/features/pos/ui/barcode-scanner'
 import { CartSheet } from '@/features/checkout/ui/cart-sheet'
 import { motion } from 'framer-motion'

@@ -7,8 +7,8 @@ import { productService } from '@/features/products/infrastructure/product.servi
 import { useStockMovements } from '@/features/products/application/use-stock-movements'
 import { StockAdjustmentDialog } from '@/features/products/ui/stock/stock-adjustment-dialog'
 import { StockMovementItem } from '@/features/products/ui/stock/stock-movement-item'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Button } from '@/shared/ui/components/button'
+import { Card } from '@/shared/ui/components/card'
 import { useTenant } from '@/features/auth'
 import { Product } from '@/features/products/domain/product'
 

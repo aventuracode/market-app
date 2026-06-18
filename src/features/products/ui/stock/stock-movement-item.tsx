@@ -3,7 +3,7 @@
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { TrendingUp, TrendingDown, User } from 'lucide-react'
-import { Card } from '@/components/ui/card'
+import { Card } from '@/shared/ui/components/card'
 import { STOCK_MOVEMENT_TYPE_LABELS } from '@/features/products/domain/stock'
 import type { StockMovementFull } from '@/features/products/domain/stock'
 

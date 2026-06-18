@@ -1,7 +1,7 @@
 'use client'
 
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/shared/ui/components/card'
+import { Button } from '@/shared/ui/components/button'
 import { Pencil, Trash2, Package } from 'lucide-react'
 import type { CategoryCardProps } from '@/features/products/domain/category.schema'
 

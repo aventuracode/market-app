@@ -1,5 +1,5 @@
-import { ThemeSwitcher } from '@/components/theme/theme-switcher'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { ThemeSwitcher } from '@/shared/ui/theme/theme-switcher'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/components/card'
 
 export default function AppearancePage() {
   return (

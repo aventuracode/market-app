@@ -6,9 +6,9 @@ import { Plus, Loader2, FolderX } from 'lucide-react'
 import { useCategories, useDeleteCategory } from '@/features/products/application/queries/use-categories-query'
 import { CategoryListItem } from '@/features/products/ui/categories/category-list-item'
 import { DeleteCategoryDialog } from '@/features/products/ui/categories/delete-category-dialog'
-import { PageHeader } from '@/components/shared/page-header'
-import { SearchBar } from '@/components/shared/search-bar'
-import { Button } from '@/components/ui/button'
+import { PageHeader } from '@/shared/ui/components/page-header'
+import { SearchBar } from '@/shared/ui/components/search-bar'
+import { Button } from '@/shared/ui/components/button'
 import type { CategoryWithProductCount } from '@/features/products/domain/category.schema'
 
 export function CategoriesClient() {

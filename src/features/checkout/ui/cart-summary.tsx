@@ -1,7 +1,7 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
+import { Button } from '@/shared/ui/components/button'
+import { Separator } from '@/shared/ui/components/separator'
 import { formatPrice } from '@/features/products/domain/product-helpers'
 
 interface CartSummaryProps {

@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { useCategoryForm } from '@/features/products/application/use-category-form'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/shared/ui/components/card'
+import { Input } from '@/shared/ui/components/input'
+import { Label } from '@/shared/ui/components/label'
+import { Textarea } from '@/shared/ui/components/textarea'
+import { Button } from '@/shared/ui/components/button'
 import { Category } from '../../domain/product'
 
 interface CategoryFormProps {

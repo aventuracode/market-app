@@ -1,8 +1,8 @@
 'use client'
 
 import { Trash2, Loader2, AlertTriangle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { Button } from '@/shared/ui/components/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/shared/ui/components/dialog'
 import type { ProductWithCategory } from '@/features/products/domain/product'
 import { useDeleteProductMutation } from '@/features/products/application/queries/use-products-query'
 

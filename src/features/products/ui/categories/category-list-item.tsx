@@ -1,7 +1,7 @@
 'use client'
 
 import { Folder, Edit, Trash2 } from 'lucide-react'
-import { Card } from '@/components/ui/card'
+import { Card } from '@/shared/ui/components/card'
 import type { CategoryWithProductCount } from '../../domain/category.schema'
 
 interface CategoryListItemProps {

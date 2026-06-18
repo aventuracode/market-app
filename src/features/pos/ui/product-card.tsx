@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { Package, Tag, Plus, Minus, Weight } from 'lucide-react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/shared/ui/components/card'
+import { Button } from '@/shared/ui/components/button'
+import { Badge } from '@/shared/ui/components/badge'
 import { cn } from '@/shared/ui'
 import { formatPrice, formatUnit, getUnitBadgeVariant } from '@/features/products/domain/product-helpers'
 import { formatWeight } from '@/shared/utils'

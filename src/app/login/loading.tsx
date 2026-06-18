@@ -1,4 +1,4 @@
-import { Loading } from '@/components/ui/loading'
+import { Loading } from '@/shared/ui/components/loading'
 
 export default function LoginLoading() {
   return <Loading text="Cargando login..." />

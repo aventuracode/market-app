@@ -14,12 +14,12 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Card } from '@/components/ui/card'
+} from '@/shared/ui/components/dialog'
+import { Button } from '@/shared/ui/components/button'
+import { Input } from '@/shared/ui/components/input'
+import { Label } from '@/shared/ui/components/label'
+import { Textarea } from '@/shared/ui/components/textarea'
+import { Card } from '@/shared/ui/components/card'
 import type { CashSession, CashSummary } from '../domain/cash'
 import { formatCurrency } from '@/shared/utils'
 

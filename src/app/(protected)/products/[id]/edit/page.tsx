@@ -6,7 +6,7 @@ import { ArrowLeft, Loader2 } from 'lucide-react'
 import { ProductForm } from '@/features/products/ui/products/product-form'
 import { productService } from '@/features/products/infrastructure/product.service'
 import { useTenant } from '@/features/auth'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/ui/components/button'
 import type { Product } from '@/features/products/domain/product'
 
 export default function EditProductPage() {

@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { SaleCard } from './sale-card'
 import { SaleDetailSheet } from './sale-detail-sheet'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Card, CardContent } from '@/components/ui/card'
+import { Skeleton } from '@/shared/ui/components/skeleton'
+import { Card, CardContent } from '@/shared/ui/components/card'
 import { ShoppingBag } from 'lucide-react'
 import type { SaleWithDetails } from '@/features/sales/domain/sales.types'
 

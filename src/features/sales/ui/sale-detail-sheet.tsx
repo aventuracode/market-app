@@ -5,9 +5,9 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
+} from '@/shared/ui/components/sheet'
+import { Badge } from '@/shared/ui/components/badge'
+import { Separator } from '@/shared/ui/components/separator'
 import { 
   CreditCard, 
   Banknote, 

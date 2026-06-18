@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { Search, Plus } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Input } from '@/shared/ui/components/input'
+import { Button } from '@/shared/ui/components/button'
+import { Skeleton } from '@/shared/ui/components/skeleton'
 import { CategoryCard } from '@/features/products/ui/categories/category-card'
 import { CategoryFormDialog } from '@/features/products/ui/categories/category-form-dialog'
 import { DeleteCategoryDialog } from '@/features/products/ui/categories/delete-category-dialog'

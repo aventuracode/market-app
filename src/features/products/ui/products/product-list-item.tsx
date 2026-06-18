@@ -1,8 +1,8 @@
 'use client'
 
 import { Package, Edit, Trash2, AlertCircle } from 'lucide-react'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/shared/ui/components/card'
+import { Badge } from '@/shared/ui/components/badge'
 import { formatStock } from '@/features/products/domain/format-stock'
 import { formatUnit, getUnitBadgeVariant, formatPriceByUnit } from '@/features/products/domain/product-helpers'
 import { ProductWithCategory, UnitType } from '@/features/products/domain/product'

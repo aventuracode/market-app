@@ -10,7 +10,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
+} from '@/shared/ui/components/dialog'
 import {
   Form,
   FormControl,
@@ -18,10 +18,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
+} from '@/shared/ui/components/form'
+import { Input } from '@/shared/ui/components/input'
+import { Textarea } from '@/shared/ui/components/textarea'
+import { Button } from '@/shared/ui/components/button'
 import { 
   createCategorySchema, 
   type CreateCategoryInput,

@@ -9,7 +9,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+} from '@/shared/ui/components/alert-dialog'
 import type { CategoryWithProductCount } from '@/features/products/domain/category.schema'
 
 interface DeleteCategoryDialogProps {

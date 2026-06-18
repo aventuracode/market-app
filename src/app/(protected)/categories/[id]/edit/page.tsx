@@ -6,7 +6,7 @@ import { ArrowLeft, Loader2 } from 'lucide-react'
 import { CategoryForm } from '@/features/products/ui/categories/category-form'
 import { categoryService } from '@/features/products/infrastructure/category.service'
 import { useTenant } from '@/features/auth'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/ui/components/button'
 import { Category } from '@/features/products/domain/product'
 
 export default function EditCategoryPage() {

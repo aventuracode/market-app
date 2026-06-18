@@ -1,4 +1,4 @@
-import { PageContainer } from '@/components/layout/page-container'
+import { PageContainer } from '@/shared/ui/layout/page-container'
 import { ProductosClient } from './products-client'
 
 export default function ProductsPage() {
