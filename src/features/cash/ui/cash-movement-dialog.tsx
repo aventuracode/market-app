@@ -112,7 +112,6 @@ export function CashMovementDialog({
             Registra un ingreso o egreso de efectivo
           </DialogDescription>
         </DialogHeader>
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <Button
