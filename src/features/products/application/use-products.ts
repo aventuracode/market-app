@@ -40,7 +40,6 @@ export function useProducts(options: UseProductsOptions = {}) {
         setTotal(result.total)
         setParams(searchParams)
       } catch (err) {
-        console.error('Error loading products:', err)
         setError(err instanceof Error ? err.message : 'Error al cargar productos')
       } finally {
         setLoading(false)

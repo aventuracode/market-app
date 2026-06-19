@@ -97,7 +97,6 @@ export function CashMovementDialog({
       onSuccess?.()
       onClose()
     } catch (err) {
-      console.error('Error creating movement:', err)
       setError(err instanceof Error ? err.message : 'Error al registrar el movimiento')
     } finally {
       setLoading(false)

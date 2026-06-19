@@ -85,11 +85,9 @@ class CashRealtimeService {
       )
       .subscribe((status, err) => {
         if (status === 'CHANNEL_ERROR') {
-          console.error(`[Realtime] Channel error on ${channelName}:`, err)
           callbacks.onError?.(new Error(err?.message || 'Channel error'))
         }
         if (status === 'TIMED_OUT') {
-          console.error(`[Realtime] Subscription timed out on ${channelName}`)
           callbacks.onError?.(new Error('Subscription timed out'))
         }
       })
@@ -142,7 +140,6 @@ class CashRealtimeService {
       )
       .subscribe((status, err) => {
         if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
-          console.error(`[Realtime] Error on ${channelName}:`, err)
           callbacks.onError?.(new Error(err?.message || 'Subscription error'))
         }
       })

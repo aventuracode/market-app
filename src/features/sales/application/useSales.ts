@@ -83,11 +83,9 @@ export function useSales(period: SalesPeriod = 'today') {
         return sales
       } catch (error) {
         if (error instanceof SalesPermissionError) {
-          console.error('[useSales] Permission denied:', error.message)
           throw error
         }
 
-        console.error('[useSales] Error loading sales:', error)
         throw error
       }
     },

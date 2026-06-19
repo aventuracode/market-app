@@ -279,15 +279,6 @@ class SalesService {
 
       // Detectar errores de permisos RLS
       if (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('[SalesService] Error fetching sales:', {
-            code: error.code,
-            message: error.message,
-            details: error.details,
-            hint: error.hint,
-          })
-        }
-
         // Error de permisos
         if (error.code === 'PGRST301' || error.message?.includes('permission denied')) {
           throw new SalesPermissionError('No tienes permisos para ver estas ventas')
@@ -302,7 +293,6 @@ class SalesService {
       if (err instanceof SalesPermissionError) {
         throw err
       }
-      console.error('[SalesService] Unexpected error:', err)
       throw err instanceof Error ? err : new Error('Error inesperado al cargar ventas')
     }
   }
@@ -356,7 +346,7 @@ class SalesService {
       if (err instanceof SalesPermissionError) {
         throw err
       }
-      console.error('[SalesService] Error in getSaleById:', err)
+
       throw err instanceof Error ? err : new Error('Error inesperado')
     }
   }

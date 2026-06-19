@@ -26,7 +26,6 @@ export function CategoryForm({ category, onSuccess, onCancel }: CategoryFormProp
       onSuccess?.(result)
     },
     onError: (error) => {
-      console.error('Form error:', error)
       setSubmitError(error.message)
     },
   })

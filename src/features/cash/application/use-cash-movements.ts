@@ -34,7 +34,6 @@ export function useCashMovements(options: UseCashMovementsOptions = {}) {
       const data = await cashService.getCashMovements(sessionId, limit)
       setMovements(data)
     } catch (err) {
-      console.error('Error loading cash movements:', err)
       setError(err instanceof Error ? err.message : 'Error al cargar los movimientos')
     } finally {
       setLoading(false)
@@ -81,7 +80,6 @@ export function useCashMovements(options: UseCashMovementsOptions = {}) {
           debouncedRefreshRef.current?.()
         },
         onError: (err) => {
-          console.error('[useCashMovements] Realtime error:', err)
           setRealtimeConnected(false)
         },
       }

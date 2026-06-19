@@ -80,7 +80,6 @@ export function CheckoutModal({ open, onClose, onSuccess }: CheckoutModalProps) 
       await checkout(paymentMethod)
     } catch (err) {
       // Error is already handled by useCheckout
-      console.error('Checkout error:', err)
     }
   }
 

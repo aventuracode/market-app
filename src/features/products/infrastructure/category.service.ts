@@ -25,7 +25,6 @@ class CategoryService {
     const { data, error } = await query
 
     if (error) {
-      console.error('Error fetching categories:', error)
       throw new Error(error.message || 'Error al obtener las categorías')
     }
 
@@ -41,8 +40,6 @@ class CategoryService {
       .single()
 
     if (error) {
-      console.error('Error getting category:', error)
-      
       if (error.code === 'PGRST116') {
         return null
       }
@@ -67,8 +64,6 @@ class CategoryService {
       .single()
 
     if (error) {
-      console.error('Error creating category:', error)
-      
       if (error.code === '23505') {
         throw new Error('Ya existe una categoría con este nombre')
       }
@@ -100,8 +95,6 @@ class CategoryService {
       .single()
 
     if (error) {
-      console.error('Error updating category:', error)
-      
       if (error.code === '23505') {
         throw new Error('Ya existe una categoría con este nombre')
       }
@@ -124,7 +117,6 @@ class CategoryService {
       .eq('tenant_id', tenantId)
 
     if (error) {
-      console.error('Error deleting category:', error)
       throw new Error(error.message || 'Error al eliminar la categoría')
     }
   }

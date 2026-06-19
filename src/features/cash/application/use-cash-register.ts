@@ -58,7 +58,6 @@ export function useCashRegister() {
         })
       }
     } catch (err) {
-      console.error('Error loading active cash:', err)
       setError(err instanceof Error ? err.message : 'Error al cargar la caja')
     } finally {
       setLoading(false)
@@ -73,7 +72,7 @@ export function useCashRegister() {
       setSummary(data)
       updateBalance(data.current_balance)
     } catch (err) {
-      console.error('Error loading summary:', err)
+      // Error silencioso en summary
     }
   }, [activeSession?.id, updateBalance])
 
@@ -122,7 +121,6 @@ export function useCashRegister() {
           debouncedRefreshSummaryRef.current?.()
         },
         onError: (err) => {
-          console.error('[useCashRegister] Realtime error:', err)
           setRealtimeConnected(false)
         },
       }

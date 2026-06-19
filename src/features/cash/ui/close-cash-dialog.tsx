@@ -93,7 +93,6 @@ export function CloseCashDialog({
       onSuccess?.()
       onClose()
     } catch (err) {
-      console.error('Error closing cash:', err)
       setError(err instanceof Error ? err.message : 'Error al cerrar la caja')
     } finally {
       setLoading(false)

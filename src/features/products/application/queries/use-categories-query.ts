@@ -49,7 +49,6 @@ export function useCreateCategory() {
       toast.success('Categoría creada exitosamente')
     },
     onError: (error: Error) => {
-      console.error('Error creating category:', error)
       toast.error('Error al crear la categoría')
     },
   })
@@ -70,7 +69,6 @@ export function useUpdateCategory() {
       toast.success('Categoría actualizada exitosamente')
     },
     onError: (error: Error) => {
-      console.error('Error updating category:', error)
       toast.error('Error al actualizar la categoría')
     },
   })
@@ -91,7 +89,6 @@ export function useDeleteCategory() {
       toast.success('Categoría eliminada exitosamente')
     },
     onError: (error: Error) => {
-      console.error('Error deleting category:', error)
       toast.error('Error al eliminar la categoría')
     },
   })

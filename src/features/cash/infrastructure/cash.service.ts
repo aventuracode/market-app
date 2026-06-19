@@ -84,12 +84,6 @@ class CashService {
           throw new CashConcurrencyError('Esta caja ya se encuentra abierta por otro cajero.')
         }
 
-        // Otros errores de base de datos
-        console.error('[openCash] Error al abrir caja:', {
-          code: error.code,
-          message: error.message,
-          details: error.details,
-        })
         throw new Error(error.message || 'Error al abrir la caja')
       }
 
@@ -100,8 +94,6 @@ class CashService {
         throw err
       }
 
-      // Capturar errores inesperados
-      console.error('[openCash] Error inesperado:', err)
       throw err instanceof Error ? err : new Error('Error inesperado al abrir la caja')
     }
   }
@@ -132,7 +124,6 @@ class CashService {
       .single()
 
     if (error) {
-      console.error('[closeCash] Error closing cash:', error)
       throw new Error(error.message || 'Error al cerrar la caja')
     }
 
@@ -251,7 +242,6 @@ class CashService {
       .single()
 
     if (error) {
-      console.error('Error creating cash movement:', error)
       throw new Error(error.message || 'Error al registrar el movimiento')
     }
 
@@ -277,7 +267,6 @@ class CashService {
       .limit(limit)
 
     if (error) {
-      console.error('[getCashMovements] Error fetching cash movements:', error)
       throw new Error(error.message || 'Error al obtener los movimientos')
     }
 
@@ -329,7 +318,6 @@ class CashService {
       .order('name', { ascending: true })
 
     if (error) {
-      console.error('Error fetching cash registers:', error)
       throw new Error(error.message || 'Error al obtener las cajas')
     }
 

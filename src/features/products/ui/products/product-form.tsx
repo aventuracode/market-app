@@ -40,7 +40,6 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
       onSuccess?.(result)
     },
     onError: (error) => {
-      console.error('Form error:', error)
       setSubmitError(error.message)
     },
   })
@@ -148,7 +147,7 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
       const data = await productService.getCategories(tenant.id)
       setCategories(data)
     } catch (error) {
-      console.error('Error loading categories:', error)
+      // Error silencioso al cargar categorías
     } finally {
       setLoadingCategories(false)
     }

@@ -67,7 +67,6 @@ export function useBarcodeScanner({
         }
       )
     } catch (err) {
-      console.error('Failed to start scanner:', err)
       const errorMessage = err instanceof Error ? err.message : 'Failed to access camera'
       setError(errorMessage)
       setHasPermission(false)

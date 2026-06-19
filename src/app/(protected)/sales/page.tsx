@@ -20,7 +20,7 @@ export default function SalesPage() {
   // Cargar ventas y estadísticas
   const { data: sales, isLoading: salesLoading, error: salesError } = useSales(period)
   const { data: stats, isLoading: statsLoading } = useSalesStats(period)
-console.log('data:::',stats)
+
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}

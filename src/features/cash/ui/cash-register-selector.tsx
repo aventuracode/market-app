@@ -46,7 +46,6 @@ export function CashRegisterSelector({
           onChange(registers[0].id, registers[0].name)
         }
       } catch (err) {
-        console.error('Error loading cash registers:', err)
         setError(err instanceof Error ? err.message : 'Error al cargar las cajas')
       } finally {
         setLoading(false)

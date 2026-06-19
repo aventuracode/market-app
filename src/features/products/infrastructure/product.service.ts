@@ -25,7 +25,6 @@ export class ProductService {
       .order('name', { ascending: true })
 
     if (error) {
-      console.error('Error fetching products:', error)
       throw new Error('Error al obtener productos')
     }
 
@@ -70,7 +69,6 @@ export class ProductService {
     const { data, error, count } = await queryBuilder
 
     if (error) {
-      console.error('Error searching products:', error)
       throw new Error('Error al buscar productos')
     }
 
@@ -100,8 +98,6 @@ export class ProductService {
       .single()
 
     if (error) {
-      console.error('Error getting product:', error)
-      
       // Si el error es "not found", retornar null
       if (error.code === 'PGRST116') {
         return null
@@ -130,7 +126,6 @@ export class ProductService {
       .maybeSingle()
 
     if (error) {
-      console.error('Error getting product by barcode:', error)
       return null
     }
 
@@ -151,7 +146,6 @@ export class ProductService {
       .order('name', { ascending: true })
 
     if (error) {
-      console.error('Error getting categories:', error)
       return []
     }
 
@@ -198,8 +192,6 @@ export class ProductService {
       .single()
 
     if (error) {
-      console.error('Error creating product:', error)
-      
       // Mensajes de error más específicos
       if (error.code === '23505') {
         throw new Error('Ya existe un producto con este código de barras')
@@ -266,7 +258,6 @@ export class ProductService {
       .single()
 
     if (error) {
-      console.error('Error updating product:', error)
       throw new Error('Error al actualizar el producto')
     }
 
@@ -297,7 +288,6 @@ export class ProductService {
       .eq('tenant_id', tenantId)
 
     if (error) {
-      console.error('Error deleting product:', error)
       throw new Error('Error al eliminar el producto')
     }
   }

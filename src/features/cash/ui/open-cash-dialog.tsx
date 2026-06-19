@@ -107,8 +107,6 @@ export function OpenCashDialog({ open, onClose, onSuccess }: OpenCashDialogProps
       onSuccess?.()
       onClose()
     } catch (err) {
-      console.error('[OpenCashDialog] Error al abrir caja:', err)
-
       // Manejo específico de error de concurrencia
       if (err instanceof CashConcurrencyError) {
         toast.error('Caja no disponible', {

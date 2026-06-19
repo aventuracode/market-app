@@ -40,7 +40,6 @@ export function useProduct(
       const data = await productService.getProductById(tenant.id, productId)
       setProduct(data)
     } catch (err) {
-      console.error('Error loading product:', err)
       setError(err instanceof Error ? err.message : 'Error al cargar el producto')
       setProduct(null)
     } finally {

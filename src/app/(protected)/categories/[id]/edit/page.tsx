@@ -36,7 +36,6 @@ export default function EditCategoryPage() {
 
         setCategory(data)
       } catch (err) {
-        console.error('Error loading category:', err)
         setError(err instanceof Error ? err.message : 'Error al cargar la categoría')
       } finally {
         setLoading(false)

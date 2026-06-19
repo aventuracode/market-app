@@ -44,7 +44,6 @@ export function StockAdjustmentDialog({
       onClose()
     },
     onError: (error) => {
-      console.error('Adjustment error:', error)
       setSubmitError(error.message)
     },
   })

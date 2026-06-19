@@ -99,7 +99,6 @@ const form = useForm<ProductFormData>({
 
       onSuccess?.(result)
     } catch (err) {
-      console.error('Error saving product:', err)
       const error = err instanceof Error ? err : new Error('Error al guardar el producto')
       onError?.(error)
       form.setError('root', {

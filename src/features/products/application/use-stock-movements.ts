@@ -31,7 +31,6 @@ export function useStockMovements(options: UseStockMovementsOptions = {}) {
       const data = await stockMovementService.getStockMovements(tenant.id, filters)
       setMovements(data)
     } catch (err) {
-      console.error('Error loading stock movements:', err)
       setError(err instanceof Error ? err.message : 'Error al cargar los movimientos')
     } finally {
       setLoading(false)
@@ -45,7 +44,7 @@ export function useStockMovements(options: UseStockMovementsOptions = {}) {
       const data = await stockMovementService.getStockSummary(tenant.id, productId)
       setSummary(data)
     } catch (err) {
-      console.error('Error loading stock summary:', err)
+      // Error silencioso en summary
     }
   }, [tenant?.id, productId])
 

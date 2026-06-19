@@ -73,7 +73,6 @@ export function useCategoryForm(options: UseCategoryFormOptions = {}) {
 
       onSuccess?.(result)
     } catch (err) {
-      console.error('Error saving category:', err)
       const error = err instanceof Error ? err : new Error('Error al guardar la categoría')
       onError?.(error)
       form.setError('root', {

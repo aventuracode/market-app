@@ -53,7 +53,6 @@ const onSubmit: SubmitHandler<StockAdjustmentFormData> = async (data) => {
       onSuccess?.(movement)
       form.reset()
     } catch (err) {
-      console.error('Error adjusting stock:', err)
       const error = err instanceof Error ? err : new Error('Error al ajustar el stock')
       onError?.(error)
       form.setError('root', {

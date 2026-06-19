@@ -18,7 +18,6 @@ export function UserMenu() {
     try {
       await logoutAction()
     } catch (error) {
-      console.error('Error al cerrar sesión:', error)
       setIsLoggingOut(false)
     }
   }

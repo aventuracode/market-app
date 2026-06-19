@@ -24,7 +24,6 @@ export function useAuth() {
           clearUser()
         }
       } catch (error) {
-        console.error('Error fetching user:', error)
         clearUser()
       } finally {
         setLoading(false)
@@ -42,7 +41,7 @@ export function useAuth() {
               setUser(userProfile as never)
             }
           } catch (error) {
-            console.error('Error fetching user on auth change:', error)
+            // Error silencioso en auth change
           }
         } else if (event === 'SIGNED_OUT') {
           clearUser()

@@ -36,7 +36,6 @@ export function BarcodeScanner({ open, onClose, onScan }: BarcodeScannerProps) {
         onClose()
       }, 1000)
     } catch (error) {
-      console.error('Scan error:', error)
       setErrorMessage(error instanceof Error ? error.message : 'Error al procesar código')
       
       // Vibrate error pattern

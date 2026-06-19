@@ -35,7 +35,6 @@ export function useTenant() {
           fetchedRef.current = user.tenantId
         }
       } catch (error) {
-        console.error('Error fetching tenant:', error)
         setTenant(null)
         fetchedRef.current = null
       } finally {

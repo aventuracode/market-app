@@ -56,7 +56,6 @@ class StockMovementService {
     const { data, error } = await query
 
     if (error) {
-      console.error('Error fetching stock movements:', error)
       throw new Error(error.message || 'Error al obtener los movimientos de stock')
     }
 
@@ -75,7 +74,6 @@ class StockMovementService {
       .single()
 
     if (productError || !product) {
-      console.error('Error fetching product:', productError)
       return null
     }
 
@@ -87,7 +85,6 @@ class StockMovementService {
       .order('created_at', { ascending: false })
 
     if (movementsError) {
-      console.error('Error fetching movements:', movementsError)
       return null
     }
 
@@ -144,8 +141,6 @@ class StockMovementService {
       .single()
 
     if (movementError) {
-      console.error('Error creating stock movement:', movementError)
-      
       if (movementError.message.includes('RLS')) {
         throw new Error('No tienes permisos para crear movimientos de stock')
       }
@@ -161,7 +156,6 @@ class StockMovementService {
       .eq('tenant_id', movementData.tenant_id)
 
     if (updateError) {
-      console.error('Error updating product stock:', updateError)
       // Intentar revertir el movimiento creado
       await this.supabase
         .from('stock_movements')
