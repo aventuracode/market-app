@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { authRepository } from '../infrastructure/auth.repository'
+import { authRepositoryServer } from '../infrastructure/auth.repository.server'
 
 /**
  * Server Action: Login
@@ -13,15 +13,16 @@ export async function loginAction(formData: FormData) {
   const password = formData.get('password') as string
 
   try {
-    await authRepository.signIn(email, password)
+    await authRepositoryServer.signIn(email, password)
     
-    revalidatePath('/', 'layout')
-    redirect('/pos')
   } catch (error) {
     return { 
       error: error instanceof Error ? error.message : 'Error al iniciar sesión' 
     }
   }
+
+    revalidatePath('/', 'layout')
+    redirect('/pos')
 }
 
 /**
@@ -30,11 +31,12 @@ export async function loginAction(formData: FormData) {
  */
 export async function logoutAction() {
   try {
-    await authRepository.signOut()
-    revalidatePath('/', 'layout')
-    redirect('/login')
+    await authRepositoryServer.signOut()
+    
   } catch (error) {
     // Redirigir de todas formas
     redirect('/login')
   }
+  revalidatePath('/', 'layout')
+    redirect('/login')
 }

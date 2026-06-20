@@ -3,33 +3,28 @@ import type { UserDB, TenantDB } from '../domain/auth.types'
 import type { User as SupabaseUser, Session } from '@supabase/supabase-js'
 
 /**
- * Auth Repository
- * Responsible for direct Supabase access only
- * Returns raw DB types
+ * AuthRepositoryClient
+ * Responsable únicamente del acceso a Supabase desde contexto CLIENT
+ * ('use client' components, hooks de React).
+ *
+ * Usa createBrowserClient, que sí puede cachearse como singleton a
+ * nivel de módulo/constructor porque no depende de cookies() de
+ * next/headers — el navegador maneja las cookies de forma nativa
+ * vía document.cookie.
+ *
+ * Expone todos los métodos consumidos desde auth.service.ts
+ * (según auditoría de uso), excepto signIn/signOut que viven en
+ * AuthRepositoryServer porque se invocan desde la Server Action
+ * de login/logout.
  */
-export class AuthRepository {
+export class AuthRepositoryClient {
   private supabase = createClient()
 
-  /**
-   * Sign in with email and password
-   */
-  async signIn(email: string, password: string) {
-    const { data, error } = await this.supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (error) throw error
-    return data
-  }
-
-  /**
-   * Sign out current user
-   */
-  async signOut() {
-    const { error } = await this.supabase.auth.signOut()
-    if (error) throw error
-  }
+  // signIn / signOut viven exclusivamente en AuthRepositoryServer,
+  // invocados desde las Server Actions loginAction/logoutAction.
+  // No se duplican acá: AuthService confirmó no tener consumidores
+  // client-side para login/logout (auditoría de uso, código muerto
+  // eliminado).
 
   /**
    * Sign up new user
@@ -48,7 +43,10 @@ export class AuthRepository {
    * Get current session
    */
   async getSession(): Promise<Session | null> {
-    const { data: { session }, error } = await this.supabase.auth.getSession()
+    const {
+      data: { session },
+      error,
+    } = await this.supabase.auth.getSession()
     if (error) throw error
     return session
   }
@@ -57,7 +55,10 @@ export class AuthRepository {
    * Get current auth user
    */
   async getAuthUser(): Promise<SupabaseUser | null> {
-    const { data: { user }, error } = await this.supabase.auth.getUser()
+    const {
+      data: { user },
+      error,
+    } = await this.supabase.auth.getUser()
     if (error) throw error
     return user
   }
@@ -141,4 +142,4 @@ export class AuthRepository {
   }
 }
 
-export const authRepository = new AuthRepository()
+export const authRepositoryClient = new AuthRepositoryClient()

@@ -1,59 +1,44 @@
-import { authRepository } from '../infrastructure/auth.repository'
+
 import { mapUserProfile, mapTenant } from '../domain/auth.mapper'
-import type { UserProfile, Tenant, LoginCredentials, SignUpData } from '../domain/auth.types'
+import type { UserProfile, Tenant } from '../domain/auth.types'
+import { authRepositoryClient } from '../infrastructure/auth.repository.client'
 
 /**
  * Auth Service
  * Application layer - uses repository and applies mappers
  * Returns domain types
+ *
+ * Login y logout viven exclusivamente en las Server Actions
+ * (loginAction / logoutAction → authRepositoryServer). Este service
+ * es client-only y expone solo lectura de perfil/tenant/sesión y
+ * gestión de password, que sí se invocan desde hooks ('use client').
  */
 export class AuthService {
   /**
-   * Login user
-   */
-  async login(credentials: LoginCredentials) {
-    const { user, session } = await authRepository.signIn(
-      credentials.email,
-      credentials.password
-    )
-
-    if (!user) throw new Error('Login failed')
-
-    // Get user profile
-    const userProfile = await this.getCurrentUserProfile()
-    
-    return {
-      user: userProfile,
-      session,
-    }
-  }
-
-  /**
-   * Logout user
-   */
-  async logout() {
-    await authRepository.signOut()
-  }
-
-  /**
    * Sign up new user
    */
-  async signUp(signUpData: SignUpData) {
-    const { user } = await authRepository.signUp(
+  async signUp(signUpData: {
+    email: string
+    password: string
+    tenantId: string
+    role?: string
+    firstName?: string
+    lastName?: string
+  }) {
+    const { user } = await authRepositoryClient.signUp(
       signUpData.email,
       signUpData.password
     )
 
     if (!user) throw new Error('User creation failed')
 
-    // Create user profile
     const roleMap: Record<string, number> = {
-      'ADMIN': 1,
-      'CAJERO': 2,
-      'SUPERVISOR': 3,
+      ADMIN: 1,
+      CAJERO: 2,
+      SUPERVISOR: 3,
     }
 
-    const profile = await authRepository.createUserProfile({
+    const profile = await authRepositoryClient.createUserProfile({
       id: user.id,
       email: signUpData.email,
       tenant_id: signUpData.tenantId,
@@ -69,12 +54,12 @@ export class AuthService {
    * Get current user profile (domain type)
    */
   async getCurrentUserProfile(): Promise<UserProfile | null> {
-    const authUser = await authRepository.getAuthUser()
-    
+    const authUser = await authRepositoryClient.getAuthUser()
+
     if (!authUser) return null
 
-    const userProfile = await authRepository.getUserProfile(authUser.id)
-    
+    const userProfile = await authRepositoryClient.getUserProfile(authUser.id)
+
     if (!userProfile) return null
 
     return mapUserProfile(userProfile, authUser.email || '')
@@ -84,8 +69,8 @@ export class AuthService {
    * Get tenant by ID (domain type)
    */
   async getTenant(tenantId: string): Promise<Tenant | null> {
-    const tenant = await authRepository.getTenantById(tenantId)
-    
+    const tenant = await authRepositoryClient.getTenantById(tenantId)
+
     if (!tenant) return null
 
     return mapTenant(tenant)
@@ -96,28 +81,28 @@ export class AuthService {
    */
   async resetPassword(email: string) {
     const redirectTo = `${window.location.origin}/auth/reset-password`
-    await authRepository.resetPassword(email, redirectTo)
+    await authRepositoryClient.resetPassword(email, redirectTo)
   }
 
   /**
    * Update password
    */
   async updatePassword(newPassword: string) {
-    await authRepository.updatePassword(newPassword)
+    await authRepositoryClient.updatePassword(newPassword)
   }
 
   /**
    * Get current session
    */
   async getSession() {
-    return await authRepository.getSession()
+    return await authRepositoryClient.getSession()
   }
 
   /**
    * Subscribe to auth state changes
    */
   onAuthStateChange(callback: (event: string, session: unknown) => void) {
-    return authRepository.onAuthStateChange(callback)
+    return authRepositoryClient.onAuthStateChange(callback)
   }
 }
 
