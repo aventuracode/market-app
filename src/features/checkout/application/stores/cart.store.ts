@@ -8,6 +8,8 @@ import { CartItem, StockValidationResult } from '@/features/checkout/domain/cart
 
 interface CartStore {
   items: CartItem[]
+  tenantId: string | null
+  setTenantId: (id: string | null) => void
   addItem: (product: ProductWithCategory, quantity?: number) => StockValidationResult
   removeItem: (productId: string) => void
   updateQuantity: (productId: string, quantity: number) => StockValidationResult
@@ -24,6 +26,11 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      tenantId: null,
+
+      setTenantId: (id) => {
+        set({ tenantId: id })
+      },
 
       addItem: (product, quantity = 1) => {
         const existingItem = get().items.find(
@@ -100,7 +107,7 @@ export const useCartStore = create<CartStore>()(
       },
 
       clearCart: () => {
-        set({ items: [] })
+        set({ items: [], tenantId: null })
       },
 
       getTotal: () => {
@@ -178,6 +185,19 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: 'cart-storage',
+      onRehydrateStorage: () => (state) => {
+        if (!state) return
+        try {
+          const raw = localStorage.getItem('auth-storage')
+          const parsed = raw ? JSON.parse(raw) : null
+          const activeTenantId = parsed?.state?.user?.tenantId ?? null
+          if (state.tenantId !== activeTenantId) {
+            state.clearCart()
+          }
+        } catch {
+          state.clearCart()
+        }
+      },
     }
   )
 )
