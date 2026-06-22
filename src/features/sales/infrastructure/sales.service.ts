@@ -57,7 +57,10 @@ class SalesService {
   async createSale(params: CreateSaleInputParams): Promise<CreateSaleResponse> {
     const payload = this.buildSalePayload(params)
     const saleId = await this.executeSaleRPC(payload)
-    return this.fetchSaleById(saleId, params.tenant_id)
+    // tenant_id ya no se pasa a la RPC, pero se necesita para fetchSaleById
+    // Se obtiene del payload original (que viene de Insert que sí lo tiene)
+    const tenantId = (params as any).tenant_id
+    return this.fetchSaleById(saleId, tenantId)
   }
 
   private buildSalePayload(params: CreateSaleInputParams) {
@@ -73,9 +76,8 @@ class SalesService {
   private async executeSaleRPC(
   payload: ReturnType<typeof this.buildSalePayload>
 ): Promise<string> {
+  // Se actualizarán con `pnpm types:generate` después de actualizar la RPC en Supabase
   const { data, error } = await this.supabase.rpc('create_sale', {
-    p_tenant_id: payload.tenant_id,
-    p_user_id: payload.user_id,
     p_cash_register_id: payload.cash_register_id,
     p_cash_session_id: payload.cash_session_id,
     p_payment_method: payload.payment_method,
@@ -137,14 +139,6 @@ class SalesService {
    * Valida los parámetros de la venta
    */
   private validateSaleParams(params: CreateSaleInputParams): void {
-    if (!params.tenant_id) {
-      throw new Error('tenant_id es requerido')
-    }
-
-    if (!params.user_id) {
-      throw new Error('user_id es requerido')
-    }
-
     if (!params.payment_method) {
       throw new Error('Método de pago es requerido')
     }
@@ -184,7 +178,20 @@ class SalesService {
   private handleRPCError(error: any): Error {
     const errorMessage = error.message || 'Error desconocido'
 
-    // Errores comunes
+    // Errores específicos con product_id
+    if (errorMessage.includes('not found or does not belong to tenant')) {
+      return new Error('Uno o más productos no existen o no pertenecen a tu tenant')
+    }
+
+    if (errorMessage.includes('Insufficient stock for product')) {
+      return new Error('Stock insuficiente para uno o más productos')
+    }
+
+    if (errorMessage.includes('Cash session is not open or does not belong to this tenant/register')) {
+      return new Error('La sesión de caja no está abierta o no pertenece a esta caja')
+    }
+
+    // Errores comunes (legacy)
     if (errorMessage.includes('insufficient stock')) {
       return new Error('Stock insuficiente para completar la venta')
     }

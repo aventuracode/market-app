@@ -125,7 +125,7 @@ export type Database = {
           notes: string | null
           opened_at: string | null
           opening_amount: number
-          status: string
+          status: Database["public"]["Enums"]["cash_session_status"]
           tenant_id: string
           user_id: string
         }
@@ -139,7 +139,7 @@ export type Database = {
           notes?: string | null
           opened_at?: string | null
           opening_amount: number
-          status: string
+          status: Database["public"]["Enums"]["cash_session_status"]
           tenant_id: string
           user_id: string
         }
@@ -153,7 +153,7 @@ export type Database = {
           notes?: string | null
           opened_at?: string | null
           opening_amount?: number
-          status?: string
+          status?: Database["public"]["Enums"]["cash_session_status"]
           tenant_id?: string
           user_id?: string
         }
@@ -572,6 +572,15 @@ export type Database = {
           p_cash_session_id: string
           p_items: Json
           p_payment_method: string
+        }
+        Returns: string
+      }
+      create_sale_param_tenantID_NA: {
+        Args: {
+          p_cash_register_id: string
+          p_cash_session_id: string
+          p_items: Json
+          p_payment_method: string
           p_tenant_id: string
           p_user_id: string
         }
@@ -592,6 +601,7 @@ export type Database = {
         | "EXPENSE"
         | "CLOSING"
         | "ADJUSTMENT"
+      cash_session_status: "OPEN" | "CLOSED"
       payment_method: "CASH" | "CARD" | "TRANSFER"
       stock_movement_type: "IN" | "OUT" | "ADJUSTMENT"
     }
@@ -729,6 +739,7 @@ export const Constants = {
         "CLOSING",
         "ADJUSTMENT",
       ],
+      cash_session_status: ["OPEN", "CLOSED"],
       payment_method: ["CASH", "CARD", "TRANSFER"],
       stock_movement_type: ["IN", "OUT", "ADJUSTMENT"],
     },

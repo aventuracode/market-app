@@ -9,7 +9,7 @@ export type SaleItemInput = {
 
 export type CreateSaleInputParams = Omit<
   Inserts<'sales'>,
-  'id' | 'created_at' | 'sale_number' | 'subtotal' | 'total'  // ✅ la RPC los calcula
+  'id' | 'created_at' | 'sale_number' | 'subtotal' | 'total' | 'tenant_id' | 'user_id'  // ✅ la RPC los calcula/obtiene de auth
 > & {
   cash_register_id: string  // sobreescribe string | null
   cash_session_id: string   // sobreescribe string | null

@@ -39,6 +39,16 @@ export const useCashStore = create<CashState>()(
     }),
     {
       name: 'cash-storage',
+      version: 2,
+      migrate: (persistedState: any, version: number) => {
+        if (version < 2) {
+          if (persistedState?.activeSession?.status) {
+            persistedState.activeSession.status =
+              persistedState.activeSession.status.toUpperCase()
+          }
+        }
+        return persistedState
+      },
       partialize: (state) => ({
         activeCashRegister: state.activeCashRegister,
         activeSession: state.activeSession,

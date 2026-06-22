@@ -26,7 +26,7 @@ class CashService {
       .select('*')
       .eq('tenant_id', tenantId)
       .eq('user_id', userId)
-      .eq('status', 'open')
+      .eq('status', 'OPEN')
       .order('opened_at', { ascending: false })
       .limit(1)
     if (error || !sessions || sessions.length === 0) {
@@ -72,7 +72,7 @@ class CashService {
           cash_register_id: cashRegisterId,
           user_id: userId,
           opening_amount: openingAmount,
-          status: 'open',
+          status: 'OPEN',
           notes: notes || null,
         })
         .select()
@@ -114,7 +114,7 @@ class CashService {
         closing_amount: closingAmount,
         expected_amount: expectedAmount,
         difference: difference,
-        status: 'closed',
+        status: 'CLOSED',
         closed_at: new Date().toISOString(),
         notes: notes || null,
       })

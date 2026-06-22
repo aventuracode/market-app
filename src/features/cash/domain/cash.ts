@@ -13,7 +13,7 @@ export type CashSession = Omit<Tables<'cash_sessions'>, 'opening_amount' | 'clos
   closing_amount: Money
   expected_amount: Money
   difference: Money
-  status: 'open' | 'closed'
+  status: 'OPEN' | 'CLOSED'
   opened_at: string
 }
 

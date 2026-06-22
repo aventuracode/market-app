@@ -158,9 +158,9 @@ class StockMovementService {
     if (updateError) {
       // Intentar revertir el movimiento creado
       await this.supabase
-        .from('stock_movements')
-        .delete()
-        .eq('id', movement.id)
+      .from('stock_movements')
+      .delete()
+      .eq('id', movement.id)
         
       
       throw new Error('Error al actualizar el stock del producto')

@@ -72,7 +72,7 @@ export function mapCashSession(raw: CashSessionDB): CashSession {
     closing_amount: money(raw.closing_amount ?? 0),
     expected_amount: money(raw.expected_amount ?? 0),
     difference: money(raw.difference ?? 0),
-    status: (raw.status as 'open' | 'closed') ?? 'open',
+    status: (raw.status?.toUpperCase() as 'OPEN' | 'CLOSED') ?? 'OPEN',
     opened_at: raw.opened_at ?? new Date().toISOString(),
   }
 }

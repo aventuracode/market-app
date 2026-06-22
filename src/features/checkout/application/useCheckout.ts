@@ -48,16 +48,14 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
 
         // SRP: construcción y sanitización de items delegada
         const saleItems = buildSaleItems()
-debugger
+
         const response = await saleService.createSale({
-          tenant_id: tenant!.id,
-          user_id: user!.id,
           cash_register_id: activeSession!.cash_register_id,
           cash_session_id: activeSession!.id,
           payment_method: paymentMethod,
           items: saleItems,
         })
-debugger
+
         setSuccess(response.sale.sale_number)
         clearCart()
         options.onSuccess?.(response)
