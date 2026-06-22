@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"src/**/*.{ts,tsx,json,css,md}\"",
-    "types:generate": "supabase gen types typescript --project-id <REFERENCE_ID> --schema public > src/types/supabase.generated.ts"
+    "types:generate": "supabase gen types typescript --schema public > src/shared/supabase/types.generated.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -54,6 +54,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.6.1",
     "tailwindcss": "^3.4.3",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.4.5"
   },
   "pnpm": {

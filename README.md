@@ -75,6 +75,8 @@
 - ✅ Componentes accesibles (shadcn/ui)
 - ✅ Optimizado para pantallas táctiles
 - ✅ PWA ready
+- ✅ Colores semánticos centralizados (SEMANTIC_COLORS)
+- ✅ Bottom-sheets optimizados para iOS/Android (safe-area, dvh)
 
 ---
 
@@ -323,4 +325,4 @@ export const validateCheckoutTotal = (total: Money): void => ...
 
 ## 📄 Licencia
 
-MIT © [Tu Nombre](https://github.com/tu-usuario)
+MIT © [Ventura Ariel](https://github.com/aventuracode)
