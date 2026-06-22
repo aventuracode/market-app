@@ -6,6 +6,7 @@ import { Clock, User, Package, CreditCard, Banknote, ArrowRightLeft } from 'luci
 import { formatCurrency, formatTime } from '@/shared/utils'
 import type { SaleWithDetails as SaleWithRelations, PaymentMethod } from '@/features/sales/domain/sales.types'
 import { cn } from '@/shared/ui'
+import { SEMANTIC_COLORS } from '@/shared/config/semantic-colors'
 
 interface SaleCardProps {
   sale: SaleWithRelations
@@ -81,19 +82,19 @@ function getPaymentMethodConfig(method: 'CASH' | 'CARD' | 'TRANSFER') {
       label: 'Efectivo',
       icon: <Banknote className="h-3 w-3 mr-1" />,
       variant: 'default' as const,
-      className: 'bg-green-100 text-green-700 hover:bg-green-200',
+      className: `${SEMANTIC_COLORS.success.badge} hover:bg-green-200`,
     },
     CARD: {
       label: 'Tarjeta',
       icon: <CreditCard className="h-3 w-3 mr-1" />,
       variant: 'secondary' as const,
-      className: 'bg-blue-100 text-blue-700 hover:bg-blue-200',
+      className: `${SEMANTIC_COLORS.card.badge} hover:bg-blue-200`,
     },
     TRANSFER: {
       label: 'Transferencia',
       icon: <ArrowRightLeft className="h-3 w-3 mr-1" />,
       variant: 'outline' as const,
-      className: 'bg-purple-100 text-purple-700 hover:bg-purple-200',
+      className: `${SEMANTIC_COLORS.transfer.badge} hover:bg-purple-200`,
     },
   }
 

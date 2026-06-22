@@ -1,14 +1,8 @@
 'use client'
 
-import { TrendingDown, TrendingUp, Wallet } from 'lucide-react'
+import { TrendingDown, TrendingUp, Wallet, CreditCard, ArrowRightLeft } from 'lucide-react'
 import { SummaryStatCard, type SummaryStatTone } from './summary-stat-card'
-
-export type CashSummary = {
-  opening_amount: number
-  total_sales: number
-  total_income: number
-  total_expenses: number
-}
+import type { CashSummary } from '../domain/cash'
 
 type CashSummaryGridProps = {
   summary: CashSummary
@@ -20,6 +14,7 @@ type StatDefinition = {
   value: number
   icon: typeof Wallet
   tone: SummaryStatTone
+  colorClass?: string
 }
 
 /**
@@ -40,11 +35,28 @@ export function CashSummaryGrid({ summary }: CashSummaryGridProps) {
       tone: 'neutral',
     },
     {
-      key: 'sales',
-      label: 'Ventas',
+      key: 'cash-sales',
+      label: 'Ventas Efectivo',
       value: summary.total_sales,
       icon: TrendingUp,
       tone: 'positive',
+      colorClass: 'text-green-600',
+    },
+    {
+      key: 'card-sales',
+      label: 'Ventas Tarjeta',
+      value: summary.total_card_sales,
+      icon: CreditCard,
+      tone: 'neutral',
+      colorClass: 'text-blue-600',
+    },
+    {
+      key: 'transfer-sales',
+      label: 'Ventas Transferencia',
+      value: summary.total_transfer_sales,
+      icon: ArrowRightLeft,
+      tone: 'neutral',
+      colorClass: 'text-purple-600',
     },
     {
       key: 'income',
@@ -71,6 +83,7 @@ export function CashSummaryGrid({ summary }: CashSummaryGridProps) {
           value={stat.value}
           icon={stat.icon}
           tone={stat.tone}
+          colorClass={stat.colorClass}
         />
       ))}
     </div>

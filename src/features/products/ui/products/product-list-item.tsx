@@ -7,6 +7,7 @@ import { formatStock } from '@/features/products/domain/format-stock'
 import { formatUnit, getUnitBadgeVariant, formatPriceByUnit } from '@/features/products/domain/product-helpers'
 import { ProductWithCategory, UnitType } from '@/features/products/domain/product'
 import { formatCurrency } from '@/shared/utils'
+import { SEMANTIC_COLORS } from '@/shared/config/semantic-colors'
 
 interface ProductListItemProps {
   product: ProductWithCategory
@@ -35,27 +36,27 @@ export function ProductListItem({
     if (isOutOfStock) {
       return {
         label: 'Sin stock',
-        className: 'bg-red-50 text-red-700 border-red-200',
+        className: `${SEMANTIC_COLORS.danger.bg} ${SEMANTIC_COLORS.danger.text} ${SEMANTIC_COLORS.danger.border}`,
         icon: true
       }
     }
     if (isLowStock) {
       return {
         label: formattedStock,
-        className: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+        className: 'bg-yellow-50 text-yellow-700 border-yellow-200',  // TODO: revisar semántica (yellow vs warning amber)
         icon: true
       }
     }
     if (isHighStock) {
       return {
         label: formattedStock,
-        className: 'bg-green-50 text-green-700 border-green-200',
+        className: `${SEMANTIC_COLORS.success.bg} ${SEMANTIC_COLORS.success.text} ${SEMANTIC_COLORS.success.border}`,
         icon: false
       }
     }
     return {
       label: formattedStock,
-      className: 'bg-blue-50 text-blue-700 border-blue-200',
+      className: `${SEMANTIC_COLORS.card.bg} ${SEMANTIC_COLORS.card.text} ${SEMANTIC_COLORS.card.border}`,
       icon: false
     }
   }

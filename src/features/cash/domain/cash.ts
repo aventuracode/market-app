@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { SEMANTIC_COLORS } from '@/shared/config/semantic-colors'
 import type { Money } from '@/shared/utils'
 import type { Tables, Enums } from '@/shared/supabase/types'
 
@@ -99,10 +100,10 @@ export const CASH_MOVEMENT_LABELS: Record<CashMovementType, string> = {
 }
 
 export const CASH_MOVEMENT_COLORS: Record<CashMovementType, string> = {
-  OPENING: 'text-purple-600 bg-purple-50',
-  SALE: 'text-blue-600 bg-blue-50',
-  INCOME: 'text-green-600 bg-green-50',
-  EXPENSE: 'text-red-600 bg-red-50',
-  CLOSING: 'text-orange-600 bg-orange-50',
-  ADJUSTMENT: 'text-yellow-600 bg-yellow-50',
+  OPENING: `${SEMANTIC_COLORS.transfer.text} ${SEMANTIC_COLORS.transfer.bg}`,
+  SALE: `${SEMANTIC_COLORS.card.text} ${SEMANTIC_COLORS.card.bg}`,
+  INCOME: `${SEMANTIC_COLORS.success.text} ${SEMANTIC_COLORS.success.bg}`,
+  EXPENSE: `${SEMANTIC_COLORS.danger.text} ${SEMANTIC_COLORS.danger.bg}`,
+  CLOSING: 'text-orange-600 bg-orange-50',  // TODO: revisar semántica (orange no tiene equivalente)
+  ADJUSTMENT: 'text-yellow-600 bg-yellow-50',  // TODO: revisar semántica (yellow vs amber)
 }

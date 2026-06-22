@@ -4,6 +4,7 @@ import { Banknote, CreditCard, ArrowRightLeft } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '@/shared/ui'
 import { PaymentMethod } from '@/features/sales/domain/sales.types'
+import { SEMANTIC_COLORS } from '@/shared/config/semantic-colors'
 
 interface PaymentMethodSelectorProps {
   selected: PaymentMethod | null
@@ -15,25 +16,25 @@ const paymentMethods = [
     id: 'CASH' as PaymentMethod,
     name: 'Efectivo',
     icon: Banknote,
-    color: 'text-green-600 dark:text-green-400',
-    bgColor: 'bg-green-50 dark:bg-green-950/30',
-    borderColor: 'border-green-200 dark:border-green-800',
+    color: `${SEMANTIC_COLORS.success.text} dark:text-green-400`,
+    bgColor: `${SEMANTIC_COLORS.success.bg} dark:bg-green-950/30`,
+    borderColor: `${SEMANTIC_COLORS.success.border} dark:border-green-800`,
   },
   {
     id: 'CARD' as PaymentMethod,
     name: 'Tarjeta',
     icon: CreditCard,
-    color: 'text-blue-600 dark:text-blue-400',
-    bgColor: 'bg-blue-50 dark:bg-blue-950/30',
-    borderColor: 'border-blue-200 dark:border-blue-800',
+    color: `${SEMANTIC_COLORS.card.text} dark:text-blue-400`,
+    bgColor: `${SEMANTIC_COLORS.card.bg} dark:bg-blue-950/30`,
+    borderColor: `${SEMANTIC_COLORS.card.border} dark:border-blue-800`,
   },
   {
     id: 'TRANSFER' as PaymentMethod,
     name: 'Transferencia',
     icon: ArrowRightLeft,
-    color: 'text-purple-600 dark:text-purple-400',
-    bgColor: 'bg-purple-50 dark:bg-purple-950/30',
-    borderColor: 'border-purple-200 dark:border-purple-800',
+    color: `${SEMANTIC_COLORS.transfer.text} dark:text-purple-400`,
+    bgColor: `${SEMANTIC_COLORS.transfer.bg} dark:bg-purple-950/30`,
+    borderColor: `${SEMANTIC_COLORS.transfer.border} dark:border-purple-800`,
   },
 ]
 

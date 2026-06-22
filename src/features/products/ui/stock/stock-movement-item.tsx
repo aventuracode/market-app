@@ -6,6 +6,7 @@ import { TrendingUp, TrendingDown, User } from 'lucide-react'
 import { Card } from '@/shared/ui/components/card'
 import { STOCK_MOVEMENT_TYPE_LABELS } from '@/features/products/domain/stock'
 import type { StockMovementFull } from '@/features/products/domain/stock'
+import { SEMANTIC_COLORS } from '@/shared/config/semantic-colors'
 
 interface StockMovementItemProps {
   movement: StockMovementFull
@@ -26,9 +27,9 @@ export function StockMovementItem({ movement }: StockMovementItemProps) {
             }`}
           >
             {isIncrease ? (
-              <TrendingUp className="w-6 h-6 text-green-600" />
+              <TrendingUp className={`w-6 h-6 ${SEMANTIC_COLORS.success.icon}`} />
             ) : (
-              <TrendingDown className="w-6 h-6 text-red-600" />
+              <TrendingDown className={`w-6 h-6 ${SEMANTIC_COLORS.danger.icon}`} />
             )}
           </div>
         </div>
@@ -44,7 +45,7 @@ export function StockMovementItem({ movement }: StockMovementItemProps) {
                 </span>
                 <span
                   className={`text-sm font-medium ${
-                    isIncrease ? 'text-green-600' : 'text-red-600'
+                    isIncrease ? SEMANTIC_COLORS.success.text : SEMANTIC_COLORS.danger.text
                   }`}
                 >
                   {isIncrease ? '+' : '-'}

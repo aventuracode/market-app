@@ -6,6 +6,7 @@ import { Badge } from '@/shared/ui/components/badge'
 import { CASH_MOVEMENT_LABELS } from '../domain/cash'
 import type { CashMovementWithUser } from '../domain/cash'
 import { formatCurrency } from '@/shared/utils'
+import { SEMANTIC_COLORS } from '@/shared/config/semantic-colors'
 
 interface CashMovementItemProps {
   movement: CashMovementWithUser
@@ -15,11 +16,11 @@ export function CashMovementItem({ movement }: CashMovementItemProps) {
   const getIcon = () => {
     switch (movement.type) {
       case 'INCOME':
-        return <TrendingUp className="w-6 h-6 text-green-600" />
+        return <TrendingUp className={`w-6 h-6 ${SEMANTIC_COLORS.success.icon}`} />
       case 'EXPENSE':
-        return <TrendingDown className="w-6 h-6 text-red-600" />
+        return <TrendingDown className={`w-6 h-6 ${SEMANTIC_COLORS.danger.icon}`} />
       case 'SALE':
-        return <ShoppingCart className="w-6 h-6 text-blue-600" />
+        return <ShoppingCart className={`w-6 h-6 ${SEMANTIC_COLORS.card.icon}`} />
       default:
         return <ShoppingCart className="w-6 h-6 text-gray-600" />
     }
@@ -28,32 +29,32 @@ export function CashMovementItem({ movement }: CashMovementItemProps) {
   const getColorClass = () => {
     switch (movement.type) {
       case 'INCOME':
-        return 'bg-green-50 dark:bg-green-950'
+        return `${SEMANTIC_COLORS.success.bg} dark:bg-green-950`
       case 'EXPENSE':
-        return 'bg-red-50 dark:bg-red-950'
+        return `${SEMANTIC_COLORS.danger.bg} dark:bg-red-950`
       case 'SALE':
-        return 'bg-blue-50 dark:bg-blue-950'
+        return `${SEMANTIC_COLORS.card.bg} dark:bg-blue-950`
       case 'OPENING':
-        return 'bg-purple-50 dark:bg-purple-950'
+        return `${SEMANTIC_COLORS.transfer.bg} dark:bg-purple-950`
       case 'CLOSING':
-        return 'bg-orange-50 dark:bg-orange-950'
+        return 'bg-orange-50 dark:bg-orange-950'  // TODO: revisar semántica (orange no tiene equivalente)
       case 'ADJUSTMENT':
-        return 'bg-yellow-50 dark:bg-yellow-950'
+        return 'bg-yellow-50 dark:bg-yellow-950'  // TODO: revisar semántica (yellow vs amber)
       default:
-        return 'bg-gray-50 dark:bg-gray-950'
+        return `${SEMANTIC_COLORS.neutral.bg} dark:bg-gray-950`
     }
   }
 
   const getBadgeClass = () => {
     switch (movement.type) {
       case 'INCOME':
-        return 'bg-green-50 text-green-700 border-green-200'
+        return `${SEMANTIC_COLORS.success.bg} ${SEMANTIC_COLORS.success.text} ${SEMANTIC_COLORS.success.border}`
       case 'EXPENSE':
-        return 'bg-red-50 text-red-700 border-red-200'
+        return `${SEMANTIC_COLORS.danger.bg} ${SEMANTIC_COLORS.danger.text} ${SEMANTIC_COLORS.danger.border}`
       case 'SALE':
-        return 'bg-blue-50 text-blue-700 border-blue-200'
+        return `${SEMANTIC_COLORS.card.bg} ${SEMANTIC_COLORS.card.text} ${SEMANTIC_COLORS.card.border}`
       default:
-        return 'bg-gray-50 text-gray-700 border-gray-200'
+        return `${SEMANTIC_COLORS.neutral.bg} ${SEMANTIC_COLORS.neutral.text} ${SEMANTIC_COLORS.neutral.border}`
     }
   }
 
@@ -87,7 +88,7 @@ export function CashMovementItem({ movement }: CashMovementItemProps) {
               )}
             </div>
             <span className={`text-xl font-bold flex-shrink-0 tracking-tight group-hover:scale-105 transition-transform ${
-              movement.type === 'EXPENSE' ? 'text-red-600' : 'text-green-600'
+              movement.type === 'EXPENSE' ? SEMANTIC_COLORS.danger.text : SEMANTIC_COLORS.success.text
             }`}>
               {movement.type === 'EXPENSE' ? '-' : '+'}{formatCurrency(movement.amount)}
             </span>

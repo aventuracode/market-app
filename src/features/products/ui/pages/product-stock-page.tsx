@@ -9,6 +9,7 @@ import { StockAdjustmentDialog } from '../stock/stock-adjustment-dialog'
 import { StockMovementItem } from '../stock/stock-movement-item'
 import { Button } from '@/shared/ui/components/button'
 import { Card } from '@/shared/ui/components/card'
+import { SEMANTIC_COLORS } from '@/shared/config/semantic-colors'
 
 export function ProductStockPage() {
   const router = useRouter()
@@ -105,19 +106,19 @@ export function ProductStockPage() {
           <div className="grid grid-cols-2 gap-3">
             <Card className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-4 h-4 text-green-600" />
+                <TrendingUp className={`w-4 h-4 ${SEMANTIC_COLORS.success.icon}`} />
                 <p className="text-xs text-muted-foreground">Entradas</p>
               </div>
-              <p className="text-2xl font-bold text-green-600">
+              <p className={`text-2xl font-bold ${SEMANTIC_COLORS.success.text}`}>
                 +{summary.total_purchases + summary.total_adjustments}
               </p>
             </Card>
             <Card className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                <TrendingDown className="w-4 h-4 text-red-600" />
+                <TrendingDown className={`w-4 h-4 ${SEMANTIC_COLORS.danger.icon}`} />
                 <p className="text-xs text-muted-foreground">Salidas</p>
               </div>
-              <p className="text-2xl font-bold text-red-600">
+              <p className={`text-2xl font-bold ${SEMANTIC_COLORS.danger.text}`}>
                 -{summary.total_sales + summary.total_damages}
               </p>
             </Card>

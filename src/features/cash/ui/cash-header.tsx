@@ -4,6 +4,7 @@ import { Clock, User, X } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { Button } from '@/shared/ui/components/button'
+import { SEMANTIC_COLORS } from '@/shared/config/semantic-colors'
 
 type CashHeaderProps = {
   userFirstName?: string
@@ -52,20 +53,20 @@ export function CashHeader({
           onClick={onCloseClick}
           variant="outline"
           size="sm"
-          className="gap-1.5 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all duration-200 active:scale-95 h-9"
+          className={`gap-1.5 ${SEMANTIC_COLORS.danger.border} ${SEMANTIC_COLORS.danger.text} hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all duration-200 active:scale-95 h-9`}
         >
           <X className="w-3.5 h-3.5" />
           <span className="text-xs font-medium">Cerrar</span>
         </Button>
       </div>
 
-      <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-50 border border-green-200">
+      <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full ${SEMANTIC_COLORS.success.bg} border ${SEMANTIC_COLORS.success.border}`}>
         <div
           className={`w-1.5 h-1.5 rounded-full ${
             realtimeConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
           }`}
         />
-        <span className="text-[10px] font-medium text-green-700">
+        <span className={`text-[10px] font-medium ${SEMANTIC_COLORS.success.text}`}>
           {realtimeConnected ? 'Caja activa' : 'Offline'}
         </span>
       </div>

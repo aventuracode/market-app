@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { SEMANTIC_COLORS } from '@/shared/config/semantic-colors'
 import type { Enums } from '@/shared/supabase/types'
 
 export type StockMovementType = Enums<'stock_movement_type'>
@@ -108,7 +109,7 @@ export const STOCK_MOVEMENT_TYPE_LABELS: Record<StockMovementType, string> = {
   ADJUSTMENT: 'Ajuste',
 }
 export const STOCK_MOVEMENT_TYPE_COLORS: Record<StockMovementType, string> = {
-  IN: 'text-green-600 bg-green-50',
-  OUT: 'text-red-600 bg-red-50',
-  ADJUSTMENT: 'text-purple-600 bg-purple-50',
+  IN: `${SEMANTIC_COLORS.success.text} ${SEMANTIC_COLORS.success.bg}`,
+  OUT: `${SEMANTIC_COLORS.danger.text} ${SEMANTIC_COLORS.danger.bg}`,
+  ADJUSTMENT: `${SEMANTIC_COLORS.transfer.text} ${SEMANTIC_COLORS.transfer.bg}`,
 }

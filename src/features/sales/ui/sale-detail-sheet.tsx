@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { formatCurrency, formatDateTime } from '@/shared/utils'
 import type { SaleWithDetails as SaleWithRelations, PaymentMethod } from '@/features/sales/domain/sales.types'
+import { SEMANTIC_COLORS } from '@/shared/config/semantic-colors'
 
 interface SaleDetailSheetProps {
   sale: SaleWithRelations | null
@@ -168,19 +169,19 @@ function getPaymentMethodConfig(method: 'CASH' | 'CARD' | 'TRANSFER') {
       label: 'Efectivo',
       icon: <Banknote className="h-4 w-4" />,
       variant: 'default' as const,
-      className: 'bg-green-100 text-green-700',
+      className: SEMANTIC_COLORS.success.badge,
     },
     CARD: {
       label: 'Tarjeta',
       icon: <CreditCard className="h-4 w-4" />,
       variant: 'secondary' as const,
-      className: 'bg-blue-100 text-blue-700',
+      className: SEMANTIC_COLORS.card.badge,
     },
     TRANSFER: {
       label: 'Transferencia',
       icon: <ArrowRightLeft className="h-4 w-4" />,
       variant: 'outline' as const,
-      className: 'bg-purple-100 text-purple-700',
+      className: SEMANTIC_COLORS.transfer.badge,
     },
   }
 

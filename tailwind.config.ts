@@ -91,6 +91,20 @@ const config: Config = {
       },
     },
   },
+  safelist: [
+    // semantic-colors.ts — success (verde)
+    'text-green-600', 'bg-green-50', 'border-green-200', 'bg-green-100', 'text-green-800',
+    // semantic-colors.ts — card (azul)
+    'text-blue-600',  'bg-blue-50',  'border-blue-200',  'bg-blue-100',  'text-blue-800',
+    // semantic-colors.ts — transfer (púrpura)
+    'text-purple-600', 'bg-purple-50', 'border-purple-200', 'bg-purple-100', 'text-purple-800',
+    // semantic-colors.ts — warning (ámbar)
+    'text-amber-600', 'bg-amber-50', 'border-amber-200', 'bg-amber-100', 'text-amber-800',
+    // semantic-colors.ts — danger (rojo)
+    'text-red-600',   'bg-red-50',   'border-red-200',   'bg-red-100',   'text-red-800',
+    // semantic-colors.ts — neutral (gris)
+    'text-slate-600', 'bg-slate-50', 'border-slate-200', 'bg-slate-100', 'text-slate-700',
+  ],
   plugins: [tailwindcssAnimate],
 }
 
