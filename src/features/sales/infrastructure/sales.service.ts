@@ -57,10 +57,7 @@ class SalesService {
   async createSale(params: CreateSaleInputParams): Promise<CreateSaleResponse> {
     const payload = this.buildSalePayload(params)
     const saleId = await this.executeSaleRPC(payload)
-    // tenant_id ya no se pasa a la RPC, pero se necesita para fetchSaleById
-    // Se obtiene del payload original (que viene de Insert que sí lo tiene)
-    const tenantId = (params as any).tenant_id
-    return this.fetchSaleById(saleId, tenantId)
+    return this.fetchSaleById(saleId)
   }
 
   private buildSalePayload(params: CreateSaleInputParams) {
@@ -76,7 +73,6 @@ class SalesService {
   private async executeSaleRPC(
   payload: ReturnType<typeof this.buildSalePayload>
 ): Promise<string> {
-  // Se actualizarán con `pnpm types:generate` después de actualizar la RPC en Supabase
   const { data, error } = await this.supabase.rpc('create_sale', {
     p_cash_register_id: payload.cash_register_id,
     p_cash_session_id: payload.cash_session_id,
@@ -91,14 +87,12 @@ class SalesService {
 }
 
   private async fetchSaleById(
-  saleId: string,
-  tenantId: string
+  saleId: string
 ): Promise<CreateSaleResponse> {
   const { data, error } = await this.supabase
     .from('sales')
     .select('*')
     .eq('id', saleId)
-    .eq('tenant_id', tenantId)
     .single()
 
   if (error || !data) {
