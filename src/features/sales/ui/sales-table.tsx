@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from '@/shared/ui/components/alert'
 import type { SaleWithDetails } from '@/features/sales/domain/sales.types'
 import { formatCurrency } from '@/shared/utils'
 import { formatDateTime } from '@/shared/utils'
+import { SEMANTIC_COLORS } from '@/shared/config/semantic-colors'
 
 interface SalesTableProps {
   sales: SaleWithDetails[] | undefined
@@ -129,13 +130,13 @@ export function SalesTable({ sales, isLoading, error }: SalesTableProps) {
   const getPaymentMethodColor = (method: string) => {
     switch (method) {
       case 'CASH':
-        return 'bg-green-50 text-green-700 border-green-200'
+        return `${SEMANTIC_COLORS.success.bg} ${SEMANTIC_COLORS.success.text} ${SEMANTIC_COLORS.success.border}`
       case 'CARD':
-        return 'bg-blue-50 text-blue-700 border-blue-200'
+        return `${SEMANTIC_COLORS.card.bg} ${SEMANTIC_COLORS.card.text} ${SEMANTIC_COLORS.card.border}`
       case 'TRANSFER':
-        return 'bg-purple-50 text-purple-700 border-purple-200'
+        return `${SEMANTIC_COLORS.transfer.bg} ${SEMANTIC_COLORS.transfer.text} ${SEMANTIC_COLORS.transfer.border}`
       default:
-        return 'bg-gray-50 text-gray-700 border-gray-200'
+        return `${SEMANTIC_COLORS.neutral.bg} ${SEMANTIC_COLORS.neutral.text} ${SEMANTIC_COLORS.neutral.border}`
     }
   }
 
