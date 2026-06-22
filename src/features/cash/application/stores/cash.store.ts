@@ -7,9 +7,12 @@ interface CashState {
   activeCashRegister: CashRegister | null
   activeSession: CashSession | null
   currentBalance: number
+  tenantId: string | null
+  setTenantId: (id: string | null) => void
   setActiveCash: (register: CashRegister, session: CashSession) => void
   updateBalance: (balance: number) => void
   clearActiveCash: () => void
+  clearCash: () => void
 }
 
 export const useCashStore = create<CashState>()(
@@ -18,6 +21,11 @@ export const useCashStore = create<CashState>()(
       activeCashRegister: null,
       activeSession: null,
       currentBalance: 0,
+      tenantId: null,
+
+      setTenantId: (id) => {
+        set({ tenantId: id })
+      },
 
       setActiveCash: (register, session) =>
         set({
@@ -36,6 +44,14 @@ export const useCashStore = create<CashState>()(
           activeSession: null,
           currentBalance: 0,
         }),
+
+      clearCash: () =>
+        set({
+          activeCashRegister: null,
+          activeSession: null,
+          currentBalance: 0,
+          tenantId: null,
+        }),
     }),
     {
       name: 'cash-storage',
@@ -52,6 +68,7 @@ export const useCashStore = create<CashState>()(
       partialize: (state) => ({
         activeCashRegister: state.activeCashRegister,
         activeSession: state.activeSession,
+        tenantId: state.tenantId,
       }),
       merge: (persistedState, currentState) => ({
         ...currentState,
@@ -59,6 +76,19 @@ export const useCashStore = create<CashState>()(
         // Siempre inicializar currentBalance en 0, se calculará después
         currentBalance: 0,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (!state) return
+        try {
+          const raw = localStorage.getItem('auth-storage')
+          const parsed = raw ? JSON.parse(raw) : null
+          const activeTenantId = parsed?.state?.user?.tenantId ?? null
+          if (state.tenantId !== activeTenantId) {
+            state.clearCash()
+          }
+        } catch {
+          state.clearCash()
+        }
+      },
     }
   )
 )
