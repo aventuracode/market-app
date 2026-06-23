@@ -12,6 +12,7 @@ type CashHeaderProps = {
   sessionOpenedAt?: string | null
   realtimeConnected: boolean
   onCloseClick: () => void
+  onHistorialClick?: () => void
 }
 
 /**
@@ -29,6 +30,7 @@ export function CashHeader({
   sessionOpenedAt,
   realtimeConnected,
   onCloseClick,
+  onHistorialClick,
 }: CashHeaderProps) {
   return (
     <div className="px-4 pt-5 pb-4 border-b bg-background/95 backdrop-blur-sm">
@@ -49,15 +51,27 @@ export function CashHeader({
             )}
           </div>
         </div>
-        <Button
-          onClick={onCloseClick}
-          variant="outline"
-          size="sm"
-          className={`gap-1.5 ${SEMANTIC_COLORS.danger.border} ${SEMANTIC_COLORS.danger.text} hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all duration-200 active:scale-95 h-9`}
-        >
-          <X className="w-3.5 h-3.5" />
-          <span className="text-xs font-medium">Cerrar</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          {onHistorialClick && (
+            <Button
+              onClick={onHistorialClick}
+              variant="ghost"
+              size="sm"
+              className="h-9"
+            >
+              <span className="text-xs font-medium">Historial</span>
+            </Button>
+          )}
+          <Button
+            onClick={onCloseClick}
+            variant="outline"
+            size="sm"
+            className={`gap-1.5 ${SEMANTIC_COLORS.danger.border} ${SEMANTIC_COLORS.danger.text} hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all duration-200 active:scale-95 h-9`}
+          >
+            <X className="w-3.5 h-3.5" />
+            <span className="text-xs font-medium">Cerrar</span>
+          </Button>
+        </div>
       </div>
 
       <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full ${SEMANTIC_COLORS.success.bg} border ${SEMANTIC_COLORS.success.border}`}>

@@ -1,6 +1,7 @@
 'use client'
 
 import { Plus } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useCashRegister } from '../application/use-cash-register'
 import { useCashMovements } from '../application/use-cash-movements'
 import { useCashDialogs } from '../application/use-cash-dialogs'
@@ -25,6 +26,7 @@ import { CashSummaryGrid } from './cash-summary-grid'
  * interna de cada tarjeta: eso vive en cada subcomponente.
  */
 export function CashPage() {
+  const router = useRouter()
   const { user } = useAuthStore()
   const {
     activeSession,
@@ -57,9 +59,19 @@ export function CashPage() {
   if (!isOpen) {
     return (
       <div className="flex flex-col h-full">
-        <div className="p-4 border-b">
-          <h1 className="text-2xl font-bold">Caja</h1>
-          <p className="text-sm text-muted-foreground">Gestión de caja</p>
+        <div className="p-4 border-b flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">Caja</h1>
+            <p className="text-sm text-muted-foreground">Gestión de caja</p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push('/cash/sessions')}
+            className="border-2"
+          >
+            Historial
+          </Button>
         </div>
 
         <CashClosedState onOpenClick={dialogs.openOpenDialog} />
@@ -80,6 +92,7 @@ export function CashPage() {
         sessionOpenedAt={activeSession?.opened_at}
         realtimeConnected={realtimeConnected}
         onCloseClick={dialogs.openCloseDialog}
+        onHistorialClick={() => router.push('/cash/sessions')}
       />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-5">
