@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import CurrencyInput from 'react-currency-input-field'
 import { money } from '@/shared/utils'
@@ -64,12 +64,14 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
     if (costPrice > 0 && costPriceInput === '') {
       setCostPriceInput(costPrice.toString())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [costPrice])
   
   useEffect(() => {
     if (salePrice > 0 && salePriceInput === '') {
       setSalePriceInput(salePrice.toString())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [salePrice])
 
   // Calcular ganancia
@@ -110,11 +112,24 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
     }
   }
 
+  const loadCategories = useCallback(async () => {
+    if (!tenant?.id) return
+    
+    try {
+      setLoadingCategories(true)
+      const data = await productService.getCategories(tenant.id)
+      setCategories(data)
+    } catch (error) {
+      // Error silencioso al cargar categorías
+    } finally {
+      setLoadingCategories(false)
+    }
+  }, [tenant?.id])
+
   // Cargar categorías primero
   useEffect(() => {
-    if (!tenant?.id) return
     loadCategories()
-  }, [tenant?.id])
+  }, [loadCategories])
 
   // Resetear formulario cuando el producto cambie Y las categorías estén cargadas
   useEffect(() => {
@@ -138,20 +153,6 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
       setSalePriceInput(product.sale_price ? product.sale_price.toString() : '')
     }
   }, [product, loadingCategories, form])
-
-  const loadCategories = async () => {
-    if (!tenant?.id) return
-    
-    try {
-      setLoadingCategories(true)
-      const data = await productService.getCategories(tenant.id)
-      setCategories(data)
-    } catch (error) {
-      // Error silencioso al cargar categorías
-    } finally {
-      setLoadingCategories(false)
-    }
-  }
 
   const handleCategoryCreated = async (categoryId: string) => {
     await loadCategories()

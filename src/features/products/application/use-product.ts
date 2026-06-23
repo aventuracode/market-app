@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { productService } from '../infrastructure/product.service'
 import { useTenant } from '@/features/auth'
 import type { Product } from '../domain/product'
@@ -28,7 +28,7 @@ export function useProduct(
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const loadProduct = async () => {
+  const loadProduct = useCallback(async () => {
     if (!tenant?.id || !productId) {
       setLoading(false)
       return
@@ -45,13 +45,13 @@ export function useProduct(
     } finally {
       setLoading(false)
     }
-  }
+  }, [tenant?.id, productId])
 
   useEffect(() => {
     if (options.autoLoad !== false) {
       loadProduct()
     }
-  }, [tenant?.id, productId, options.autoLoad])
+  }, [loadProduct, options.autoLoad])
 
   return {
     product,

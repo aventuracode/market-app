@@ -68,7 +68,7 @@ export function useCheckout(options: UseCheckoutOptions = {}) {
         throw error
       }
     },
-    [items, user, tenant, activeSession, clearCart, options,
+    [activeSession, clearCart, options,
      assertSessionReady, assertStockAvailability, buildSaleItems,
      setLoading, setSuccess, setError]
   )

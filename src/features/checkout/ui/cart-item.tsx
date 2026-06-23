@@ -37,6 +37,7 @@ export function CartItem({ item, onIncrease, onDecrease, onRemove, onUpdateQuant
         setInputValue(formattedValue)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quantity, isEditing])
 
   const unitType = product.unit_type || 'UNIT'

@@ -91,6 +91,7 @@ export function useProducts(options: UseProductsOptions = {}) {
     if (autoLoad && tenant?.id) {
       loadProducts()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tenant?.id, autoLoad]) // Solo cargar cuando cambia el tenant
 
   return {

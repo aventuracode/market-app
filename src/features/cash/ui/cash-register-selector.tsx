@@ -53,6 +53,7 @@ export function CashRegisterSelector({
     }
 
     loadCashRegisters()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tenant?.id])
 
   const handleValueChange = (registerId: string) => {

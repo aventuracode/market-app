@@ -97,7 +97,7 @@ export function useCashRegister() {
     if (activeSession) {
       loadSummary()
     }
-  }, [activeSession?.id])
+  }, [activeSession?.id, loadSummary])
 
   // Setup Realtime subscription
   useEffect(() => {
