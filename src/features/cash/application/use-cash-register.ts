@@ -94,7 +94,7 @@ export function useCashRegister() {
 
   // Load summary when session becomes active
   useEffect(() => {
-    if (activeSession) {
+    if (activeSession?.id) {
       loadSummary()
     }
   }, [activeSession?.id, loadSummary])
