@@ -12,7 +12,6 @@ type CashHeaderProps = {
   sessionOpenedAt?: string | null
   realtimeConnected: boolean
   onCloseClick: () => void
-  onHistorialClick?: () => void
 }
 
 /**
@@ -30,43 +29,18 @@ export function CashHeader({
   sessionOpenedAt,
   realtimeConnected,
   onCloseClick,
-  onHistorialClick,
 }: CashHeaderProps) {
   return (
     <div className="px-4 pt-5 pb-4 border-b bg-background/95 backdrop-blur-sm">
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight">Caja</h1>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground/80 mt-1">
-            <User className="w-3 h-3" />
-            <span>
-              {userFirstName} {userLastName}
-            </span>
-            {sessionOpenedAt && (
-              <>
-                <span className="text-muted-foreground/40">•</span>
-                <Clock className="w-3 h-3" />
-                <span>{format(new Date(sessionOpenedAt), 'HH:mm', { locale: es })}</span>
-              </>
-            )}
-          </div>
-        </div>
+      {/* Fila 1: Título + botones */}
+      <div className="flex items-center justify-between mb-2">
+        <h1 className="text-xl font-bold tracking-tight">Caja</h1>
         <div className="flex items-center gap-2">
-          {onHistorialClick && (
-            <Button
-              onClick={onHistorialClick}
-              variant="ghost"
-              size="sm"
-              className="h-9"
-            >
-              <span className="text-xs font-medium">Historial</span>
-            </Button>
-          )}
           <Button
             onClick={onCloseClick}
             variant="outline"
             size="sm"
-            className={`gap-1.5 ${SEMANTIC_COLORS.danger.border} ${SEMANTIC_COLORS.danger.text} hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all duration-200 active:scale-95 h-9`}
+            className="gap-1.5 h-9 text-muted-foreground hover:text-red-600 hover:border-red-300 hover:bg-red-50 transition-all duration-200 active:scale-95"
           >
             <X className="w-3.5 h-3.5" />
             <span className="text-xs font-medium">Cerrar</span>
@@ -74,15 +48,30 @@ export function CashHeader({
         </div>
       </div>
 
-      <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full ${SEMANTIC_COLORS.success.bg} border ${SEMANTIC_COLORS.success.border}`}>
-        <div
-          className={`w-1.5 h-1.5 rounded-full ${
-            realtimeConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
-          }`}
-        />
-        <span className={`text-[10px] font-medium ${SEMANTIC_COLORS.success.text}`}>
-          {realtimeConnected ? 'Caja activa' : 'Offline'}
+      {/* Fila 2: Badge + usuario + hora inline */}
+      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full ${SEMANTIC_COLORS.success.bg} border ${SEMANTIC_COLORS.success.border}`}>
+          <div
+            className={`w-1.5 h-1.5 rounded-full ${
+              realtimeConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
+            }`}
+          />
+          <span className={`text-[10px] font-medium ${SEMANTIC_COLORS.success.text}`}>
+            {realtimeConnected ? 'Caja activa' : 'Offline'}
+          </span>
+        </div>
+        <span className="text-muted-foreground/40">·</span>
+        <User className="w-3 h-3" />
+        <span>
+          {userFirstName} {userLastName}
         </span>
+        {sessionOpenedAt && (
+          <>
+            <span className="text-muted-foreground/40">·</span>
+            <Clock className="w-3 h-3" />
+            <span>{format(new Date(sessionOpenedAt), 'HH:mm', { locale: es })}</span>
+          </>
+        )}
       </div>
     </div>
   )

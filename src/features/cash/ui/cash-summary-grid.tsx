@@ -33,6 +33,7 @@ export function CashSummaryGrid({ summary }: CashSummaryGridProps) {
       value: summary.opening_amount,
       icon: Wallet,
       tone: 'neutral',
+      colorClass: 'text-gray-600',
     },
     {
       key: 'cash-sales',

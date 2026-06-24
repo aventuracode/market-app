@@ -1,6 +1,6 @@
 'use client'
 
-import { Plus } from 'lucide-react'
+import { Plus, ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCashRegister } from '../application/use-cash-register'
 import { useCashMovements } from '../application/use-cash-movements'
@@ -68,7 +68,7 @@ export function CashPage() {
             variant="outline"
             size="sm"
             onClick={() => router.push('/cash/sessions')}
-            className="border-2"
+            className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200"
           >
             Historial
           </Button>
@@ -92,13 +92,21 @@ export function CashPage() {
         sessionOpenedAt={activeSession?.opened_at}
         realtimeConnected={realtimeConnected}
         onCloseClick={dialogs.openCloseDialog}
-        onHistorialClick={() => router.push('/cash/sessions')}
       />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-5">
         <CashBalanceCard balance={currentBalance} />
 
         {summary && <CashSummaryGrid summary={summary} />}
+
+        <button
+          type="button"
+          onClick={() => router.push('/cash/sessions')}
+          className="w-full text-xs text-muted-foreground hover:text-foreground flex items-center justify-end gap-1 transition-colors"
+        >
+          Ver historial de sesiones
+          <ChevronRight className="w-3 h-3" />
+        </button>
 
         <Button
           onClick={dialogs.openMovementDialog}

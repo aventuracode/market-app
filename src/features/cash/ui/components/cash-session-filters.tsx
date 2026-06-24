@@ -34,6 +34,9 @@ export function CashSessionFilters({ filters, onChange }: CashSessionFiltersProp
     })
   }
 
+  const toLocalDateString = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+
   const handleDateChange = (value: string) => {
     const newDateFilter = value as DateFilter
     setDateFilter(newDateFilter)
@@ -43,17 +46,17 @@ export function CashSessionFilters({ filters, onChange }: CashSessionFiltersProp
 
     switch (newDateFilter) {
       case 'today':
-        date = today.toISOString().split('T')[0]
+        date = toLocalDateString(today)
         break
       case 'yesterday':
         const yesterday = new Date(today)
         yesterday.setDate(yesterday.getDate() - 1)
-        date = yesterday.toISOString().split('T')[0]
+        date = toLocalDateString(yesterday)
         break
       case 'last7days':
         const last7 = new Date(today)
         last7.setDate(last7.getDate() - 7)
-        date = last7.toISOString().split('T')[0]
+        date = toLocalDateString(last7)
         break
       default:
         date = undefined

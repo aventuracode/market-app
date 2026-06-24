@@ -14,11 +14,16 @@ export function CashSessionsPage() {
   const { user } = useAuthStore()
   const role = user?.role
 
+  const todayLocal = (() => {
+    const d = new Date()
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  })()
+
   const [filters, setFilters] = useState<{
     status?: CashSessionStatus
     date?: string
   }>({
-    date: new Date().toISOString().split('T')[0], // Por defecto: Hoy
+    date: todayLocal, // Por defecto: Hoy (fecha local, no UTC)
   })
 
   const [selectedSession, setSelectedSession] = useState<CashSession | null>(null)
